@@ -1,28 +1,30 @@
 import React from 'react';
 import { SafeAreaView,  TouchableOpacity, View, Image, Text } from 'react-native';
-import CustomButton from '../components/CustomButton';
-import HeaderText from '../components/HeaderText';  
-import RegularText from '../components/RegularText';  
-import createSharedStyles from '../styles/SharedStyles';
-import { lightTheme, darkTheme } from '../styles/Theme';
+import CustomButton from '../ui/components/CustomButton';
+import HeaderText from '../ui/components/HeaderText';  
+import RegularText from '../ui/components/RegularText';  
+import createSharedStyles from '../ui/styles/SharedStyles';
+import { lightTheme, darkTheme } from '../ui/styles/Theme';
 {/* import i18n from '../i18n'; */} // Para las traducciones. No pude probarlo, solo está en esta pantalla por ahora
+import { useRouter } from 'expo-router';
 
 const theme =   darkTheme;  // Puedes cambiar manualmente entre lightTheme y darkTheme
 const sharedStyles = createSharedStyles(theme);
 
 const FirstScreen: React.FC = () => {
+  const router = useRouter();
   return (
     <SafeAreaView style={sharedStyles.screenContainer}>
 
       {/* Logo como imagen PNG */}
       <Image 
-        source={require('./assets/images/icons/LogoiPost.png')} 
+        source={require('../assets/images/icons/LogoiPost.png')} 
         style={{ width: 180, height: 180 }} 
       />
 
       {/* Texto "Bienvenidos a iPost" */}
       <View style={{ flexDirection: 'row', justifyContent: 'center', alignItems: 'baseline' }}>
-        <HeaderText text= {i18n.t('welcome')} theme={theme} />
+        <HeaderText text= {('welcome')} theme={theme} />
         <Text style={{ fontSize: 34, fontWeight: 'bold', color: theme.colors.textPrimary }}> iPost</Text>
       </View> 
 
@@ -31,7 +33,7 @@ const FirstScreen: React.FC = () => {
 
         {/* Botón de Iniciar sesión */}
         <CustomButton
-          title= {i18n.t('login')}
+          title= {('login')}
           onPress={() => console.log('Iniciar sesión')}
           type="primary"
           theme={theme}
@@ -40,7 +42,7 @@ const FirstScreen: React.FC = () => {
 
         {/* Botón de Registrarse */}
         <CustomButton
-          title={i18n.t('signup')} 
+          title={('signup')} 
           onPress={() => console.log('Registrarse')}
           type="secondary"
           theme={theme}
@@ -49,7 +51,7 @@ const FirstScreen: React.FC = () => {
       </View>
 
       {/* Texto "o continua con" */}
-      <RegularText text= {i18n.t('continueWith')} theme={theme} />
+      <RegularText text= {('continue with')} theme={theme} />
 
       {/* Botón de Google con imagen PNG */}
       <TouchableOpacity
@@ -57,7 +59,7 @@ const FirstScreen: React.FC = () => {
         onPress={() => console.log('Google')}
       >
         <Image 
-          source={require('./assets/images/icons/Google.png')} 
+          source={require('../assets/images/icons/Google.png')} 
           style={{ width: 24, height: 24, marginRight: theme.spacing.medium }} 
         />
         <Text style={sharedStyles.googleText}>Google</Text>

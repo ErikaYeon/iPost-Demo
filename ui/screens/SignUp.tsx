@@ -7,22 +7,42 @@ import LinkText from '../components/LinkText';
 import InputField from '../components/InputField';  
 import createSharedStyles from '../styles/SharedStyles';
 import { lightTheme, darkTheme } from '../styles/Theme';
+import { styles } from '../styles/LogIn';
+import { useDispatch } from 'react-redux'; 
+import { setProfile } from '../../redux/slices/profileSlice'; 
 
 const theme = darkTheme;  // Para alternar entre darkTheme y lightTheme manualmente
 const sharedStyles = createSharedStyles(theme);
 
+
+
 const SignUpScreen: React.FC = () => {
+  const dispatch = useDispatch();
   const [email, setEmail] = useState('');
   const [username, setUsername] = useState('');
   const [password, setPassword] = useState('');
-  const [error, setError] = useState(false);
+  const [errorMessage, setErrorMessage] = useState('');
 
   const handleRegister = () => {
+    const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+  
+  // Regular expression for validating password (at least 6 characters and one special character)
+  const passwordRegex = /^(?=.*[!@#$%^&*])[A-Za-z\d!@#$%^&*]{6,}$/;
     if (!email || !username || !password) {
-      setError(true);
+      setErrorMessage('Por favor, completa todos los campos.');
+    }
+    else if (!emailRegex.test(email)) {
+      setErrorMessage('Por favor, ingresa un correo electrónico válido.');
+    } 
+    // Check if password meets the requirements
+    else if (!passwordRegex.test(password)) {
+      setErrorMessage('La contraseña debe tener al menos 6 caracteres y un carácter especial.');
     } else {
-      setError(false);
-      console.log('Registro exitoso');
+      setErrorMessage('');
+      dispatch(setProfile({ email, username, password }));
+      setEmail('');
+      setPassword('');
+      setUsername('');
     }
   };
 
@@ -32,7 +52,7 @@ const SignUpScreen: React.FC = () => {
       {/* Texto "Regístrese en iPost" */}
       <View style={{ flexDirection: 'row', justifyContent: 'center', alignItems: 'baseline' }}>
         <HeaderText text="Regístrese en" theme={theme} />
-        <Text style={{ fontSize: 34, fontWeight: 'bold', color: theme.colors.textPrimary }}> iPost</Text>
+        <Text style={styles.headerText}> iPost</Text>
       </View> 
 
       {/* Input de Correo electrónico */}
@@ -41,7 +61,7 @@ const SignUpScreen: React.FC = () => {
         placeholder="micorreo@ejemplo.com"
         value={email}
         onChangeText={setEmail}
-        error={error && !email}
+        error={!!errorMessage}
         theme={theme}
       />
 
@@ -51,7 +71,7 @@ const SignUpScreen: React.FC = () => {
         placeholder="usuario_ejemplo"
         value={username}
         onChangeText={setUsername}
-        error={error && !username}
+        error={!!errorMessage}
         theme={theme}
       />
 
@@ -62,7 +82,7 @@ const SignUpScreen: React.FC = () => {
         value={password}
         onChangeText={setPassword}
         secureTextEntry={true}
-        error={error && !password}
+        error={!!errorMessage}
         theme={theme}
       />
 
@@ -88,15 +108,22 @@ const SignUpScreen: React.FC = () => {
 
       {/* Botón de Google con imagen PNG */}
       <TouchableOpacity
-        style={[sharedStyles.googleButton, { marginTop: theme.spacing.small }]}
+        style={[styles.googleButton, { marginTop: theme.spacing.small }]} // Usa los estilos separados
         onPress={() => console.log('Google')}
       >
         <Image 
-          source={require('./assets/images/icons/Google.png')} 
+          source={require('../../assets/images/icons/Google.png')} 
           style={{ width: 24, height: 24, marginRight: theme.spacing.medium }} 
         />
-        <Text style={sharedStyles.googleText}>Google</Text>
+        <Text style={styles.googleText}>Google</Text>
       </TouchableOpacity>
+
+      {/* Error message banner */}
+      {errorMessage ? (
+        <View style={styles.errorBanner}>
+          <Text style={styles.errorText}>{errorMessage}</Text>
+        </View>
+      ) : null}
       
     </SafeAreaView>
   );

@@ -4,27 +4,27 @@
     "slug": "iPost",
     "version": "1.0.0",
     "orientation": "portrait",
-    "icon": "./assets/images/icon.png",
+    "icon": "./assets/images/icons/LogoiPost.png",
     "scheme": "myapp",
     "userInterfaceStyle": "automatic",
     "splash": {
-      "image": "./assets/images/splash.png",
-      "resizeMode": "contain",
-      "backgroundColor": "#ffffff"
+      "image": "./assets/images/icons/ic_launcher_foreground.png",
+      "resizeMode": "resizeMode",
+      "backgroundColor": "#201E43"
     },
     "ios": {
       "supportsTablet": true
     },
     "android": {
       "adaptiveIcon": {
-        "foregroundImage": "./assets/images/adaptive-icon.png",
+        "foregroundImage": "./assets/images/icons/ic_launcher_foreground.png",
         "backgroundColor": "#ffffff"
       }
     },
     "web": {
       "bundler": "metro",
       "output": "static",
-      "favicon": "./assets/images/favicon.png"
+      "favicon": "./assets/images/icons/LogoiPost.png"
     },
     "plugins": [
       "expo-router"
