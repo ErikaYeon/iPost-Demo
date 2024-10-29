@@ -6,7 +6,7 @@ import RegularText from '../ui/components/RegularText';
 import createSharedStyles from '../ui/styles/SharedStyles';
 import { lightTheme, darkTheme } from '../ui/styles/Theme';
 {/* import i18n from '../i18n'; */} // Para las traducciones. No pude probarlo, solo está en esta pantalla por ahora
-import { useRouter } from 'expo-router';
+import { Link, useRouter } from 'expo-router';
 
 const theme =   darkTheme;  // Puedes cambiar manualmente entre lightTheme y darkTheme
 const sharedStyles = createSharedStyles(theme);
@@ -33,8 +33,8 @@ const FirstScreen: React.FC = () => {
 
         {/* Botón de Iniciar sesión */}
         <CustomButton
-          title= {('login')}
-          onPress={() => console.log('Iniciar sesión')}
+          title= {('iniciar Sesion')}
+          onPress={() => router.push('/LogIn')}
           type="primary"
           theme={theme}
           style={{marginBottom: theme.spacing.medium, width: '85%' }} 
@@ -43,7 +43,7 @@ const FirstScreen: React.FC = () => {
         {/* Botón de Registrarse */}
         <CustomButton
           title={('signup')} 
-          onPress={() => console.log('Registrarse')}
+          onPress={() => router.push('/SignUp')}
           type="secondary"
           theme={theme}
           style={{ marginBottom: theme.spacing.medium, width: '85%' }} 
@@ -60,7 +60,7 @@ const FirstScreen: React.FC = () => {
       >
         <Image 
           source={require('../assets/images/icons/Google.png')} 
-          style={{ width: 24, height: 24, marginRight: theme.spacing.medium }} 
+          style={{ width: 24, height: 24}} 
         />
         <Text style={sharedStyles.googleText}>Google</Text>
       </TouchableOpacity>

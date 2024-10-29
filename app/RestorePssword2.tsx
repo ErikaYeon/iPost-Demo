@@ -1,37 +1,36 @@
 import React from 'react';
 import { SafeAreaView, View, Image, Text } from 'react-native';
-import CustomButton from '../components/CustomButton';
-import MessageText from '../components/MessageText'; 
-import LinkText from '../components/LinkText'; 
-import HeaderText from '../components/HeaderText'; 
-import createSharedStyles from '../styles/SharedStyles';
-import { lightTheme, darkTheme } from '../styles/Theme';
+import CustomButton from '../ui/components/CustomButton';
+import MessageText from '../ui/components/MessageText'; 
+import LinkText from '../ui/components/LinkText'; 
+import HeaderText from '../ui/components/HeaderText'; 
+import createSharedStyles from '../ui/styles/SharedStyles';
+import { lightTheme, darkTheme } from '../ui/styles/Theme';
+import { router } from 'expo-router';
+import { styles } from '@/ui/styles/LogIn';
 
 const theme = darkTheme; 
 const sharedStyles = createSharedStyles(theme);
 
-const ActivateAccount: React.FC = () => {
+const RestorePassword2: React.FC = () => {
   return (
     <SafeAreaView style={sharedStyles.screenContainer}>
 
-      {/* Logo de iPost */}
-      <Image 
+<Image 
         source={require('../assets/images/icons/LogoiPost.png')} 
-        style={{ width: 150, height: 150, marginBottom: 20 }} 
+        style={styles.logo} 
       />
-
-      {/* Título "Activá tu iPost" */}
-      <View style={{ flexDirection: 'row', justifyContent: 'center', alignItems: 'baseline' }}>
-        <HeaderText text="Activá tu" theme={theme} />
-        <Text style={{ fontSize: 34, fontWeight: 'bold', color: theme.colors.textPrimary }}> iPost</Text>
+      <View style={styles.headerContainer}>
+        <Text style={styles.headerTextContra}> Reestablecer Contraseña</Text>
       </View>
 
-      {/* Mensaje Informativo para enlace de acceso */}
+      <View style={{marginTop:20, marginBottom:10}}>
       <MessageText
         message="Se ha enviado un enlace de acceso a su correo. Por favor, verifique su bandeja de entrada."
         boldText="enlace de acceso"
         theme={theme}
       />
+      </View>
 
       {/* Botón "Reenviar enlace" */}
       <CustomButton
@@ -45,7 +44,7 @@ const ActivateAccount: React.FC = () => {
       {/* Enlace para "Volver a inicio de sesión" */}
       <LinkText
         text="Volver a inicio de sesión"
-        onPress={() => console.log('Volver a inicio de sesión')}
+        onPress={() => router.push('/LogIn')}
         theme={theme}
       />
 
@@ -53,4 +52,4 @@ const ActivateAccount: React.FC = () => {
   );
 };
 
-export default ActivateAccount;
+export default RestorePassword2;

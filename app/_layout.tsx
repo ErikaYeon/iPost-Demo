@@ -1,13 +1,18 @@
 import { Stack } from "expo-router";
+import store from '../redux/store';
+import { Provider } from 'react-redux';
 
-const Layout = () => {
+const StackLayout = () => {
   return (
-    <Stack>
-      <Stack.Screen name="index.tsx" />
+    <Provider store={store}>
+      <Stack screenOptions={{ headerShown: false }}>
+        {/* <Stack.Screen name="(tabs)"  /> */}
+        <Stack.Screen name="index"  />
 
-    </Stack>
+      </Stack>
+    </Provider>
 
   );
 }
 
-export default Layout;
+export default StackLayout;

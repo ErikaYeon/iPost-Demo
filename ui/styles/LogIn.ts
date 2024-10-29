@@ -8,16 +8,31 @@ export const styles = StyleSheet.create({
   logo: {
     width: 150,
     height: 150,
+    marginBottom: 10,
   },
   headerContainer: {
     flexDirection: 'row',
     justifyContent: 'center',
     alignItems: 'baseline',
+    padding: 7,
   },
   headerText: {
     fontSize: 34,
     fontWeight: 'bold',
     color: theme.colors.textPrimary,
+  },
+  headerTextContra: {
+    fontSize: 25,
+    fontWeight: 'bold',
+    color: theme.colors.textPrimary,
+  },
+  TextInfo: {
+    fontSize: 17,
+    color: theme.colors.textPrimary,
+    textAlign: 'center',
+    margin: 18,
+    paddingHorizontal: 10,
+
   },
   googleButton: {
     flexDirection: 'row',

@@ -11,6 +11,7 @@ import { styles } from '../ui/styles/LogIn';
 import { useRouter } from 'expo-router';
 import { useDispatch } from 'react-redux'; 
 import { setProfile } from '../redux/slices/profileSlice'; 
+import RegularTextLine from '@/ui/components/RegularTextLine';
 
 
 const theme = darkTheme;
@@ -77,8 +78,9 @@ const LogInScreen: React.FC = () =>{
         error={!!errorMessage}
         theme={theme}
       />
-
-      <LinkText text="¿Olvidaste tu contraseña?" onPress={() => console.log('Olvidaste tu contraseña')} theme={theme} />
+      <View style={ {marginTop:7,}}>
+      <LinkText text="¿Olvidaste tu contraseña?" onPress={() => router.push('/RestorePssword1')} theme={theme} />
+      </View>
 
       <CustomButton
         title="Iniciar sesión"
@@ -88,12 +90,12 @@ const LogInScreen: React.FC = () =>{
         style={{ marginTop: theme.spacing.medium, width: '85%' }}
       />
 
-      <View style={{ flexDirection: 'row', justifyContent: 'center'}}>
+      <View style={{ flexDirection: 'row', justifyContent: 'center', marginTop:7,}}>
         <RegularText text="¿No tienes una cuenta? " theme={theme} />
-        <LinkText text="Regístrate" onPress={() => router.push('/')} theme={theme} />
+        <LinkText text="Regístrate" onPress={() => router.push('/SignUp')} theme={theme} />
       </View>
 
-      <RegularText text="o continua con" theme={theme} />
+      <RegularTextLine text="o continua con" theme={theme} />
 
       <TouchableOpacity
         style={[sharedStyles.googleButton, { marginTop: theme.spacing.xsmall }]}
@@ -101,7 +103,7 @@ const LogInScreen: React.FC = () =>{
       >
         <Image 
           source={require('../assets/images/icons/Google.png')} 
-          style={{ width: 24, height: 24, marginRight: theme.spacing.medium }} 
+          style={{ width: 24, height: 24 }} 
         />
         <Text style={sharedStyles.googleText}>Google</Text>
       </TouchableOpacity>

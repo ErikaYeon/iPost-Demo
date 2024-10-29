@@ -1,15 +1,17 @@
 import React, { useState } from 'react';
 import { SafeAreaView, View, TouchableOpacity, Image, Text } from 'react-native';
-import CustomButton from '../components/CustomButton'; 
-import HeaderText from '../components/HeaderText';  
-import RegularText from '../components/RegularText';  
-import LinkText from '../components/LinkText';  
-import InputField from '../components/InputField';  
-import createSharedStyles from '../styles/SharedStyles';
-import { lightTheme, darkTheme } from '../styles/Theme';
-import { styles } from '../styles/LogIn';
+import CustomButton from '../ui/components/CustomButton'; 
+import HeaderText from '../ui/components/HeaderText';  
+import RegularText from '../ui/components/RegularText';  
+import LinkText from '../ui/components/LinkText';  
+import InputField from '../ui/components/InputField';  
+import createSharedStyles from '../ui/styles/SharedStyles';
+import { lightTheme, darkTheme } from '../ui/styles/Theme';
+import { styles } from '../ui/styles/LogIn';
 import { useDispatch } from 'react-redux'; 
-import { setProfile } from '../../redux/slices/profileSlice'; 
+import { setProfile } from '../redux/slices/profileSlice'; 
+import { router } from 'expo-router';
+import RegularTextLine from '@/ui/components/RegularTextLine';
 
 const theme = darkTheme;  // Para alternar entre darkTheme y lightTheme manualmente
 const sharedStyles = createSharedStyles(theme);
@@ -43,6 +45,7 @@ const SignUpScreen: React.FC = () => {
       setEmail('');
       setPassword('');
       setUsername('');
+      router.push('/ActivateAccount')
     }
   };
 
@@ -96,26 +99,26 @@ const SignUpScreen: React.FC = () => {
       />
 
       {/* Link para iniciar sesión */}
-      <View style={{ flexDirection: 'row', justifyContent: 'center'}}>
+      <View style={{ flexDirection: 'row', justifyContent: 'center', marginTop:7}}>
         <RegularText text="¿Tienes una cuenta? " theme={theme} />
-        <LinkText text="Inicia sesión" onPress={() => console.log('Iniciar Sesión')} theme={theme} />
+        <LinkText text="Inicia sesión" onPress={() => router.push('/LogIn')} theme={theme} />
       </View>
 
       {/* Texto "o continua con" */}
       <View style={{ justifyContent: 'center', alignItems: 'center', marginTop: theme.spacing.small }}>
-        <RegularText text="O continua con" theme={theme} />
+        <RegularTextLine text="O continua con" theme={theme} />
       </View>
 
       {/* Botón de Google con imagen PNG */}
       <TouchableOpacity
-        style={[styles.googleButton, { marginTop: theme.spacing.small }]} // Usa los estilos separados
+        style={[sharedStyles.googleButton, { marginTop: theme.spacing.small }]} // Usa los estilos separados
         onPress={() => console.log('Google')}
       >
         <Image 
-          source={require('../../assets/images/icons/Google.png')} 
-          style={{ width: 24, height: 24, marginRight: theme.spacing.medium }} 
+          source={require('../assets/images/icons/Google.png')} 
+          style={{ width: 24, height: 24 }} 
         />
-        <Text style={styles.googleText}>Google</Text>
+        <Text style={sharedStyles.googleText}>Google</Text>
       </TouchableOpacity>
 
       {/* Error message banner */}

@@ -8,24 +8,26 @@ import RegularText from '@/ui/components/RegularText';
 import createSharedStyles from '@/ui/styles/SharedStyles';
 import { lightTheme, darkTheme } from '@/ui/styles/Theme';
 import LogInScreen from './LogIn';
-import SignUpScreen from '../ui/screens/SignUp';
 import Welcome from './Welcome';
 import store from '../redux/store';
 import { Provider } from 'react-redux';
+import { Redirect } from 'expo-router';
 
 
 const theme = darkTheme;  // Para alternar entre light y dark mode manualmente
 const sharedStyles = createSharedStyles(theme);
 
-const App = () => {
-  return(
+const index = () => {
+  // return <Redirect href="/home" />;
+  return (
     <Provider store={store}>
-      <SignUpScreen />
+      <Redirect href="/Welcome" />
     </Provider>
-  ) 
+    
+  )
 };
 
-export default App;
+export default index;
 
 
 //   const [email, setEmail] = useState('');

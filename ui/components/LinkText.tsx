@@ -21,6 +21,7 @@ const styles = StyleSheet.create({
   linkText: {
     textDecorationLine: 'underline',
     fontWeight: 'bold',
+    
   },
 });
 

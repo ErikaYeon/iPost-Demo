@@ -1,12 +1,12 @@
 import React, { useState } from 'react';
 import { SafeAreaView, Image, View, Text } from 'react-native';
-import CustomButton from '../components/CustomButton';
-import InputField from '../components/InputField';
-import HeaderText from '../components/HeaderText';
-import LinkText from '../components/LinkText';
-import RegularText from '../components/RegularText';
-import createSharedStyles from '../styles/sharedStyles';
-import { lightTheme, darkTheme } from '../styles/theme';
+import CustomButton from '../ui/components/CustomButton';
+import InputField from '../ui/components/InputField';
+import HeaderText from '../ui/components/HeaderText';
+import LinkText from '../ui/components/LinkText';
+import RegularText from '../ui/components/RegularText';
+import createSharedStyles from '../ui/styles/SharedStyles';
+import { lightTheme, darkTheme } from '../ui/styles/Theme';
 
 const theme = darkTheme; // Para alternar entre light y dark mode
 const sharedStyles = createSharedStyles(theme);
