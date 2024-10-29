@@ -1,0 +1,40 @@
+import React from 'react';
+import { Text, StyleSheet, View } from 'react-native';
+
+interface RegularTextProps {
+  text: string;
+  theme?: any; 
+}
+
+const RegularText: React.FC<RegularTextProps> = ({ text, theme }) => {
+  const textColor = theme?.colors?.textPrimary || '#000'; // Color predeterminado
+
+  return (
+    <View style={styles.container}>
+    <View style={styles.line} />
+    <Text style={[styles.text, { color: textColor }]}>{text}</Text>
+    <View style={styles.line} />
+  </View>
+);
+};
+
+const styles = StyleSheet.create({
+  container: {
+    flexDirection: 'row',
+    alignItems: 'center', // Centra el texto verticalmente con las líneas
+  },
+  line: {
+    flex: 1, // Toma el espacio disponible
+    height: 1, // Grosor de la línea
+    backgroundColor: '#FFFF', // Color de la línea (puedes cambiarlo)
+    marginHorizontal: 25, // Espacio entre la línea y el texto
+   
+    
+  },
+  text: {
+    fontSize: 14,
+    marginBottom: 10,
+  },
+});
+
+export default RegularText;

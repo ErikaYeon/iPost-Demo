@@ -9,7 +9,9 @@ interface RegularTextProps {
 const RegularText: React.FC<RegularTextProps> = ({ text, theme }) => {
   const textColor = theme?.colors?.textPrimary || '#000'; // Color predeterminado
 
-  return <Text style={[styles.text, { color: textColor }]}>{text}</Text>;
+  return (
+  <Text style={[styles.text, { color: textColor }]}>{text}</Text>
+);
 };
 
 const styles = StyleSheet.create({

@@ -1,3 +1,26 @@
+// export type Theme = {
+//   colors: {
+//     primary: string;
+//     secondary: string;
+//     background: string;
+//     error: string;
+//     textPrimary: string;
+//     textSecondary: string;
+//   };
+//   fonts: {
+//     large: number;
+//     medium: number;
+//     small: number;
+//   };
+//   spacing: {
+//     xsmall: number;
+//     small: number;
+//     medium: number;
+//     large: number;
+//   };
+//   borderRadius: number;
+//   isDark: boolean;
+// };
 export const lightTheme = {
     colors: {
       primary: '#12C1A4', // Verde para el fondo del botón "Iniciar sesión"
