@@ -26,8 +26,8 @@ const RestorePassword2: React.FC = () => {
 
       <View style={{marginTop:20, marginBottom:10}}>
       <MessageText
-        message="Se ha enviado un enlace de acceso a su correo. Por favor, verifique su bandeja de entrada."
-        boldText="enlace de acceso"
+        message="Se ha enviado un enlace de recuperación al correo asociado a su cuenta. Revisa también la carpeta de spam o correo no deseado si no lo encuentras"
+        boldText="enlace de recuperación"
         theme={theme}
       />
       </View>

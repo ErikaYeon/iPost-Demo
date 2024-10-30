@@ -16,7 +16,13 @@ const CustomButton: React.FC<ButtonProps> = ({ title, onPress, type = 'primary',
 
   return (
     <TouchableOpacity
-      style={[styles.button, styles[type], disabled && styles.disabled, style]}
+      style={[
+        { alignSelf: 'center' }, // Hace que el botón se centre en su contenedor
+        styles.button,
+        styles[type],
+        disabled && styles.disabled,
+        style,
+      ]}
       onPress={onPress}
       disabled={disabled}
     >
