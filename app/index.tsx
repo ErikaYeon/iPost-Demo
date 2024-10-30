@@ -1,14 +1,14 @@
 import React, { useState } from 'react';
-//import { SafeAreaView, Image, TouchableOpacity, View, Text } from 'react-native';
-//import CustomButton from '@/ui/components/CustomButton';
-//import InputField from '@/ui/components/InputField';
-//import HeaderText from '@/ui/components/HeaderText';
-//import LinkText from '@/ui/components/LinkText';
-//import RegularText from '@/ui/components/RegularText';  
-//import createSharedStyles from '@/ui/styles/SharedStyles';
-//import { lightTheme, darkTheme } from '@/ui/styles/Theme';
-//import LogInScreen from './LogIn';
-//import Welcome from './Welcome';
+import { SafeAreaView, Image, TouchableOpacity, View, Text } from 'react-native';
+import CustomButton from '@/ui/components/CustomButton';
+import InputField from '@/ui/components/InputField';
+import HeaderText from '@/ui/components/HeaderText';
+import LinkText from '@/ui/components/LinkText';
+import RegularText from '@/ui/components/RegularText';  
+import createSharedStyles from '@/ui/styles/SharedStyles';
+import { lightTheme, darkTheme } from '@/ui/styles/Theme';
+import LogInScreen from './LogIn';
+import Welcome from './Welcome';
 import store from '../redux/store';
 import { Provider } from 'react-redux';
 import { Redirect } from 'expo-router';
@@ -18,7 +18,7 @@ const theme = darkTheme;  // Para alternar entre light y dark mode manualmente
 const sharedStyles = createSharedStyles(theme);
 
 const index = () => {
-  return <Redirect href="/home" />;
+  // return <Redirect href="/home" />;
   return (
     <Provider store={store}>
       <Redirect href="/Welcome" />
