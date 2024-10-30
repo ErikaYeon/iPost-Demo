@@ -45,6 +45,7 @@ const LogInScreen: React.FC = () =>{
       dispatch(setProfile({ email, password }));
       setEmail('');
       setPassword('');
+      router.push('/(tabs)/home');
     }
   };
 

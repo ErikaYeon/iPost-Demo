@@ -56,7 +56,7 @@ const FirstScreen: React.FC = () => {
       {/* Botón de Google con imagen PNG */}
       <TouchableOpacity
         style={[sharedStyles.googleButton, { marginTop: theme.spacing.xsmall }]}
-        onPress={() => console.log('Google')}
+        onPress={() => router.push('/LogInFaceId')}
       >
         <Image 
           source={require('../assets/images/icons/Google.png')} 
