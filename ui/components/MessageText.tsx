@@ -8,12 +8,14 @@ interface MessageTextProps {
 }
 
 const MessageText: React.FC<MessageTextProps> = ({ message, boldText, theme }) => {
+  const [beforeBold, afterBold] = message.split(boldText);
+
   return (
     <View style={[styles.container, { backgroundColor: theme.colors.secondary, borderColor: theme.colors.primary }]}>
       <Text style={[styles.text, { color: '#201E43' }]}>
-        {message.split(boldText)[0]}
+        {beforeBold}
         <Text style={{ fontWeight: 'bold' }}>{boldText}</Text>
-        {message.split(boldText)[1]}
+        {afterBold}
       </Text>
     </View>
   );
@@ -26,6 +28,7 @@ const styles = StyleSheet.create({
     marginBottom: 30,
     width: '85%',
     borderWidth: 2, 
+    alignSelf: 'center',  // Para centrar el contenedor horizontalmente
   },
   text: {
     textAlign: 'center',
