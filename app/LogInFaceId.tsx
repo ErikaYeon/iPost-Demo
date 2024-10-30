@@ -7,22 +7,32 @@ import LinkText from '../ui/components/LinkText';
 import RegularText from '../ui/components/RegularText';
 import createSharedStyles from '../ui/styles/SharedStyles';
 import { lightTheme, darkTheme } from '../ui/styles/Theme';
+import { useDispatch } from 'react-redux';
+import { setProfile } from '../redux/slices/profileSlice'; 
+import { router } from 'expo-router';
+import { styles } from '@/ui/styles/LogIn';
 
 const theme = darkTheme; // Para alternar entre light y dark mode
 const sharedStyles = createSharedStyles(theme);
 
 const LogInFaceIdScreen: React.FC = () => {
   const [password, setPassword] = useState('');
-  const [error, setError] = useState(false); // Manejo de errores
+  const dispatch = useDispatch();
+  const [errorMessage, setErrorMessage] = useState('');
   const username = 'María'; // Nombre del usuario
 
   const handleLogin = () => {
+    const passwordRegex = /^(?=.*[!@#$%^&*])[A-Za-z\d!@#$%^&*]{6,}$/;
     if (!password) {
-      setError(true);
-    } else {
-      setError(false);
-      console.log('Iniciar sesión');
-      // Manejar la lógica de inicio de sesión
+      setErrorMessage('Por favor, completa todos los campos.');
+
+    } else if (!passwordRegex.test(password)) {
+      setErrorMessage('La contraseña debe tener al menos 6 caracteres y un carácter especial.');
+    }else {
+      setErrorMessage('');
+      dispatch(setProfile({ password }));
+      setPassword('');
+      router.push('/(tabs)/home');
     }
   };
 
@@ -47,24 +57,33 @@ const LogInFaceIdScreen: React.FC = () => {
         value={password}
         onChangeText={setPassword}
         secureTextEntry={true}
-        error={error && !password}
+        // error={!passwordRegex && !password}
         theme={theme}
+        style={{ marginBottom:10, marginTop:10}}
       />
 
-      {/* Enlace para "¿Olvidaste tu contraseña?" */}
-      <LinkText text="¿Olvidaste tu contraseña?" onPress={() => console.log('Olvidaste tu contraseña')} theme={theme} />
+      
+      <LinkText text="¿Olvidaste tu contraseña?" onPress={() => router.push('/RestorePssword1')} theme={theme} />
+     
 
-      {/* Botón de Iniciar sesión */}
+     
       <CustomButton
         title="Iniciar sesión"
         onPress={handleLogin}
         type="primary"
         theme={theme}
-        style={{ marginTop: theme.spacing.medium, width: '85%' }}
+        style={{ marginTop: theme.spacing.large, marginBottom: theme.spacing.medium, width: '85%' }}
       />
+    
 
-      {/* Enlace para "Cambiar de usuario" */}
-      <LinkText text="Cambiar de usuario" onPress={() => console.log('Cambiar de usuario')} theme={theme} />
+     
+      <LinkText text="Cambiar de usuario" onPress={() => router.push('/LogIn')} theme={theme} />
+      
+      {errorMessage ? (
+        <View style={styles.errorBanner}>
+          <Text style={styles.errorText}>{errorMessage}</Text>
+        </View>
+      ) : null}
     </SafeAreaView>
   );
 };

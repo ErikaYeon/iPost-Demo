@@ -1,18 +1,21 @@
-import React from 'react';
+// import React, { useState } from 'react';
 import { SafeAreaView, View, Image, Text } from 'react-native';
 import CustomButton from '../ui/components/CustomButton';
 import MessageText from '../ui/components/MessageText'; 
 import LinkText from '../ui/components/LinkText'; 
-import HeaderText from '../ui/components/HeaderText'; 
 import createSharedStyles from '../ui/styles/SharedStyles';
 import { lightTheme, darkTheme } from '../ui/styles/Theme';
 import { router } from 'expo-router';
 import { styles } from '@/ui/styles/LogIn';
+// import { useDispatch } from 'react-redux';
+// import { setProfile } from '../redux/slices/profileSlice'; 
 
 const theme = darkTheme; 
 const sharedStyles = createSharedStyles(theme);
 
 const RestorePassword2: React.FC = () => {
+    // const dispatch = useDispatch();
+    // const [email, setEmail] = useState('');
   return (
     <SafeAreaView style={sharedStyles.screenContainer}>
 
