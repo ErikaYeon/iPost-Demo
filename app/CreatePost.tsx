@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useEffect , useState} from 'react';
 import { SafeAreaView, View, StatusBar, Platform, FlatList, Image, TouchableOpacity, Text } from 'react-native';
 import * as ImagePicker from 'expo-image-picker';
 import CustomButton from '../ui/components/CustomButton';
@@ -11,20 +11,30 @@ import CloseIcon from '../assets/images/icons/close.svg';
 import PhotoIcon from '../assets/images/icons/photo.svg';
 import LocationIcon from '../assets/images/icons/location_on.svg';
 import { useRouter } from 'expo-router';
+import {  setAllPostData, setPostContent, setSelectedImages, setLocation, clearPost } from '../redux/slices/createPostSlice';
+import { useDispatch,  useSelector } from 'react-redux';
+import { RootState } from '../redux/store';
 
 const theme = darkTheme;
 const sharedStyles = createSharedStyles(theme);
 
 const CreatePost: React.FC = () => {
   const router = useRouter();
-  const [postContent, setPostContent] = useState('');
-  const [selectedImages, setSelectedImages] = useState([]);
-  const [location, setLocation] = useState(''); // Estado para almacenar la ubicación
+  // const [postContent, setPostContent] = useState('');
+  // const [selectedImages, setSelectedImages] = useState([]);
+  // const [location, setLocation] = useState(''); 
+  const dispatch = useDispatch();
+  // const {location} = useState{state => state.createPost};
+  
+
+  const postContent = useSelector((state: RootState) => state.createPost.postContent);
+  const selectedImages = useSelector((state: RootState) => state.createPost.selectedImages);
+  const location = useSelector((state: RootState) => state.createPost.location);
 
   // Obtén la ubicación pasada como parámetro (No se ve la Ubicacion en la pantalla *ARREGLAR*)
   useEffect(() => {
     if (router.params?.location) {
-      setLocation(router.params.location); // Actualiza la ubicación
+      dispatch(setLocation(router.params.location)); // Update location if passed from AddLocation
     }
   }, [router.params?.location]);
 
@@ -38,6 +48,7 @@ const CreatePost: React.FC = () => {
 
     if (!result.canceled) {
       setSelectedImages(result.assets.map((asset) => asset.uri));
+      dispatch(setSelectedImages(result.assets.map((asset) => asset.uri)));
     }
   };
 
@@ -59,6 +70,15 @@ const CreatePost: React.FC = () => {
       </TouchableOpacity>
     </View>
   );
+  const handlePublish = () => {
+    dispatch(setAllPostData({ postContent, location, selectedImages }));
+    console.log('Post publicado con datos:', { postContent, location, selectedImages });
+    router.push('/(tabs)/home');
+    dispatch(clearPost());   //despues borrar esta linea!!!
+  };
+  // console.log(useState.)
+  
+  
 
   return (
     <View style={{ flex: 1, backgroundColor: theme.colors.background }}>
@@ -68,14 +88,17 @@ const CreatePost: React.FC = () => {
         style={{
           backgroundColor: theme.colors.background,
           paddingTop: Platform.OS === 'android' ? StatusBar.currentHeight + 10 : 30,
+          
         }}
       >
+      
         <HeaderWithIcon
           iconComponent={() => <CloseIcon width={24} height={24} fill={theme.colors.textPrimary} />}
           title="Nuevo post"
-          onPress={() => console.log('Cerrar')}
+          onPress={() => router.push('/(tabs)/home')}
           theme={theme}
         />
+       
       </SafeAreaView>
 
       <SafeAreaView
@@ -87,7 +110,10 @@ const CreatePost: React.FC = () => {
         <PostTextInput
           placeholder="¿Qué te gustaría publicar?"
           value={postContent}
-          onChangeText={setPostContent}
+          onChangeText={(text) => {
+            setPostContent(text); // Local state update
+            dispatch(setPostContent(text)); // Update Redux state
+          }}
           multiline={true}
           theme={theme}
           style={{ marginBottom: theme.spacing.medium }}
@@ -120,9 +146,10 @@ const CreatePost: React.FC = () => {
           onPress={selectImages}
           theme={theme}
         />
+        
         <OptionButton
           iconComponent={() => <LocationIcon width={24} height={24} fill={theme.colors.textPrimary} />}
-          text="Agregar ubicación"
+          text={location ? location : "Agregar ubicación"}
           onPress={() => router.push('/AddLocation')}
           theme={theme}
         />
@@ -131,7 +158,7 @@ const CreatePost: React.FC = () => {
         <View style={{ width: '100%', alignItems: 'center' }}>
           <CustomButton
             title="Publicar"
-            onPress={() => console.log('Publicar')}
+            onPress= {handlePublish}
             type="secondary"
             theme={theme}
             disabled={!postContent.trim() && selectedImages.length === 0}
