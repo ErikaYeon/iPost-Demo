@@ -11,24 +11,25 @@ import CloseIcon from '../assets/images/icons/close.svg';
 import PhotoIcon from '../assets/images/icons/photo.svg';
 import LocationIcon from '../assets/images/icons/location_on.svg';
 import { useRouter } from 'expo-router';
-import {  setAllPostData, setPostContent, setSelectedImages, setLocation } from '../redux/slices/createPostSlice';
+import {  setAllPostData, setPostContent, setSelectedImages, setLocation, clearPost } from '../redux/slices/createPostSlice';
 import { useDispatch,  useSelector } from 'react-redux';
+import { RootState } from '../redux/store';
 
 const theme = darkTheme;
 const sharedStyles = createSharedStyles(theme);
 
 const CreatePost: React.FC = () => {
   const router = useRouter();
-  // const state = useState();
-  const [postContent, setPostContent] = useState('');
-  const [selectedImages, setSelectedImages] = useState([]);
-  const [location, setLocation] = useState(''); // Estado para almacenar la ubicación
+  // const [postContent, setPostContent] = useState('');
+  // const [selectedImages, setSelectedImages] = useState([]);
+  // const [location, setLocation] = useState(''); 
   const dispatch = useDispatch();
+  // const {location} = useState{state => state.createPost};
   
 
-  // const postContent = useSelector((state) => state.createPost.postContent);
-  // const selectedImages = useSelector((state) => state.createPost.selectedImages);
-  // const location = useSelector((state) => state.createPost.location);
+  const postContent = useSelector((state: RootState) => state.createPost.postContent);
+  const selectedImages = useSelector((state: RootState) => state.createPost.selectedImages);
+  const location = useSelector((state: RootState) => state.createPost.location);
 
   // Obtén la ubicación pasada como parámetro (No se ve la Ubicacion en la pantalla *ARREGLAR*)
   useEffect(() => {
@@ -47,6 +48,7 @@ const CreatePost: React.FC = () => {
 
     if (!result.canceled) {
       setSelectedImages(result.assets.map((asset) => asset.uri));
+      dispatch(setSelectedImages(result.assets.map((asset) => asset.uri)));
     }
   };
 
@@ -69,13 +71,13 @@ const CreatePost: React.FC = () => {
     </View>
   );
   const handlePublish = () => {
-    // Despacha la acción para almacenar los datos en el store
     dispatch(setAllPostData({ postContent, location, selectedImages }));
     console.log('Post publicado con datos:', { postContent, location, selectedImages });
-    // Opcional: Redirecciona después de publicar
     router.push('/(tabs)/home');
+    dispatch(clearPost());   //despues borrar esta linea!!!
   };
   // console.log(useState.)
+  
   
 
   return (
@@ -108,7 +110,10 @@ const CreatePost: React.FC = () => {
         <PostTextInput
           placeholder="¿Qué te gustaría publicar?"
           value={postContent}
-          onChangeText={setPostContent}
+          onChangeText={(text) => {
+            setPostContent(text); // Local state update
+            dispatch(setPostContent(text)); // Update Redux state
+          }}
           multiline={true}
           theme={theme}
           style={{ marginBottom: theme.spacing.medium }}

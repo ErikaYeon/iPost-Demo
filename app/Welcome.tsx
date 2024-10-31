@@ -1,12 +1,12 @@
 import React from 'react';
 import { SafeAreaView,  TouchableOpacity, View, Image, Text } from 'react-native';
 import CustomButton from '../ui/components/CustomButton';
-import HeaderText from '../ui/components/HeaderText';  
-import RegularText from '../ui/components/RegularText';  
+import HeaderText from '../ui/components/HeaderText';    
 import createSharedStyles from '../ui/styles/SharedStyles';
 import { lightTheme, darkTheme } from '../ui/styles/Theme';
 {/* import i18n from '../i18n'; */} // Para las traducciones. No pude probarlo, solo está en esta pantalla por ahora
 import { Link, useRouter } from 'expo-router';
+import RegularTextLine from '@/ui/components/RegularTextLine';
 
 const theme =   darkTheme;  // Puedes cambiar manualmente entre lightTheme y darkTheme
 const sharedStyles = createSharedStyles(theme);
@@ -42,7 +42,7 @@ const FirstScreen: React.FC = () => {
 
         {/* Botón de Registrarse */}
         <CustomButton
-          title={('signup')} 
+          title={('Registrarse')} 
           onPress={() => router.push('/SignUp')}
           type="secondary"
           theme={theme}
@@ -51,7 +51,7 @@ const FirstScreen: React.FC = () => {
       </View>
 
       {/* Texto "o continua con" */}
-      <RegularText text= {('continue with')} theme={theme} />
+      <RegularTextLine text= {('continuar con')} theme={theme} />
 
       {/* Botón de Google con imagen PNG */}
       <TouchableOpacity

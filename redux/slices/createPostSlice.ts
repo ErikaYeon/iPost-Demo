@@ -1,35 +1,35 @@
-import { createSlice } from '@reduxjs/toolkit';
+import { createSlice , PayloadAction } from '@reduxjs/toolkit';
 
-// interface CreatePostState {
-//     postContent: string;
-//     selectedImages: string[];
-//     location: string;
-//   }
+interface CreatePostState {
+    postContent: string;
+    selectedImages: string[];
+    location: string;
+  }
 
-const initialState = {
+  const initialState: CreatePostState = {
   postContent: '',
   location: '',
-  selectedImages: [],
+  selectedImages:[],
 };
 
 const createPostSlice = createSlice({
   name: 'createPost',
   initialState,
   reducers: {
-    setPostContent(state, action) {
+    setPostContent(state, action: PayloadAction<string>) {
       state.postContent = action.payload;
     },
-    setLocation(state, action) {
+    setLocation(state, action: PayloadAction<string>) {
       state.location = action.payload;
     },
-    setSelectedImages(state, action) {
+    setSelectedImages(state, action: PayloadAction<string[]>) {
       state.selectedImages = action.payload;
     },
-    setAllPostData(state, action) { // Acción para establecer todos los datos al mismo tiempo
-        const { postContent, location, selectedImages } = action.payload;
-        state.postContent = postContent;
-        state.location = location;
-        state.selectedImages = selectedImages;
+    setAllPostData(state, action: PayloadAction<CreatePostState>) { // Acción para establecer todos los datos al mismo tiempo
+        const { postContent, selectedImages, location } = action.payload;
+      state.postContent = postContent;
+      state.selectedImages = selectedImages;
+      state.location = location;
       },
     clearPost(state) {
       state.postContent = '';
@@ -43,7 +43,7 @@ const createPostSlice = createSlice({
 export const { setPostContent, setLocation, setSelectedImages, clearPost, setAllPostData } = createPostSlice.actions;
 
 // Definir y exportar los selectores como "getters"
-export const selectPostContent = (state) => state.createPost.postContent;
+// export const selectPostContent = (state) => state.createPost.postContent;
 // export const selectLocation = (state) => state.createPost.location;
 // export const selectSelectedImages = (state) => state.createPost.selectedImages;
 
