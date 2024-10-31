@@ -25,6 +25,7 @@ const styles = StyleSheet.create({
     width: '100%',
     alignItems: 'center',  // Centra el texto horizontalmente
     paddingVertical: 10,   // Añade un poco de padding vertical
+
   },
   title: {
     fontSize: 20,

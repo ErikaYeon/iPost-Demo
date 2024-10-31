@@ -1,10 +1,12 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect} from 'react';
 import { SafeAreaView, View, StatusBar, Platform } from 'react-native';
 import HeaderNoIcon from '../ui/components/HeaderNoIcon';
 import SearchBar from '../ui/components/SearchBar';
 import SuggestionsList from '../ui/components/SuggestionsList'; 
 import { darkTheme } from '../ui/styles/Theme';
-import { useRouter } from 'expo-router'; // Importa useRouter
+import { useRouter } from 'expo-router'; 
+import { useDispatch, useSelector} from 'react-redux';
+import { setLocation } from '../redux/slices/createPostSlice'; 
 
 const theme = darkTheme;
 
@@ -31,6 +33,7 @@ const AddLocation: React.FC = () => {
   const router = useRouter(); // Inicializa el router
   const [searchQuery, setSearchQuery] = useState('');
   const [suggestions, setSuggestions] = useState([]);
+  const dispatch = useDispatch();
 
   const handleSearch = async (query: string) => {
     setSearchQuery(query);
@@ -47,7 +50,9 @@ const AddLocation: React.FC = () => {
   };
 
   const handleSuggestionPress = (displayName: string) => {
-    console.log("Ubicación seleccionada:", displayName);
+    // console.log("Ubicación seleccionada:", displayName);
+    dispatch(setLocation(displayName));
+    
     // Navega a CreatePost y pasa la ubicación seleccionada
     router.push({
       pathname: '/CreatePost',
