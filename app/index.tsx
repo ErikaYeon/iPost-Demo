@@ -12,6 +12,7 @@ import Welcome from './Welcome';
 import store from '../redux/store';
 import { Provider } from 'react-redux';
 import { Redirect } from 'expo-router';
+import Timeline from './Timeline';
 
 
 const theme = darkTheme;  // Para alternar entre light y dark mode manualmente
@@ -21,7 +22,7 @@ const index = () => {
   // return <Redirect href="/home" />;
   return (
     <Provider store={store}>
-      <Redirect href="/Welcome" />
+      <Redirect href="/(tabs)/home" />
     </Provider>
     
   )

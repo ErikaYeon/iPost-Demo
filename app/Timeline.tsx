@@ -1,25 +1,17 @@
-import InitialMessage from '@/ui/components/InitialMessage';
-import React from 'react'
-import { SafeAreaView, FlatList, StyleSheet, Text, View } from 'react-native'
-import createSharedStyles from '../../ui/styles/SharedStyles';
-import { lightTheme, darkTheme } from '../../ui/styles/Theme';
-import { styles } from '../../ui/styles/LogIn';
+import React from 'react';
+import { View, FlatList, StyleSheet, SafeAreaView } from 'react-native';
 import Post from '@/ui/components/Post';
 import { Image } from 'react-native';
+import { styles } from '../ui/styles/Home';
 import { mockData } from '@/assets/mockData';
 
-const home = () => {
   
-const theme = darkTheme;
-const sharedStyles = createSharedStyles(theme);
 
-    return (
-      <SafeAreaView style={sharedStyles.screenContainer}>
-        {/* mas adelante cuando este listo el timeline va a haber un condicional de si esta llena la lista 
-        sale este componente y se pone el otro */}
-      {/*<InitialMessage theme={theme}/>*/}
-
-      <FlatList
+const Timeline: React.FC = () => {
+  return (
+    <SafeAreaView style={styles.safeArea}>
+      <View style={styles.container}>
+        <FlatList
           contentContainerStyle={styles.listContainer}
           data={mockData}
           renderItem={({ item }) => (
@@ -36,16 +28,14 @@ const sharedStyles = createSharedStyles(theme);
               onLike={() => console.log('Liked post ' + item.id)}
               onComment={() => console.log('Commented on post ' + item.id)}
               onSave={() => console.log('Saved post ' + item.id)}
-              theme = {theme}
             />
-
           )}
           keyExtractor={(item) => item.id}
         />
+      </View>
+    </SafeAreaView>
+  );
+};
 
-      </SafeAreaView>
-    );
-  }
 
-
-export default home;
+export default Timeline;

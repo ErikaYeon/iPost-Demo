@@ -63,4 +63,9 @@ errorBanner: {
     textAlign: 'center',
     fontSize: 16,
   },
+  listContainer: {
+    paddingTop: 30,
+    paddingBottom: 0,
+    marginBottom: 100,
+  },
 });
