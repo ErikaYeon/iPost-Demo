@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React from 'react';
 import { SafeAreaView, Image, TouchableOpacity, View, Text } from 'react-native';
 import CustomButton from '@/ui/components/CustomButton';
 import InputField from '@/ui/components/InputField';
@@ -20,8 +20,8 @@ const sharedStyles = createSharedStyles(theme);
 const index = () => {
   // return <Redirect href="/home" />;
   return (
-    <Provider store={store}>
-      <Redirect href="/home" />
+    <Provider store={store} >
+      <Redirect href="/Welcome" />
     </Provider>
     
   )

@@ -3,14 +3,22 @@ import { SafeAreaView, FlatList, StatusBar, StyleSheet } from 'react-native';
 import Post from '@/ui/components/Post';
 import { darkTheme } from '../../ui/styles/Theme';
 import { mockData } from '@/assets/mockData';
+import InitialMessage from '../../ui/components/InitialMessage';
+import createSharedStyles from '../../ui/styles/SharedStyles';
+import { styles } from '../../ui/styles/LogIn';
 
-const Home = () => {
+const home = () => {
   const theme = darkTheme;
+  const sharedStyles = createSharedStyles(theme);
+
 
   return (
-    <SafeAreaView style={[styles.screenContainer, { paddingTop: StatusBar.currentHeight || 0, backgroundColor: theme.colors.background }]}>
+    <SafeAreaView style={[stylesLocal.screenContainer, { paddingTop: StatusBar.currentHeight || 0, backgroundColor: theme.colors.background }]}>
+      {mockData.length === 0 ? (
+        <InitialMessage />    //NO FUNCIONA EL CONDICIONAL TODAVIA
+      ) : (
       <FlatList
-        contentContainerStyle={styles.listContainer}
+        contentContainerStyle={stylesLocal.listContainer}
         data={mockData}
         renderItem={({ item }) => (
           <Post
@@ -30,15 +38,17 @@ const Home = () => {
             onComment={() => console.log('Commented on post ' + item.id)}
             onSave={() => console.log('Saved post ' + item.id)}
             theme={theme}
-          />
-        )}
-        keyExtractor={(item) => item.id}
-      />
-    </SafeAreaView>
+            />
+          )}
+          keyExtractor={(item) => item.id}
+        />
+      )}
+   </SafeAreaView>
   );
 };
+    
 
-const styles = StyleSheet.create({
+const stylesLocal = StyleSheet.create({
   screenContainer: {
     flex: 1,
     backgroundColor: darkTheme.colors.background,
@@ -48,4 +58,4 @@ const styles = StyleSheet.create({
   },
 });
 
-export default Home;
+export default home;
