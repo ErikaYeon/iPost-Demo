@@ -1,23 +1,61 @@
-import InitialMessage from '@/ui/components/InitialMessage';
-import React from 'react'
-import { SafeAreaView, Text, View } from 'react-native'
+import React from 'react';
+import { SafeAreaView, FlatList, StatusBar, StyleSheet } from 'react-native';
+import Post from '@/ui/components/Post';
+import { darkTheme } from '../../ui/styles/Theme';
+import { mockData } from '@/assets/mockData';
+import InitialMessage from '../../ui/components/InitialMessage';
 import createSharedStyles from '../../ui/styles/SharedStyles';
-import { lightTheme, darkTheme } from '../../ui/styles/Theme';
 import { styles } from '../../ui/styles/LogIn';
 
 const home = () => {
-  
-const theme = darkTheme;
-const sharedStyles = createSharedStyles(theme);
+  const theme = darkTheme;
+  const sharedStyles = createSharedStyles(theme);
 
-    return (
-      <SafeAreaView style={sharedStyles.screenContainer}>
-        {/* mas adelante cuando este listo el timeline va a haber un condicional de si esta llena la lista 
-        sale este componente y se pone el otro */}
-      <InitialMessage theme={theme}/>
-      </SafeAreaView>
-    );
-  }
 
+  return (
+    <SafeAreaView style={[stylesLocal.screenContainer, { paddingTop: StatusBar.currentHeight || 0, backgroundColor: theme.colors.background }]}>
+      {mockData.length === 0 ? (
+        <InitialMessage />    //NO FUNCIONA EL CONDICIONAL TODAVIA
+      ) : (
+      <FlatList
+        contentContainerStyle={stylesLocal.listContainer}
+        data={mockData}
+        renderItem={({ item }) => (
+          <Post
+            profilePictureUrl={item.profilePictureUrl}
+            name={item.name}
+            username={item.username}
+            description={item.description}
+            location={item.location}
+            date={item.date}
+            images={item.images}
+            likes={item.likes}
+            comments={item.comments}
+            isVip={item.isVip}
+            crownType={item.crownType}
+            commentSection={item.commentSection}
+            onLike={() => console.log('Liked post ' + item.id)}
+            onComment={() => console.log('Commented on post ' + item.id)}
+            onSave={() => console.log('Saved post ' + item.id)}
+            theme={theme}
+            />
+          )}
+          keyExtractor={(item) => item.id}
+        />
+      )}
+   </SafeAreaView>
+  );
+};
+    
+
+const stylesLocal = StyleSheet.create({
+  screenContainer: {
+    flex: 1,
+    backgroundColor: darkTheme.colors.background,
+  },
+  listContainer: {
+    paddingBottom: 20,
+  },
+});
 
 export default home;
