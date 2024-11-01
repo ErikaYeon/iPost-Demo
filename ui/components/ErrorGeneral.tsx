@@ -1,0 +1,65 @@
+import React from 'react';
+import { View, Text, StyleSheet } from 'react-native';
+import ErrorGen from '../../assets/images/icons/errorGeneral.svg'; 
+import CustomButton from './CustomButton'; 
+import { darkTheme } from '../styles/Theme'; 
+
+const ErrorGeneral = ({ onRetry, theme = darkTheme }) => { // Default to darkTheme if theme is not passed
+  return (
+    <View style={[styles.container, { backgroundColor: theme.colors.background }]}>
+      <View style={styles.card}>
+        <ErrorGen width={300} height={300} style={styles.icon} />
+        <Text style={styles.title}>Oops!</Text>
+        <Text style={styles.message}>Algo salió mal,{"\n"}por favor intenta nuevamente.</Text>
+        
+        {/* Botón de reintentar usando CustomButton */}
+        <CustomButton
+          title="Reintentar"
+          onPress={onRetry}
+          type="primary"
+          theme={theme}
+          style={{ marginTop: 20, width: '85%' }}
+        />
+      </View>
+    </View>
+  );
+};
+
+const styles = StyleSheet.create({
+  container: {
+    flex: 1,
+    justifyContent: 'center',
+    alignItems: 'center',
+  },
+  card: {
+    backgroundColor: '#FFFFFF',
+    borderRadius: 12,
+    padding: 20,
+    paddingBottom: 115,
+    width: '80%',
+    alignItems: 'center',
+    shadowColor: '#000',
+    shadowOpacity: 0.1,
+    shadowOffset: { width: 0, height: 5 },
+    shadowRadius: 10,
+    elevation: 5,
+  },
+  icon: {
+    marginBottom: 5,
+  },
+  title: {
+    fontSize: 24,
+    fontWeight: 'bold',
+    color: '#201E43',
+    marginBottom: 10,
+    marginTop: -80,
+  },
+  message: {
+    fontSize: 16,
+    color: '#201E43',
+    textAlign: 'center',
+    marginBottom: 20,
+  },
+});
+
+export default ErrorGeneral;
