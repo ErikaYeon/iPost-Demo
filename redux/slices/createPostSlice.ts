@@ -4,12 +4,26 @@ interface CreatePostState {
     postContent: string;
     selectedImages: string[];
     location: string;
-  }
+    likes: number,
+    comments: number,
+    commentSection: [],
+    date: string,
+}
+interface PartialPostData {
+  postContent: string;
+  selectedImages: string[];
+  location: string;
+  date: string;
+}
 
   const initialState: CreatePostState = {
   postContent: '',
   location: '',
   selectedImages:[],
+  likes:0,
+  comments:0,
+  commentSection: [],
+  date: '',
 };
 
 const createPostSlice = createSlice({
@@ -25,11 +39,15 @@ const createPostSlice = createSlice({
     setSelectedImages(state, action: PayloadAction<string[]>) {
       state.selectedImages = action.payload;
     },
-    setAllPostData(state, action: PayloadAction<CreatePostState>) { // Acción para establecer todos los datos al mismo tiempo
-        const { postContent, selectedImages, location } = action.payload;
+    setDate(state, action: PayloadAction<string>){
+      state.date = action.payload;
+    },
+    setAllPostData(state, action: PayloadAction<PartialPostData>) { // Acción para establecer todos los datos al mismo tiempo
+        const { postContent, selectedImages, location, date} = action.payload;
       state.postContent = postContent;
       state.selectedImages = selectedImages;
       state.location = location;
+      state.date = date;
       },
     clearPost(state) {
       state.postContent = '';
@@ -40,7 +58,7 @@ const createPostSlice = createSlice({
 });
 
 // Exportar las acciones
-export const { setPostContent, setLocation, setSelectedImages, clearPost, setAllPostData } = createPostSlice.actions;
+export const { setPostContent, setLocation, setSelectedImages, clearPost, setAllPostData, setDate } = createPostSlice.actions;
 
 // Definir y exportar los selectores como "getters"
 // export const selectPostContent = (state) => state.createPost.postContent;
