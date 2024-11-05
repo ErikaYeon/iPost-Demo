@@ -34,6 +34,9 @@ type PostProps = {
   onSave: () => void;
   theme: any;
 };
+const truncateText = (text: string, maxLength: number) => {
+  return text.length > maxLength ? `${text.substring(0, maxLength)}...` : text;
+}; //PARA QUE DESPUES DE CIERTA CANT DE CARACTERES APAREZCAN 3 PUNTOS Y NO SE IMPRIMA TODO
 
 const Post: React.FC<PostProps> = ({
   profilePictureUrl,
@@ -53,7 +56,7 @@ const Post: React.FC<PostProps> = ({
   comments,
   theme,
 }) => {
-  const renderCrownIcon = (type) => {
+  const renderCrownIcon = (type: string) => {
     switch (type) {
       case 'grey':
         return <CrownGrey width={20} height={20} style={styles.crownIcon} />;
@@ -82,7 +85,11 @@ const Post: React.FC<PostProps> = ({
       </View>
       <Text style={[styles.description, { color: theme.colors.textPrimary }]}>{description}</Text>
       <View style={styles.locationDateContainer}>
-        {location && <Text style={[styles.location, { color: theme.colors.textSecondary }]}>{location}</Text>}
+      {location && (
+          <Text style={[styles.location, { color: theme.colors.textSecondary }]}>
+            {truncateText(location, 35)} {/* Cambia 20 por el número máximo de caracteres que prefieras */}
+          </Text>
+        )}
         <Text style={[styles.date, { color: theme.colors.textSecondary }]}>{date}</Text>
       </View>
 
