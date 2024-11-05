@@ -11,7 +11,7 @@ import CloseIcon from '../assets/images/icons/close.svg';
 import PhotoIcon from '../assets/images/icons/photo.svg';
 import LocationIcon from '../assets/images/icons/location_on.svg';
 import { useRouter } from 'expo-router';
-import {  setAllPostData, setPostContent, setSelectedImages, setLocation, clearPost } from '../redux/slices/createPostSlice';
+import {  setAllPostData, setPostContent, setSelectedImages, setLocation, clearPost, setDate } from '../redux/slices/createPostSlice';
 import { useDispatch,  useSelector } from 'react-redux';
 import { RootState } from '../redux/store';
 
@@ -30,6 +30,9 @@ const CreatePost: React.FC = () => {
   const postContent = useSelector((state: RootState) => state.createPost.postContent);
   const selectedImages = useSelector((state: RootState) => state.createPost.selectedImages);
   const location = useSelector((state: RootState) => state.createPost.location);
+  const formattedDate = new Date;
+  const date = `${formattedDate.getDate().toString().padStart(2, '0')}/${(formattedDate.getMonth() + 1).toString().padStart(2, '0')}/${formattedDate.getFullYear()}`;
+  
 
   // Obtén la ubicación pasada como parámetro (No se ve la Ubicacion en la pantalla *ARREGLAR*)
   useEffect(() => {
@@ -71,10 +74,11 @@ const CreatePost: React.FC = () => {
     </View>
   );
   const handlePublish = () => {
-    dispatch(setAllPostData({ postContent, location, selectedImages }));
-    console.log('Post publicado con datos:', { postContent, location, selectedImages });
+    dispatch(setDate(date));
+    dispatch(setAllPostData({ postContent, location, selectedImages, date }));
+    console.log('Post publicado con datos:', { postContent, location, selectedImages, date });
     router.push('/(tabs)/home');
-    dispatch(clearPost());   //despues borrar esta linea!!!
+    // dispatch(clearPost());   //despues borrar esta linea!!!
   };
   // console.log(useState.)
   
@@ -132,12 +136,12 @@ const CreatePost: React.FC = () => {
         )}
 
         {/* Mostrar la ubicación seleccionada */}
-        {location && (
+        {/*{location && (
           <View style={{ flexDirection: 'row', alignItems: 'center', marginVertical: theme.spacing.small }}>
             <LocationIcon width={24} height={24} fill={theme.colors.textPrimary} />
             <Text style={{ marginLeft: 5, color: theme.colors.textPrimary }}>{location}</Text>
           </View>
-        )}
+        )}*/}
 
         {/* Botones de opción */}
         <OptionButton
@@ -146,6 +150,7 @@ const CreatePost: React.FC = () => {
           onPress={selectImages}
           theme={theme}
         />
+          
         
         <OptionButton
           iconComponent={() => <LocationIcon width={24} height={24} fill={theme.colors.textPrimary} />}
@@ -166,7 +171,7 @@ const CreatePost: React.FC = () => {
               marginTop: 30,
               marginBottom: 150,
               backgroundColor: !postContent.trim() && selectedImages.length === 0 ? '#B5BACB' : theme.colors.primary,
-              borderColor: theme.colors.textSecondary,
+              borderColor: theme.colors.primary,
               width: '95%',
             }}
           />

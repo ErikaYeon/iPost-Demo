@@ -19,7 +19,7 @@ type CommentType = {
   text: string;
   profilePictureUrl: string;
   isVip?: boolean;
-  crownType?: string;
+  crownType: string;
 };
 
 type PostProps = {
@@ -33,13 +33,16 @@ type PostProps = {
   likes: number;
   comments: number;
   isVip?: boolean;
-  crownType?: string;
+  crownType: string;
   commentSection?: CommentType[];
   onLike: () => void;
   onComment: () => void;
   onSave: () => void;
   theme: any;
 };
+const truncateText = (text: string, maxLength: number) => {
+  return text.length > maxLength ? `${text.substring(0, maxLength)}...` : text;
+}; //PARA QUE DESPUES DE CIERTA CANT DE CARACTERES APAREZCAN 3 PUNTOS Y NO SE IMPRIMA TODO
 
 const Post: React.FC<PostProps> = ({
   profilePictureUrl,
@@ -64,7 +67,8 @@ const Post: React.FC<PostProps> = ({
   const [commentsList, setCommentsList] = useState(commentSection);
   const [newComment, setNewComment] = useState('');
 
-  const renderCrownIcon = (type) => {
+  
+  const renderCrownIcon = (type: string) => {
     switch (type) {
       case 'grey':
         return <CrownGrey width={20} height={20} style={styles.crownIcon} />;
@@ -116,7 +120,11 @@ const Post: React.FC<PostProps> = ({
       </View>
       <Text style={[styles.description, { color: theme.colors.textPrimary }]}>{description}</Text>
       <View style={styles.locationDateContainer}>
-        {location && <Text style={[styles.location, { color: theme.colors.textSecondary }]}>{location}</Text>}
+      {location && (
+          <Text style={[styles.location, { color: theme.colors.textSecondary }]}>
+            {truncateText(location, 35)} {/* Cambia 20 por el número máximo de caracteres que prefieras */}
+          </Text>
+        )}
         <Text style={[styles.date, { color: theme.colors.textSecondary }]}>{date}</Text>
       </View>
 

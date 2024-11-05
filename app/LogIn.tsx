@@ -21,6 +21,7 @@ const LogInScreen: React.FC = () =>{
   const dispatch = useDispatch();
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
+  const [username, setUsername]= useState('elisheba')  //MODIFICAR!!
   const [errorMessage, setErrorMessage] = useState('');
   const router = useRouter();
 
@@ -42,7 +43,7 @@ const LogInScreen: React.FC = () =>{
       setErrorMessage('La contraseña debe tener al menos 6 caracteres y un carácter especial.');
     }else {
       setErrorMessage('');
-      dispatch(setProfile({ email, password }));
+      dispatch(setProfile({ email, password, username }));
       setEmail('');
       setPassword('');
       router.push('/(tabs)/home');
