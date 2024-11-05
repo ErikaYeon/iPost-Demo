@@ -12,6 +12,9 @@ import CrownBronze from '../../assets/images/icons/gamif_crown_1.svg';
 import CrownSilver from '../../assets/images/icons/gamif_crown_2.svg';
 import CrownGold from '../../assets/images/icons/gamif_crown_3.svg';
 import styles from '../../ui/styles/PostStyles'; 
+// import {  setLike } from '../../redux/slices/createPostSlice';
+// import { useDispatch,  useSelector } from 'react-redux';
+// import { RootState } from '../../redux/store';
 
 type CommentType = {
   id: string;
@@ -66,6 +69,8 @@ const Post: React.FC<PostProps> = ({
   const [isModalVisible, setModalVisible] = useState(false);
   const [commentsList, setCommentsList] = useState(commentSection);
   const [newComment, setNewComment] = useState('');
+  // const dispatch = useDispatch();
+  // const like = useSelector((state: RootState) => state.createPost.likes);
 
   
   const renderCrownIcon = (type: string) => {
@@ -85,7 +90,9 @@ const Post: React.FC<PostProps> = ({
 
   const toggleLike = () => {
     setIsLiked(!isLiked);
+    // dispatch(setLike(likes));
     onLike();
+    // console.log(like)
   };
 
   const openModal = () => setModalVisible(true);
