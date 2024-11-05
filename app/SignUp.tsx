@@ -45,7 +45,7 @@ const SignUpScreen: React.FC = () => {
       setEmail('');
       setPassword('');
       setUsername('');
-      router.push('/ActivateAccount')
+      router.push('/ActivateAccount') 
     }
   };
 
