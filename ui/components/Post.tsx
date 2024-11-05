@@ -6,6 +6,7 @@ import LikeIcon from '../../assets/images/icons/like.svg';
 import LikeColoredIcon from '../../assets/images/icons/like_colored.svg';
 import CommentIcon from '../../assets/images/icons/comment.svg';
 import SaveIcon from '../../assets/images/icons/save.svg';
+import SaveColoredIcon from '../../assets/images/icons/save_colored.svg';
 import SendCommentIcon from '../../assets/images/icons/send_comment.svg';
 import CrownGrey from '../../assets/images/icons/gamif_crown_0_1.svg';
 import CrownBronze from '../../assets/images/icons/gamif_crown_1.svg';
@@ -66,6 +67,7 @@ const Post: React.FC<PostProps> = ({
   theme,
 }) => {
   const [isLiked, setIsLiked] = useState(false);
+  const [isSaved, setIsSaved] = useState(false);
   const [isModalVisible, setModalVisible] = useState(false);
   const [commentsList, setCommentsList] = useState(commentSection);
   const [newComment, setNewComment] = useState('');
@@ -93,6 +95,10 @@ const Post: React.FC<PostProps> = ({
     // dispatch(setLike(likes));
     onLike();
     // console.log(like)
+  };
+  const toggleSave = () => {
+    setIsSaved(!isSaved);
+    onSave();
   };
 
   const openModal = () => setModalVisible(true);
@@ -160,9 +166,13 @@ const Post: React.FC<PostProps> = ({
             <Text style={[styles.counter, { color: theme.colors.textPrimary }]}>{commentsList.length}</Text>
           </TouchableOpacity>
         </View>
-        <TouchableOpacity onPress={onSave} style={styles.iconButton}>
-          <SaveIcon width={20} height={20} />
-        </TouchableOpacity>
+          <TouchableOpacity onPress={toggleSave} style={styles.iconButton}>
+            {isSaved ? (
+              <SaveColoredIcon width={20} height={20} />
+            ) : (
+              <SaveIcon width={20} height={20} />
+            )}
+          </TouchableOpacity>
       </View>
 
       {commentsList.length > 0 && (
