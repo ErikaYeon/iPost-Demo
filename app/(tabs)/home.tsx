@@ -41,9 +41,10 @@ const home = () => {
 
   return (
     <SafeAreaView style={[stylesLocal.screenContainer, { paddingTop: StatusBar.currentHeight || 0, backgroundColor: theme.colors.background }]}>
-      {postList.length === 0 ? (
+      {postList.length ==0 ? (
         <InitialMessage theme={theme} />
       ) : (
+        
         <FlatList
           contentContainerStyle={stylesLocal.listContainer}
           data={postList}
