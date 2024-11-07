@@ -1,19 +1,29 @@
-import React from 'react';
-import { View, Text, Image, TouchableOpacity, StyleSheet, FlatList } from 'react-native';
+// Post.tsx
+import React, { useState } from 'react';
+import { View, Text, Image, TouchableOpacity, FlatList, TextInput, KeyboardAvoidingView, Platform } from 'react-native';
+import Modal from 'react-native-modal';
 import LikeIcon from '../../assets/images/icons/like.svg';
+import LikeColoredIcon from '../../assets/images/icons/like_colored.svg';
 import CommentIcon from '../../assets/images/icons/comment.svg';
 import SaveIcon from '../../assets/images/icons/save.svg';
+import SaveColoredIcon from '../../assets/images/icons/save_colored.svg';
+import SendCommentIcon from '../../assets/images/icons/send_comment.svg';
 import CrownGrey from '../../assets/images/icons/gamif_crown_0_1.svg';
 import CrownBronze from '../../assets/images/icons/gamif_crown_1.svg';
 import CrownSilver from '../../assets/images/icons/gamif_crown_2.svg';
 import CrownGold from '../../assets/images/icons/gamif_crown_3.svg';
-import Comment from '../../ui/components/Comment';
+import styles from '../../ui/styles/PostStyles'; 
+// import {  setLike } from '../../redux/slices/createPostSlice';
+// import { useDispatch,  useSelector } from 'react-redux';
+// import { RootState } from '../../redux/store';
 
 type CommentType = {
   id: string;
   username: string;
   text: string;
   profilePictureUrl: string;
+  isVip?: boolean;
+  crownType: string;
 };
 
 type PostProps = {
@@ -27,7 +37,7 @@ type PostProps = {
   likes: number;
   comments: number;
   isVip?: boolean;
-  crownType?: string;
+  crownType: string;
   commentSection?: CommentType[];
   onLike: () => void;
   onComment: () => void;
@@ -56,6 +66,15 @@ const Post: React.FC<PostProps> = ({
   comments,
   theme,
 }) => {
+  const [isLiked, setIsLiked] = useState(false);
+  const [isSaved, setIsSaved] = useState(false);
+  const [isModalVisible, setModalVisible] = useState(false);
+  const [commentsList, setCommentsList] = useState(commentSection);
+  const [newComment, setNewComment] = useState('');
+  // const dispatch = useDispatch();
+  // const like = useSelector((state: RootState) => state.createPost.likes);
+
+  
   const renderCrownIcon = (type: string) => {
     switch (type) {
       case 'grey':
@@ -67,7 +86,36 @@ const Post: React.FC<PostProps> = ({
       case 'gold':
         return <CrownGold width={20} height={20} style={styles.crownIcon} />;
       default:
-        return <></>;
+        return null;
+    }
+  };
+
+  const toggleLike = () => {
+    setIsLiked(!isLiked);
+    // dispatch(setLike(likes));
+    onLike();
+    // console.log(like)
+  };
+  const toggleSave = () => {
+    setIsSaved(!isSaved);
+    onSave();
+  };
+
+  const openModal = () => setModalVisible(true);
+  const closeModal = () => setModalVisible(false);
+
+  const handleAddComment = () => {
+    if (newComment.trim()) {
+      const newCommentData = {
+        id: (commentsList.length + 1).toString(),
+        username: '@your_username',
+        text: newComment,
+        profilePictureUrl: 'https://your-profile-picture-url.com',
+        isVip: false,
+        crownType: 'grey',
+      };
+      setCommentsList([...commentsList, newCommentData]);
+      setNewComment('');
     }
   };
 
@@ -105,120 +153,88 @@ const Post: React.FC<PostProps> = ({
 
       <View style={styles.interactionContainer}>
         <View style={styles.leftInteraction}>
-          <TouchableOpacity onPress={onLike} style={styles.iconButton}>
-            <LikeIcon width={20} height={20} />
-            <Text style={[styles.counter, { color: theme.colors.textPrimary }]}>{likes}</Text>
+          <TouchableOpacity onPress={toggleLike} style={styles.iconButton}>
+            {isLiked ? (
+              <LikeColoredIcon width={20} height={20} />
+            ) : (
+              <LikeIcon width={20} height={20} />
+            )}
+            <Text style={[styles.counter, { color: theme.colors.textPrimary }]}>{likes + (isLiked ? 1 : 0)}</Text>
           </TouchableOpacity>
-          <TouchableOpacity onPress={onComment} style={styles.iconButton}>
+          <TouchableOpacity onPress={openModal} style={styles.iconButton}>
             <CommentIcon width={20} height={20} />
-            <Text style={[styles.counter, { color: theme.colors.textPrimary }]}>{comments}</Text>
+            <Text style={[styles.counter, { color: theme.colors.textPrimary }]}>{commentsList.length}</Text>
           </TouchableOpacity>
         </View>
-        <TouchableOpacity onPress={onSave} style={styles.iconButton}>
-          <SaveIcon width={20} height={20} />
-        </TouchableOpacity>
+          <TouchableOpacity onPress={toggleSave} style={styles.iconButton}>
+            {isSaved ? (
+              <SaveColoredIcon width={20} height={20} />
+            ) : (
+              <SaveIcon width={20} height={20} />
+            )}
+          </TouchableOpacity>
       </View>
 
-      <FlatList
-        data={commentSection}
-        keyExtractor={(item) => item.id}
-        renderItem={({ item }) => (
-          <Comment
-            profilePictureUrl={item.profilePictureUrl}
-            username={item.username}
-            text={item.text}
-            theme={theme}
+      {commentsList.length > 0 && (
+        <>
+          <TouchableOpacity onPress={openModal} style={styles.viewAllCommentsButton}>
+            <Text style={[styles.viewAllCommentsText, { color: theme.colors.secondary }]}>Ver todos los comentarios</Text>
+          </TouchableOpacity>
+
+          <View style={styles.firstCommentContainer}>
+            <Text style={{ color: theme.colors.textPrimary }}>
+              <Text style={styles.commentUsername}>{commentsList[0].username} </Text>
+              <Text>{commentsList[0].text}</Text>
+            </Text>
+          </View>
+        </>
+      )}
+
+      <Modal
+        isVisible={isModalVisible}
+        onBackdropPress={closeModal}
+        onSwipeComplete={closeModal}
+        swipeDirection="down"
+        style={styles.modal}
+      >
+        <KeyboardAvoidingView
+          behavior={Platform.OS === 'ios' ? 'padding' : 'height'}
+          style={[styles.modalContent, { backgroundColor: theme.colors.background }]}
+        >
+          <FlatList
+            data={commentsList}
+            keyExtractor={(item) => item.id}
+            renderItem={({ item }) => (
+              <View style={styles.commentContainer}>
+                <Image source={{ uri: item.profilePictureUrl }} style={styles.commentProfilePicture} />
+                <View style={styles.commentTextContainer}>
+                  <View style={styles.commentHeader}>
+                    {item.isVip && renderCrownIcon(item.crownType)}
+                    <Text style={[styles.commentUsername, { color: theme.colors.textPrimary }]}>{item.username}</Text>
+                  </View>
+                  <Text style={[styles.commentText, { color: theme.colors.textSecondary }]}>{item.text}</Text>
+                </View>
+              </View>
+            )}
           />
-        )}
-        style={styles.commentSection}
-      />
+          <View style={styles.inputContainer}>
+            <TextInput
+              style={[styles.input, { color: theme.colors.textPrimary }]}
+              placeholder="Agrega un comentario..."
+              placeholderTextColor={theme.colors.textSecondary}
+              value={newComment}
+              onChangeText={setNewComment}
+            />
+            <TouchableOpacity style={styles.sendButton} onPress={handleAddComment}>
+              <SendCommentIcon width={24} height={24} fill={theme.colors.primary} />
+            </TouchableOpacity>
+          </View>
+        </KeyboardAvoidingView>
+      </Modal>
 
       <View style={[styles.divider, { backgroundColor: theme.colors.textSecondary }]} />
     </View>
   );
 };
-
-const styles = StyleSheet.create({
-  postContainer: {
-    marginBottom: 15,
-    padding: 10,
-  },
-  header: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    marginBottom: 8,
-  },
-  profilePicture: {
-    width: 44,
-    height: 44,
-    borderRadius: 22,
-    marginRight: 10,
-  },
-  userInfo: {
-    justifyContent: 'center',
-  },
-  nameContainer: {
-    flexDirection: 'row',
-    alignItems: 'center',
-  },
-  crownIcon: {
-    marginRight: 5,
-  },
-  name: {
-    fontSize: 15,
-    fontWeight: 'bold',
-  },
-  username: {
-    fontSize: 15,
-  },
-  description: {
-    fontSize: 18,
-    marginVertical: 5,
-  },
-  locationDateContainer: {
-    flexDirection: 'row',
-    justifyContent: 'space-between',
-    marginBottom: 8,
-  },
-  location: {
-    fontSize: 15,
-    fontStyle: 'italic',
-  },
-  date: {
-    fontSize: 15,
-  },
-  postImage: {
-    width: 300,
-    height: 300,
-    borderRadius: 8,
-    marginRight: 10,
-  },
-  interactionContainer: {
-    flexDirection: 'row',
-    justifyContent: 'space-between',
-    alignItems: 'center',
-    marginTop: 10,
-  },
-  leftInteraction: {
-    flexDirection: 'row',
-  },
-  iconButton: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    marginRight: 15,
-  },
-  counter: {
-    marginLeft: 5,
-    fontSize: 14,
-  },
-  commentSection: {
-    marginVertical: 20,
-  },
-  divider: {
-    height: 1,
-    alignSelf: 'stretch',
-    marginTop: 10,
-  },
-});
 
 export default Post;

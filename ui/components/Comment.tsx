@@ -6,12 +6,8 @@ const Comment = ({ profilePictureUrl, username, text, theme }) => {
     <View style={styles.commentContainer}>
       <Image source={{ uri: profilePictureUrl }} style={styles.commentProfilePicture} />
       <View style={styles.commentTextContainer}>
-        <Text style={[styles.commentUsername, { color: theme.colors.textPrimary }]}>
-          {username}
-        </Text>
-        <Text style={[styles.commentText, { color: theme.colors.textSecondary }]}>
-          {text}
-        </Text>
+        <Text style={[styles.commentUsername, { color: theme.colors.textPrimary }]}>{username}</Text>
+        <Text style={[styles.commentText, { color: theme.colors.textSecondary }]}>{text}</Text>
       </View>
     </View>
   );

@@ -42,6 +42,9 @@ const createPostSlice = createSlice({
     setDate(state, action: PayloadAction<string>){
       state.date = action.payload;
     },
+    setLike: (state, action: PayloadAction<number>) => {
+      state.likes = action.payload;
+    },
     setAllPostData(state, action: PayloadAction<PartialPostData>) { // Acción para establecer todos los datos al mismo tiempo
         const { postContent, selectedImages, location, date} = action.payload;
       state.postContent = postContent;
@@ -58,7 +61,7 @@ const createPostSlice = createSlice({
 });
 
 // Exportar las acciones
-export const { setPostContent, setLocation, setSelectedImages, clearPost, setAllPostData, setDate } = createPostSlice.actions;
+export const { setPostContent, setLocation, setSelectedImages, clearPost, setAllPostData, setDate, setLike } = createPostSlice.actions;
 
 // Definir y exportar los selectores como "getters"
 // export const selectPostContent = (state) => state.createPost.postContent;

@@ -1,4 +1,4 @@
-import React from 'react';
+import React from 'react'; 
 import { SafeAreaView, FlatList, StatusBar, StyleSheet } from 'react-native';
 import Post from '@/ui/components/Post';
 import { darkTheme } from '../../ui/styles/Theme';
@@ -41,9 +41,10 @@ const home = () => {
 
   return (
     <SafeAreaView style={[stylesLocal.screenContainer, { paddingTop: StatusBar.currentHeight || 0, backgroundColor: theme.colors.background }]}>
-      {postList.length === 0 ? (
+      {postList.length ==0 ? (
         <InitialMessage theme={theme} />
       ) : (
+        
         <FlatList
           contentContainerStyle={stylesLocal.listContainer}
           data={postList}
@@ -73,7 +74,6 @@ const home = () => {
     </SafeAreaView>
   );
 };
-    
 
 const stylesLocal = StyleSheet.create({
   screenContainer: {
