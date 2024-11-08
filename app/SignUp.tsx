@@ -9,7 +9,7 @@ import createSharedStyles from '../ui/styles/SharedStyles';
 import { lightTheme, darkTheme } from '../ui/styles/Theme';
 import { styles } from '../ui/styles/LogIn';
 import { useDispatch } from 'react-redux'; 
-import { setProfile } from '../redux/slices/profileSlice'; 
+import { setProfile, signup } from '../redux/slices/profileSlice'; 
 import { router } from 'expo-router';
 import RegularTextLine from '@/ui/components/RegularTextLine';
 
@@ -20,12 +20,12 @@ const sharedStyles = createSharedStyles(theme);
 
 const SignUpScreen: React.FC = () => {
   const dispatch = useDispatch();
-  const [email, setEmail] = useState('');
-  const [username, setUsername] = useState('');
-  const [password, setPassword] = useState('');
+  const [email, setEmail] = useState('etawil4@uade.edu.com');
+  const [username, setUsername] = useState('elisheba');
+  const [password, setPassword] = useState('taw54#gch');
   const [errorMessage, setErrorMessage] = useState('');
 
-  const handleRegister = () => {
+  const handleRegister  = async () => {
     const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
   
   // Regular expression for validating password (at least 6 characters and one special character)
@@ -42,11 +42,20 @@ const SignUpScreen: React.FC = () => {
     } else {
       setErrorMessage('');
       dispatch(setProfile({ email, username, password }));
-      setEmail('');
-      setPassword('');
-      setUsername('');
-      router.push('/ActivateAccount') 
+      const sii = await dispatch(signup({email,username,password,name:'Ipost',lastname:'Ipost'}))
+      // console.log(JSON.stringify(sii,null,4))
+      if(sii.status == 200){
+        console.log('funciono')
+        setEmail('');
+        setPassword('');
+        setUsername('');
+        router.push('/ActivateAccount') 
+      }else{
+        setErrorMessage('ocurrió algún error,intentelo nuevamente');
+      }
+        
     }
+    
   };
 
   return (
