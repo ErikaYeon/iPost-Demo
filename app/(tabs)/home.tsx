@@ -19,8 +19,8 @@ const home = () => {
 
   // console.log('New Post Data:', newPost);
   // console.log('User Profile Data:', userProfile);
-
-
+  
+  
   if (newPost.postContent) {
     postList.unshift({
       id: '4', // Assign a unique ID for the new post

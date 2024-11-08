@@ -9,7 +9,9 @@ import createSharedStyles from '../ui/styles/SharedStyles';
 import { lightTheme, darkTheme } from '../ui/styles/Theme';
 import { styles } from '../ui/styles/LogIn';
 import { useDispatch } from 'react-redux'; 
-import { setProfile, signup } from '../redux/slices/profileSlice'; 
+// import { setProfile, signup } from '../redux/slices/profileSlice'; 
+import { setProfile } from '../redux/slices/profileSlice'; 
+import { signup } from '@/redux/slices/authSlice';
 import { router } from 'expo-router';
 import RegularTextLine from '@/ui/components/RegularTextLine';
 

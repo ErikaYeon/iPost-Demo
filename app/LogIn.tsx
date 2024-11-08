@@ -10,7 +10,9 @@ import { lightTheme, darkTheme } from '../ui/styles/Theme';
 import { styles } from '../ui/styles/LogIn';
 import { useRouter } from 'expo-router';
 import { useDispatch } from 'react-redux'; 
-import { setProfile, loginUser } from '../redux/slices/profileSlice'; 
+// import { setProfile, loginUser} from '../redux/slices/profileSlice'; 
+import { setProfile} from '../redux/slices/profileSlice'; 
+import { loginUser} from  '../redux/slices/authSlice'; 
 import RegularTextLine from '@/ui/components/RegularTextLine';
 
 
@@ -21,10 +23,9 @@ const LogInScreen: React.FC = () =>{
   const dispatch = useDispatch();
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
-  // const [username, setUsername]= useState('elisheba')  //MODIFICAR!!
+  const [username, setUsername]= useState('elisheba')  //MODIFICAR!!
   const [errorMessage, setErrorMessage] = useState('');
   const router = useRouter();
-
   const handleLogin = async () => {
     // Regular expression for validating email
   const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
@@ -43,9 +44,8 @@ const LogInScreen: React.FC = () =>{
       setErrorMessage('La contraseña debe tener al menos 6 caracteres y un carácter especial.');
     }else {
       setErrorMessage('');
-      dispatch(setProfile({ email, password }));
-
-      const resultAction = await dispatch(loginUser({ email, password }));
+      dispatch(setProfile({ email, password, username }));
+      const resultAction = await dispatch(loginUser({ email, password}));
       if (loginUser.fulfilled.match(resultAction)) {
         setEmail('');
         setPassword('');
