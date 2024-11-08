@@ -43,25 +43,27 @@ export const signup = createAsyncThunk(
   'profile/signup',
   async (userData, { rejectWithValue }) => {
     try {
-      // console.log(userData)
+      console.log(userData)
       const response = await api.post('/api/accounts/signup', userData);
       
       // Verifica si la respuesta es exitosa
       // console.log(JSON.stringify(response,null,4))
       if (response.status === 200) {
+        console.log(response.status)
         console.log('llamada bien')
-        return response.data;
+        return response.data
       
       } else {
         console.log('llamada mal')
         // Si no es 200, puedes lanzar un mensaje de error
-        return rejectWithValue('Hubo un error al registrarse. Inténtalo nuevamente.');
+        // return rejectWithValue('Hubo un error al registrarse. Inténtalo nuevamente.');
       }
     } catch (error) {
-      console.log("erroeeee")
+      // console.log("erroeeee")
       // console.log(JSON.stringify(error,null,4))
       // Captura cualquier otro error, como problemas de red
-      return rejectWithValue(
+      return 
+      rejectWithValue(
         error
         // error.response?.data?.message || 'Error al conectarse con el servidor'
       );

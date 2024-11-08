@@ -20,9 +20,9 @@ const sharedStyles = createSharedStyles(theme);
 
 const SignUpScreen: React.FC = () => {
   const dispatch = useDispatch();
-  const [email, setEmail] = useState('etawil4@uade.edu.com');
-  const [username, setUsername] = useState('elisheba');
-  const [password, setPassword] = useState('taw54#gch');
+  const [email, setEmail] = useState('');
+  const [username, setUsername] = useState('');
+  const [password, setPassword] = useState('');
   const [errorMessage, setErrorMessage] = useState('');
 
   const handleRegister  = async () => {
@@ -42,9 +42,9 @@ const SignUpScreen: React.FC = () => {
     } else {
       setErrorMessage('');
       dispatch(setProfile({ email, username, password }));
-      const sii = await dispatch(signup({email,username,password,name:'Ipost',lastname:'Ipost'}))
-      // console.log(JSON.stringify(sii,null,4))
-      if(sii.status == 200){
+      const result = await dispatch(signup({email,username,password,name:'Ipost1',lastname:'Ipost1'}))
+      console.log('sii ststus '+result.status)
+      if(signup.fulfilled.match(result)){
         console.log('funciono')
         setEmail('');
         setPassword('');
