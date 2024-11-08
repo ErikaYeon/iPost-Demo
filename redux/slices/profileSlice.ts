@@ -12,20 +12,19 @@ interface ProfileState {
   profilePictureUrl : string;
   isVip: boolean,
   crownType: string,
+  access_token?: string;
+  refresh_token?: string;
 
   
 }
 interface PartialProfileState{
   email: string;
   password: string;
-  username: string;
 }
-interface userDataSignUp{
-  email: string;
-  password: string;
-  username: string;
-  name: string;
-  lastname: string;
+interface LoginResponse {
+  id: string;
+  access_token: string;
+  refresh_token: string;
 }
 const initialState : ProfileState = {
   email: '',
@@ -43,7 +42,7 @@ export const signup = createAsyncThunk(
   'profile/signup',
   async (userData, { rejectWithValue }) => {
     try {
-      console.log(userData)
+      // console.log(userData)
       const response = await api.post('/api/accounts/signup', userData);
       
       // Verifica si la respuesta es exitosa
@@ -55,18 +54,28 @@ export const signup = createAsyncThunk(
       
       } else {
         console.log('llamada mal')
-        // Si no es 200, puedes lanzar un mensaje de error
-        // return rejectWithValue('Hubo un error al registrarse. Inténtalo nuevamente.');
+        
       }
     } catch (error) {
-      // console.log("erroeeee")
-      // console.log(JSON.stringify(error,null,4))
-      // Captura cualquier otro error, como problemas de red
+      
       return 
       rejectWithValue(
         error
-        // error.response?.data?.message || 'Error al conectarse con el servidor'
       );
+    }
+  }
+);
+
+export const loginUser = createAsyncThunk(
+  'profile/loginUser',
+  async ({ email, password }: { email: string; password: string }, { rejectWithValue }) => {
+    try {
+      const response = await api.post('/api/accounts/login', { email, password });
+      console.log(response.data)
+      return response.data as LoginResponse;
+    } catch (error: any) {
+      console.log(error)
+      return rejectWithValue('Algo salió mal, inténtelo nuevamente');
     }
   }
 );
@@ -75,17 +84,17 @@ const profileSlice = createSlice({
   initialState,
   reducers: {
     setProfile: (state, action: PayloadAction<PartialProfileState>) => {
-      const { email, username, password } = action.payload;
+      const { email,  password } = action.payload;
       state.email = email;
       state.password = password;
-      state.username = username;  //A CHECKEAR SI ESTO VA ACA
+      // state.username = username;  //A CHECKEAR SI ESTO VA ACA
 
     },
     setProfileExtraData:(state,action:PayloadAction<ProfileState>)=>{
       const{username,name, profilePictureUrl, isVip, crownType} = action.payload;   //ACA EN EL FETCH VOY A AGREGAR FOTO,ISVIP Y LA CORONA
       state.username = username;
       state.name = name;
-      state.profilePictureUrl = profilePictureUrl;
+      // state.profilePictureUrl = profilePictureUrl;
       state.isVip = isVip;
       state.crownType = crownType;
 
@@ -110,9 +119,18 @@ const profileSlice = createSlice({
       })
       .addCase(signup.rejected, (state, action) => {
         console.error('Signup failed:', action.payload);
-      });
+      })
+      .addCase(loginUser.fulfilled, (state, action) => {
+        const { id, access_token, refresh_token } = action.payload;
+        state.access_token = access_token;
+        state.refresh_token = refresh_token;
+      })
+      .addCase(loginUser.rejected, (state, action) => {
+        console.error('Login failed:', action.payload);
+      })
   },
 });
+  
 
 // Exportar las acciones
 export const { setProfile, clearProfile} = profileSlice.actions;

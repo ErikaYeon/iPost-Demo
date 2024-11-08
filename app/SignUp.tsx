@@ -42,7 +42,7 @@ const SignUpScreen: React.FC = () => {
     } else {
       setErrorMessage('');
       dispatch(setProfile({ email, username, password }));
-      const result = await dispatch(signup({email,username,password,name:'Ipost1',lastname:'Ipost1'}))
+      const result = await dispatch(signup({email,username,password,name:'Ipost',lastname:'Ipost'}))
       console.log('sii ststus '+result.status)
       if(signup.fulfilled.match(result)){
         console.log('funciono')

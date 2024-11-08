@@ -17,8 +17,8 @@ const home = () => {
   const userProfile = useSelector((state: RootState) => state.profile);
   const postList = [...mockData];
 
-  console.log('New Post Data:', newPost);
-  console.log('User Profile Data:', userProfile);
+  // console.log('New Post Data:', newPost);
+  // console.log('User Profile Data:', userProfile);
 
 
   if (newPost.postContent) {
