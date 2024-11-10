@@ -1,20 +1,27 @@
 import { APIError } from "@/types/apiContracts";
+import AsyncStorage from "@react-native-async-storage/async-storage";
 import axios from "axios";
 
 const api = axios.create({
-  baseURL: "http://localhost:8080/api",
+  baseURL: "https://ipost-api.onrender.com/api",
   headers: {
     "Content-Type": "application/json",
   },
 });
 
-export const setAuthToken = (token: string | null) => {
-  if (token) {
-    api.defaults.headers["Authorization"] = `Bearer ${token}`;
-  } else {
-    delete api.defaults.headers["Authorization"];
+// Interceptor para agregar el token en las cabeceras de la solicitud
+api.interceptors.request.use(
+  async (config) => {
+    const accessToken = await AsyncStorage.getItem("access_token");
+    if (accessToken && !config.url?.startsWith("/accounts")) {
+      config.headers["Authorization"] = `Bearer ${accessToken}`;
+    }
+    return config;
+  },
+  (error) => {
+    return Promise.reject(error);
   }
-};
+);
 
 export const handleError = (error: any): APIError => {
   if (axios.isAxiosError(error)) {

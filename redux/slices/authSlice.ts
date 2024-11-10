@@ -7,7 +7,6 @@ import {
 } from "@/types/apiContracts";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import { signup, login } from "@/networking/authService";
-import setAuthToken from "@/networking/api";
 
 interface AuthState {
   access_token: string | null;
@@ -28,27 +27,21 @@ export const signupAsync = createAsyncThunk(
   async (userData: SignupRequest, { rejectWithValue }) => {
     try {
       await signup(userData);
-      console.log("Successful sign up from slice.");
     } catch (error: APIError | any) {
-      console.log("Error from signup slice."); // ToDo: remove this log after tests
       return rejectWithValue(error.message ?? "Error when sign up");
     }
   }
 );
 
 export const loginAsync = createAsyncThunk(
-  "profile/login",
+  "auth/login",
   async (credentials: LoginRequest, { rejectWithValue }) => {
     try {
       const loginResponse: LoginResponse = await login(credentials);
-      console.log("Successful login.");
       await AsyncStorage.setItem("access_token", loginResponse.access_token);
       await AsyncStorage.setItem("refresh_token", loginResponse.refresh_token);
-      setAuthToken(loginResponse.access_token);
-      console.log("Token available in Axios.");
       return loginResponse;
     } catch (error: APIError | any) {
-      console.log("Error from login slice."); // ToDo: remove this log after tests
       return rejectWithValue(error.message ?? "Error when login");
     }
   }

@@ -32,8 +32,7 @@ export const login = async (data: LoginRequest): Promise<LoginResponse> => {
       throw new APIError("Error logging in user.");
     }
     console.log("Successful login.");
-    const loginResponse: LoginResponse = response.data;
-    return loginResponse;
+    return response.data;
   } catch (error: any) {
     handleError(error);
     throw new APIError("Never executed"); // This 'throw' is never executed, but TypeScript was whining about the method contract.

@@ -15,14 +15,18 @@ import createSharedStyles from "../ui/styles/SharedStyles";
 import { darkTheme } from "../ui/styles/Theme";
 import { styles } from "../ui/styles/LogIn";
 import { useDispatch, useSelector } from "react-redux";
-import { setProfile } from "../redux/slices/profileSlice";
 import { router } from "expo-router";
 import RegularTextLine from "@/ui/components/RegularTextLine";
 import { AppDispatch, RootState } from "@/redux/store";
 import { signupAsync } from "@/redux/slices/authSlice";
 import { SignupRequest } from "@/types/apiContracts";
 import Placeholders from "@/constants/ProfilePlaceholders";
-import { isEmailValid, isPasswordValid } from "@/utils/RegexExpressions";
+import {
+  isEmailValid,
+  isPasswordValid,
+  isStringWithNoSpaces,
+} from "@/utils/RegexExpressions";
+import { setProfileEmail } from "@/redux/slices/profileSlice";
 
 const theme = darkTheme; // Para alternar entre darkTheme y lightTheme manualmente
 const sharedStyles = createSharedStyles(theme);
@@ -47,10 +51,13 @@ const SignUpScreen: React.FC = () => {
       setErrorMessage(
         "La contraseña debe tener al menos 6 caracteres y un carácter especial."
       );
+    }
+    // Check if password meets the requirements
+    else if (!isStringWithNoSpaces(username)) {
+      setErrorMessage("El username no puede tener espacios en blanco.");
     } else {
       setErrorMessage("");
-      dispatch(setProfile({ email, username, password }));
-
+      dispatch(setProfileEmail({ email }));
       const userData: SignupRequest = {
         email,
         password,
@@ -60,12 +67,9 @@ const SignUpScreen: React.FC = () => {
       };
 
       try {
-        // Esperar a que el resultado de signupAsync se complete
         const result = await dispatch(signupAsync(userData));
 
         if (signupAsync.fulfilled.match(result)) {
-          console.log("funcionó");
-          setEmail("");
           setPassword("");
           setUsername("");
           router.push("/ActivateAccount");

@@ -15,12 +15,15 @@ import createSharedStyles from "../ui/styles/SharedStyles";
 import { darkTheme } from "../ui/styles/Theme";
 import { styles } from "../ui/styles/LogIn";
 import { useRouter } from "expo-router";
-import { useDispatch } from "react-redux";
-import { setProfile } from "../redux/slices/profileSlice";
+import { useDispatch, useSelector } from "react-redux";
 import RegularTextLine from "@/ui/components/RegularTextLine";
-import { isEmailValid, isPasswordValid } from "@/utils/RegexExpressions";
+import { isEmailValid } from "@/utils/RegexExpressions";
 import { AppDispatch } from "@/redux/store";
 import { loginAsync } from "@/redux/slices/authSlice";
+import {
+  setProfileExtraData,
+  setProfileEmail,
+} from "@/redux/slices/profileSlice";
 
 const theme = darkTheme;
 const sharedStyles = createSharedStyles(theme);
@@ -29,8 +32,8 @@ const LogInScreen: React.FC = () => {
   const dispatch = useDispatch<AppDispatch>();
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
-  const [username, setUsername] = useState("elisheba"); //MODIFICAR!!
   const [errorMessage, setErrorMessage] = useState("");
+
   const router = useRouter();
   const handleLogin = async () => {
     if (!email || !password) {
@@ -40,11 +43,12 @@ const LogInScreen: React.FC = () => {
     } else {
       try {
         setErrorMessage("");
-        dispatch(setProfile({ email, password, username }));
+        dispatch(setProfileEmail({ email }));
         const resultAction = await dispatch(loginAsync({ email, password }));
         if (loginAsync.fulfilled.match(resultAction)) {
           setEmail("");
           setPassword("");
+          dispatch(setProfileExtraData(resultAction.payload));
           router.push("/(tabs)/home");
         } else {
           setErrorMessage("credenciales invalidas, intente nuevamente");

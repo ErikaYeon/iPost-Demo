@@ -27,6 +27,36 @@ export interface LoginRequest {
 
 export interface LoginResponse {
   id: string;
+  username: string;
+  name: string;
+  lastname: string;
+  level: number;
   access_token: string;
   refresh_token: string;
+}
+
+export interface UserResponse {
+  id: string;
+  username: string;
+  email: string;
+  name: string;
+  lastname: string;
+  level: number;
+  profileImage: string;
+  coverImage: string;
+  description: string;
+  followersCount: number;
+  followingCount: number;
+  postsCount: number;
+  active: boolean;
+  createdAt: Date;
+  updatedAt: Date;
+  gender: Gender;
+}
+
+export enum Gender {
+  WOMAN,
+  MEN,
+  NON_BINARY,
+  PREFER_NOT_TO_ANSWER,
 }
