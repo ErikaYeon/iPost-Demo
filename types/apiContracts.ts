@@ -60,3 +60,31 @@ export enum Gender {
   NON_BINARY,
   PREFER_NOT_TO_ANSWER,
 }
+
+export interface UserShort {
+  id: string;
+  email: string;
+  username: string;
+  name: string;
+  lastname: string;
+  level: number;
+  profileImage: string | null;
+  active: boolean;
+}
+
+export interface Post {
+  id: string;
+  author: UserShort;
+  createdAt: Date;
+  location: string;
+  title: string;
+  likesCount: number;
+  commentsCount: number;
+  contents: string[];
+  likes: string[];
+}
+
+export interface PageParams {
+  offset: number;
+  limit: number;
+}

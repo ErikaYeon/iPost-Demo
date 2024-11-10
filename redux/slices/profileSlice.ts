@@ -18,7 +18,7 @@ interface ProfileState {
   name: string | null;
   lastname: string | null;
   crown: Crown;
-  profileImage: string | null;
+  profileImage: string | undefined;
   coverImage: string | null;
   description: string | null;
   followersCount: number;
