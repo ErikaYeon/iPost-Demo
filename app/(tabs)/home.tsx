@@ -6,6 +6,7 @@ import {
   StyleSheet,
   View,
   Text,
+  ActivityIndicator,
 } from "react-native";
 import Post from "@/ui/components/Post";
 import { darkTheme } from "../../ui/styles/Theme";
@@ -54,7 +55,11 @@ const home = () => {
         },
       ]}
     >
-      {posts.length == 0 ? (
+      {loading ? (
+        <View style={stylesLocal.loadingContainer}>
+        <ActivityIndicator size="large" color="#ffffff" />
+      </View>
+      ) : posts.length === 0 ? (
         <InitialMessage theme={theme} />
       ) : (
         <View style={stylesLocal.container}>
@@ -71,12 +76,12 @@ const home = () => {
                 username={item.author.username}
                 description={item.title}
                 location={item.location}
-                date={item.createdAt.toLocaleString()}
+                date={item.createdAt.toString()}
                 images={item.contents}
                 likes={item.likesCount}
                 comments={item.commentsCount}
                 isVip={item.author.level > 1}
-                crownType={levelToCrown(item.author.level).toString()}
+                crownType={levelToCrown(item.author.level)}
                 commentSection={[]} //ToDo: check how to handle this
                 onLike={() => console.log("Liked post " + item.id)} //ToDo: implement this
                 onComment={() => console.log("Commented on post " + item.id)} //ToDo: implement this
@@ -93,7 +98,7 @@ const home = () => {
       )}
     </SafeAreaView>
   );
-};
+};  
 
 const stylesLocal = StyleSheet.create({
   screenContainer: {
@@ -115,6 +120,11 @@ const stylesLocal = StyleSheet.create({
     color: "red",
     textAlign: "center",
     marginVertical: 10,
+  },
+  loadingContainer: {
+    flex: 1,
+    justifyContent: "center",
+    alignItems: "center",
   },
 });
 
