@@ -21,7 +21,7 @@ const initialState: PostState = {
   hasMore: true,
   offset: 0,
   limit: APIConstants.LIST_LIMIT,
-  lastFetch: new Date(new Date().setDate(new Date().getDate() - 7)), // Fecha una semana antes de hoy
+  lastFetch: new Date(new Date().setDate(new Date().getDate() - 7)), // Fecha una semana antes de hoy ToDo: falta arreglar
 };
 
 export const fetchPosts = createAsyncThunk(
