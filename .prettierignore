@@ -1,0 +1,13 @@
+# Adapted from https://stackoverflow.com/a/70715829
+
+# Ignore everything recursively
+*
+
+# But not these files
+!*.ts
+!*.tsx
+!*.js
+!*.jsx
+
+# Check subdirectories too
+!*/

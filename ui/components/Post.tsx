@@ -13,6 +13,7 @@ import CrownBronze from '../../assets/images/icons/gamif_crown_1.svg';
 import CrownSilver from '../../assets/images/icons/gamif_crown_2.svg';
 import CrownGold from '../../assets/images/icons/gamif_crown_3.svg';
 import styles from '../../ui/styles/PostStyles'; 
+import { Crown } from '@/types/models';
 // import {  setLike } from '../../redux/slices/createPostSlice';
 // import { useDispatch,  useSelector } from 'react-redux';
 // import { RootState } from '../../redux/store';
@@ -23,7 +24,7 @@ type CommentType = {
   text: string;
   profilePictureUrl: string;
   isVip?: boolean;
-  crownType: string;
+  crownType: Crown;
 };
 
 type PostProps = {
@@ -37,7 +38,7 @@ type PostProps = {
   likes: number;
   comments: number;
   isVip?: boolean;
-  crownType: string;
+  crownType: Crown;
   commentSection?: CommentType[];
   onLike: () => void;
   onComment: () => void;
@@ -47,6 +48,20 @@ type PostProps = {
 const truncateText = (text: string, maxLength: number) => {
   return text.length > maxLength ? `${text.substring(0, maxLength)}...` : text;
 }; //PARA QUE DESPUES DE CIERTA CANT DE CARACTERES APAREZCAN 3 PUNTOS Y NO SE IMPRIMA TODO
+
+const truncateDate = (formattedDate: string) => {
+  const date = new Date(formattedDate); // Convertir la cadena a un objeto Date
+
+  if (isNaN(date.getTime())) {
+    throw new Error("Invalid date provided"); // Manejo de error si la fecha es inválida
+  }
+
+  const day = date.getDate().toString().padStart(2, '0');
+  const month = (date.getMonth() + 1).toString().padStart(2, '0');
+  const year = date.getFullYear().toString().slice(-2); // Obtener los últimos dos dígitos del año
+
+  return `${day}/${month}/${year}`;
+};
 
 const Post: React.FC<PostProps> = ({
   profilePictureUrl,
@@ -58,7 +73,7 @@ const Post: React.FC<PostProps> = ({
   images = [],
   commentSection = [],
   isVip = false,
-  crownType = 'grey',
+  crownType ,
   onLike,
   onComment,
   onSave,
@@ -75,15 +90,15 @@ const Post: React.FC<PostProps> = ({
   // const like = useSelector((state: RootState) => state.createPost.likes);
 
   
-  const renderCrownIcon = (type: string) => {
+  const renderCrownIcon = (type: Crown) => {
     switch (type) {
-      case 'grey':
+      case Crown.GREY:
         return <CrownGrey width={20} height={20} style={styles.crownIcon} />;
-      case 'bronze':
+      case Crown.BRONCE:
         return <CrownBronze width={20} height={20} style={styles.crownIcon} />;
-      case 'silver':
+      case Crown.SILVER:
         return <CrownSilver width={20} height={20} style={styles.crownIcon} />;
-      case 'gold':
+      case Crown.GOLD:
         return <CrownGold width={20} height={20} style={styles.crownIcon} />;
       default:
         return null;
@@ -112,7 +127,7 @@ const Post: React.FC<PostProps> = ({
         text: newComment,
         profilePictureUrl: 'https://your-profile-picture-url.com',
         isVip: false,
-        crownType: 'grey',
+        crownType: Crown.GREY,
       };
       setCommentsList([...commentsList, newCommentData]);
       setNewComment('');
@@ -138,7 +153,7 @@ const Post: React.FC<PostProps> = ({
             {truncateText(location, 35)} {/* Cambia 20 por el número máximo de caracteres que prefieras */}
           </Text>
         )}
-        <Text style={[styles.date, { color: theme.colors.textSecondary }]}>{date}</Text>
+        <Text style={[styles.date, { color: theme.colors.textSecondary }]}>{truncateDate(date)}</Text>
       </View>
 
       {images.length > 0 && (

@@ -1,87 +1,130 @@
-import React from 'react'; 
-import { SafeAreaView, FlatList, StatusBar, StyleSheet } from 'react-native';
-import Post from '@/ui/components/Post';
-import { darkTheme } from '../../ui/styles/Theme';
-import { mockData } from '@/assets/mockData';
-import InitialMessage from '../../ui/components/InitialMessage';
-import createSharedStyles from '../../ui/styles/SharedStyles';
-import { styles } from '../../ui/styles/LogIn';
-import { useSelector, useDispatch, } from 'react-redux';
-import { RootState } from '../../redux/store';
+import React, { useEffect } from "react";
+import {
+  SafeAreaView,
+  FlatList,
+  StatusBar,
+  StyleSheet,
+  View,
+  Text,
+  ActivityIndicator,
+} from "react-native";
+import Post from "@/ui/components/Post";
+import { darkTheme } from "../../ui/styles/Theme";
+import InitialMessage from "../../ui/components/InitialMessage";
+import { useSelector, useDispatch } from "react-redux";
+import { AppDispatch, RootState } from "../../redux/store";
+import Placeholders from "@/constants/ProfilePlaceholders";
+import { levelToCrown } from "@/types/mappers";
+import { fetchPosts } from "@/redux/slices/postSlice";
 
 const home = () => {
   const theme = darkTheme;
-  const sharedStyles = createSharedStyles(theme);
 
-  const newPost = useSelector((state: RootState) => state.createPost);
+  const dispatch = useDispatch<AppDispatch>();
   const userProfile = useSelector((state: RootState) => state.profile);
-  const postList = [...mockData];
+  const { posts, lastFetch, loading, error, hasMore } = useSelector(
+    (state: RootState) => state.posts // Acceder al slice de posts desde el estado global
+  );
 
-  console.log('New Post Data:', newPost);
-  console.log('User Profile Data:', userProfile);
+  // Función para cargar los posts
+  const loadPosts = (userId: string, lastFetch: Date) => {
+    dispatch(fetchPosts({ lastFetch, userId }));
+  };
 
+  // Cargar posts al iniciar el componente
+  useEffect(() => {
+    if (userProfile.id) {
+      loadPosts(userProfile.id, lastFetch);
+    }
+  }, [dispatch, userProfile]);
 
-  if (newPost.postContent) {
-    postList.unshift({
-      id: '4', // Assign a unique ID for the new post
-      profilePictureUrl: userProfile.profilePictureUrl,
-      name:  userProfile.name,  
-      username: userProfile.username,
-      description: newPost.postContent,
-      location: newPost.location,
-      date: newPost.date, 
-      images: newPost.selectedImages,
-      likes: newPost.likes,
-      comments: newPost.comments,
-      isVip: userProfile.isVip,
-      crownType: userProfile.crownType,
-      commentSection: newPost.commentSection,
-    });
-  }
+  // Función llamada cuando se llega al final del scroll
+  const handleLoadMore = (userId: string | null) => {
+    if (hasMore && !loading && userId) {
+      loadPosts(userId, lastFetch); // Cargar más posts cuando el usuario se acerca al final
+    }
+  };
 
   return (
-    <SafeAreaView style={[stylesLocal.screenContainer, { paddingTop: StatusBar.currentHeight || 0, backgroundColor: theme.colors.background }]}>
-      {postList.length ==0 ? (
+    <SafeAreaView
+      style={[
+        stylesLocal.screenContainer,
+        {
+          paddingTop: StatusBar.currentHeight || 0,
+          backgroundColor: theme.colors.background,
+        },
+      ]}
+    >
+      {loading ? (
+        <View style={stylesLocal.loadingContainer}>
+        <ActivityIndicator size="large" color="#ffffff" />
+      </View>
+      ) : posts.length === 0 ? (
         <InitialMessage theme={theme} />
       ) : (
-        
-        <FlatList
-          contentContainerStyle={stylesLocal.listContainer}
-          data={postList}
-          renderItem={({ item }) => (
-            <Post
-              profilePictureUrl={item.profilePictureUrl}
-              name={item.name}
-              username={item.username}
-              description={item.description}
-              location={item.location}
-              date={item.date}
-              images={item.images}
-              likes={item.likes}
-              comments={item.comments}
-              isVip={item.isVip}
-              crownType={item.crownType}
-              commentSection={item.commentSection}
-              onLike={() => console.log('Liked post ' + item.id)}
-              onComment={() => console.log('Commented on post ' + item.id)}
-              onSave={() => console.log('Saved post ' + item.id)}
-              theme={theme}
-            />
-          )}
-          keyExtractor={(item) => item.id}
-        />
+        <View style={stylesLocal.container}>
+          {error && <Text style={stylesLocal.errorText}>{error}</Text>}
+          <FlatList
+            contentContainerStyle={stylesLocal.listContainer}
+            data={posts}
+            renderItem={({ item }) => (
+              <Post
+                profilePictureUrl={
+                  item.author.profileImage ?? Placeholders.DEFAULT_PROFILE_PHOTO
+                }
+                name={item.author.name}
+                username={item.author.username}
+                description={item.title}
+                location={item.location}
+                date={item.createdAt.toString()}
+                images={item.contents}
+                likes={item.likesCount}
+                comments={item.commentsCount}
+                isVip={item.author.level > 1}
+                crownType={levelToCrown(item.author.level)}
+                commentSection={[]} //ToDo: check how to handle this
+                onLike={() => console.log("Liked post " + item.id)} //ToDo: implement this
+                onComment={() => console.log("Commented on post " + item.id)} //ToDo: implement this
+                onSave={() => console.log("Saved post " + item.id)} //ToDo: implement this
+                theme={darkTheme}
+              />
+            )}
+            keyExtractor={(item) => item.id}
+            onEndReached={() => handleLoadMore(userProfile.id)}
+            onEndReachedThreshold={0.5}
+            ListFooterComponent={loading ? <Text>Cargando...</Text> : null}
+          />
+        </View>
       )}
     </SafeAreaView>
   );
-};
+};  
 
 const stylesLocal = StyleSheet.create({
   screenContainer: {
     flex: 1,
     backgroundColor: darkTheme.colors.background,
   },
+  safeArea: {
+    flex: 1,
+    backgroundColor: darkTheme.colors.background,
+  },
+  container: {
+    flex: 1,
+    paddingHorizontal: 15,
+  },
   listContainer: {
     paddingBottom: 20,
+  },
+  errorText: {
+    color: "red",
+    textAlign: "center",
+    marginVertical: 10,
+  },
+  loadingContainer: {
+    flex: 1,
+    justifyContent: "center",
+    alignItems: "center",
   },
 });
 

@@ -1,0 +1,90 @@
+export interface ApiGenericResponse {
+  message: string;
+  statusCode: number;
+}
+
+export class APIError extends Error {
+  code?: number;
+
+  constructor(message: string, code?: number) {
+    super(message);
+    this.code = code;
+  }
+}
+
+export interface SignupRequest {
+  email: string;
+  password: string;
+  username: string;
+  name: string;
+  lastname: string;
+}
+
+export interface LoginRequest {
+  email: string;
+  password: string;
+}
+
+export interface LoginResponse {
+  id: string;
+  username: string;
+  name: string;
+  lastname: string;
+  level: number;
+  access_token: string;
+  refresh_token: string;
+}
+
+export interface UserResponse {
+  id: string;
+  username: string;
+  email: string;
+  name: string;
+  lastname: string;
+  level: number;
+  profileImage: string;
+  coverImage: string;
+  description: string;
+  followersCount: number;
+  followingCount: number;
+  postsCount: number;
+  active: boolean;
+  createdAt: Date;
+  updatedAt: Date;
+  gender: Gender;
+}
+
+export enum Gender {
+  WOMAN,
+  MEN,
+  NON_BINARY,
+  PREFER_NOT_TO_ANSWER,
+}
+
+export interface UserShort {
+  id: string;
+  email: string;
+  username: string;
+  name: string;
+  lastname: string;
+  level: number;
+  profileImage: string | null;
+  active: boolean;
+}
+
+export interface Post {
+  id: string;
+  author: UserShort;
+  createdAt: Date;
+  location: string;
+  title: string;
+  likesCount: number;
+  commentsCount: number;
+  contents: string[];
+  likes: string[];
+}
+
+export interface PageParams {
+  offset: number;
+  limit: number;
+}
