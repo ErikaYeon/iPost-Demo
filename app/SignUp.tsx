@@ -26,7 +26,7 @@ import {
   isPasswordValid,
   isStringWithNoSpaces,
 } from "@/utils/RegexExpressions";
-import { setProfileEmail } from "@/redux/slices/profileSlice";
+import { setProfileEmail , setProfilePassword, setProfileUsername } from "@/redux/slices/profileSlice";
 
 const theme = darkTheme; // Para alternar entre darkTheme y lightTheme manualmente
 const sharedStyles = createSharedStyles(theme);
@@ -58,6 +58,8 @@ const SignUpScreen: React.FC = () => {
     } else {
       setErrorMessage("");
       dispatch(setProfileEmail({ email }));
+      dispatch(setProfilePassword({ password }));
+      dispatch(setProfileUsername({ username }));
       const userData: SignupRequest = {
         email,
         password,
@@ -70,8 +72,8 @@ const SignUpScreen: React.FC = () => {
         const result = await dispatch(signupAsync(userData));
 
         if (signupAsync.fulfilled.match(result)) {
-          setPassword("");
-          setUsername("");
+          // setPassword("");
+          // setUsername("");
           router.push("/ActivateAccount");
         } else {
           setErrorMessage("Ocurrió un error, intentalo nuevamente");
@@ -183,3 +185,5 @@ const SignUpScreen: React.FC = () => {
 };
 
 export default SignUpScreen;
+
+

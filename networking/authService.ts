@@ -17,6 +17,7 @@ export const signup = async (data: SignupRequest): Promise<Number> => {
     }
 
     console.log("Successful signup.");
+    console.log(response.data)
     return response.status;
   } catch (error: any) {
     handleError(error);
