@@ -87,14 +87,18 @@ const CreatePost: React.FC = () => {
   );
 
   const handlePublish = async () => {
+    console.log("Contenido de newPost.selectedImages antes de publicar:", selectedImages);
+
     dispatch(setDate(date));
     dispatch(setAllPostData({ postContent, location, selectedImages, date }));
+    
     const request: CreatePostRequest = {
       userId: userId, 
       location: location, 
-      content: selectedImages, 
+      contents: selectedImages ?? [], 
       title: postContent,
     };
+    
     try {
       const result = await dispatch(createPostAsync(request));
       if (createPostAsync.fulfilled.match(result)){

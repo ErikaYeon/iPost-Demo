@@ -11,6 +11,16 @@ interface CreatePostState {
   date: string;
   loading: boolean;
   error: string | null;
+  likes: number,
+  comments: number,
+  commentSection: [],
+}
+
+interface PartialPostData {
+  postContent: string;
+  selectedImages: string[];
+  location: string;
+  date: string;
 }
 
 const initialState: CreatePostState = {
@@ -20,6 +30,9 @@ const initialState: CreatePostState = {
   date: '',
   loading: false,
   error: null,
+  likes:0,
+  comments:0,
+  commentSection: [],
 };
 
 export const createPostAsync = createAsyncThunk(
@@ -50,6 +63,16 @@ const createPostSlice = createSlice({
     setDate(state, action: PayloadAction<string>) {
       state.date = action.payload;
     },
+    setLike: (state, action: PayloadAction<number>) => {
+      state.likes = action.payload;
+    },
+    setAllPostData(state, action: PayloadAction<PartialPostData>) { // Acción para establecer todos los datos al mismo tiempo
+        const { postContent, selectedImages, location, date} = action.payload;
+      state.postContent = postContent;
+      state.selectedImages = selectedImages;
+      state.location = location;
+      state.date = date;
+    },
     clearPost(state) {
       state.postContent = '';
       state.location = '';
@@ -74,6 +97,6 @@ const createPostSlice = createSlice({
   },
 });
 
-export const { setPostContent, setLocation, setSelectedImages, setDate, clearPost } = createPostSlice.actions;
+export const { setPostContent, setLocation, setSelectedImages, setDate, clearPost, setAllPostData, setLike } = createPostSlice.actions;
 
 export default createPostSlice.reducer;
