@@ -12,7 +12,7 @@ import { levelToCrown } from "@/types/mappers";
 import { RootState } from "../store";
 
 interface ProfileState {
-  id: string | null;
+  id: string;
   username: string | null;
   email: string | null;
   name: string | null;
@@ -31,7 +31,7 @@ interface ProfileState {
 }
 
 const initialState: ProfileState = {
-  id: null,
+  id: '',
   username: null,
   email: null,
   name: null,

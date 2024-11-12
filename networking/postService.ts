@@ -1,17 +1,15 @@
 import api from "./api";
 import { handleError } from "./api";
-import { APIError, Post } from "@/types/apiContracts";
+import { APIError, CreatePostRequest, Post } from "@/types/apiContracts";
 
 export const getPosts = async (
-  time: Date,
   userId: string,
   offset: number = 0,
   limit: number = 10
 ): Promise<Post[]> => {
   try {
-    const response = await api.get(`/posts`, {
+    const response = await api.get("/posts", {
       params: {
-        time,
         userId,
         offset,
         limit,
@@ -21,6 +19,18 @@ export const getPosts = async (
     return response.data;
   } catch (error: any) {
     handleError(error);
-    throw new APIError("Never executed"); // This 'throw' is never executed, but TypeScript was whining about the method contract.
+    throw new APIError("Never executed");
+  }
+};
+
+export const addPost = async (postData: CreatePostRequest): Promise<Post> => {
+  try {
+    const response = await api.post("/posts", postData);
+    console.log(response.data)
+    console.log("Successful post creation.");
+    return response.data;
+  } catch (error: any) {
+    handleError(error);
+    throw new APIError("Never executed");
   }
 };

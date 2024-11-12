@@ -11,7 +11,7 @@ interface PostState {
   hasMore: boolean;
   offset: number;
   limit: number;
-  lastFetch: Date;
+  //lastFetch: Date;
 }
 
 const initialState: PostState = {
@@ -21,16 +21,16 @@ const initialState: PostState = {
   hasMore: true,
   offset: 0,
   limit: APIConstants.LIST_LIMIT,
-  lastFetch: new Date(new Date().setDate(new Date().getDate() - 7)), // Fecha una semana antes de hoy ToDo: falta arreglar
+  //lastFetch: new Date(new Date().setDate(new Date().getDate() - 7)), // Fecha una semana antes de hoy ToDo: falta arreglar
 };
 
 export const fetchPosts = createAsyncThunk(
   "posts/fetchPosts",
-  async (params: { lastFetch: Date; userId: string }, { getState }) => {
+  async (params: { userId: string }, { getState }) => {
     const state = getState() as RootState;
     const { offset, limit } = state.posts;
-    const { lastFetch, userId } = params;
-    return await getPosts(lastFetch, userId, offset, limit);
+    const { userId } = params;
+    return await getPosts( userId, offset, limit);
   }
 );
 

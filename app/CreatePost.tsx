@@ -1,6 +1,7 @@
 import React, { useEffect , useState} from 'react';
 import { SafeAreaView, View, StatusBar, Platform, FlatList, Image, TouchableOpacity, Text } from 'react-native';
 import * as ImagePicker from 'expo-image-picker';
+import * as FileSystem from 'expo-file-system';
 import CustomButton from '../ui/components/CustomButton';
 import HeaderWithIcon from '../ui/components/HeaderWithIcon';
 import PostTextInput from '../ui/components/PostTextInput';
@@ -11,9 +12,10 @@ import CloseIcon from '../assets/images/icons/close.svg';
 import PhotoIcon from '../assets/images/icons/photo.svg';
 import LocationIcon from '../assets/images/icons/location_on.svg';
 import { useRouter } from 'expo-router';
-import {  setAllPostData, setPostContent, setSelectedImages, setLocation, clearPost, setDate } from '../redux/slices/createPostSlice';
+import {  setAllPostData, setPostContent, setSelectedImages, setLocation, clearPost, setDate, createPostAsync } from '../redux/slices/createPostSlice';
 import { useDispatch,  useSelector } from 'react-redux';
-import { RootState } from '../redux/store';
+import { AppDispatch, RootState } from '../redux/store';
+import { CreatePostRequest } from '@/types/apiContracts';
 
 const theme = darkTheme;
 const sharedStyles = createSharedStyles(theme);
@@ -23,7 +25,7 @@ const CreatePost: React.FC = () => {
   // const [postContent, setPostContent] = useState('');
   // const [selectedImages, setSelectedImages] = useState([]);
   // const [location, setLocation] = useState(''); 
-  const dispatch = useDispatch();
+  const dispatch = useDispatch<AppDispatch>();
   // const {location} = useState{state => state.createPost};
   
 
@@ -32,7 +34,7 @@ const CreatePost: React.FC = () => {
   const location = useSelector((state: RootState) => state.createPost.location);
   const formattedDate = new Date;
   const date = `${formattedDate.getDate().toString().padStart(2, '0')}/${(formattedDate.getMonth() + 1).toString().padStart(2, '0')}/${formattedDate.getFullYear()}`;
-  
+  const userId = useSelector((state: RootState) => state.profile.id);
 
   // Obtén la ubicación pasada como parámetro (No se ve la Ubicacion en la pantalla *ARREGLAR*)
   useEffect(() => {
@@ -46,12 +48,22 @@ const CreatePost: React.FC = () => {
       mediaTypes: ImagePicker.MediaTypeOptions.Images,
       allowsMultipleSelection: true,
       selectionLimit: 10,
-      quality: 1,
+      quality: 0.5,
     });
 
     if (!result.canceled) {
-      setSelectedImages(result.assets.map((asset) => asset.uri));
-      dispatch(setSelectedImages(result.assets.map((asset) => asset.uri)));
+      // Convertimos cada imagen a base64
+      const base64Images = await Promise.all(
+        result.assets.map(async (asset) => {
+          const base64 = await FileSystem.readAsStringAsync(asset.uri, {
+            encoding: FileSystem.EncodingType.Base64,
+          });
+          return `data:image/jpeg;base64,${base64}`; // Convertimos a formato base64
+        })
+      );
+
+      // Guardamos las imágenes base64 en el estado de Redux
+      dispatch(setSelectedImages(base64Images));
     }
   };
 
@@ -73,12 +85,26 @@ const CreatePost: React.FC = () => {
       </TouchableOpacity>
     </View>
   );
-  const handlePublish = () => {
+
+  const handlePublish = async () => {
     dispatch(setDate(date));
     dispatch(setAllPostData({ postContent, location, selectedImages, date }));
-    console.log('Post publicado con datos:', { postContent, location, selectedImages, date });
-    router.push('/(tabs)/home');
-    // dispatch(clearPost());   //despues borrar esta linea!!!
+    const request: CreatePostRequest = {
+      userId: userId, 
+      location: location, 
+      content: selectedImages, 
+      title: postContent,
+    };
+    try {
+      const result = await dispatch(createPostAsync(request));
+      if (createPostAsync.fulfilled.match(result)){
+        console.log('Post publicado con datos:', { postContent, location, selectedImages, date });
+        router.push('/(tabs)/home');
+        // dispatch(clearPost());   //despues borrar esta linea!!!
+      }
+    } catch (error) {
+      console.log('Error al crear el Post')
+    }
   };
   // console.log(useState.)
   

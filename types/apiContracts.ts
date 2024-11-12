@@ -25,6 +25,13 @@ export interface LoginRequest {
   password: string;
 }
 
+export interface CreatePostRequest {
+  userId: string;
+  location: string;
+  content: string[];
+  title: string;
+}
+
 export interface LoginResponse {
   id: string;
   username: string;

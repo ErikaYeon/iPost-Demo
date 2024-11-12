@@ -22,7 +22,7 @@ const home = () => {
 
   const dispatch = useDispatch<AppDispatch>();
   const userProfile = useSelector((state: RootState) => state.profile);
-  const { posts, lastFetch, loading, error, hasMore } = useSelector(
+  const { posts, loading, error, hasMore } = useSelector(
     (state: RootState) => state.posts // Acceder al slice de posts desde el estado global
   );
 
@@ -34,14 +34,14 @@ const home = () => {
   // Cargar posts al iniciar el componente
   useEffect(() => {
     if (userProfile.id) {
-      loadPosts(userProfile.id, lastFetch);
+      loadPosts(userProfile.id);
     }
   }, [dispatch, userProfile]);
 
   // Función llamada cuando se llega al final del scroll
   const handleLoadMore = (userId: string | null) => {
     if (hasMore && !loading && userId) {
-      loadPosts(userId, lastFetch); // Cargar más posts cuando el usuario se acerca al final
+      loadPosts(userId); // Cargar más posts cuando el usuario se acerca al final
     }
   };
 
