@@ -1,4 +1,4 @@
-import { createSlice, createAsyncThunk } from "@reduxjs/toolkit";
+import { createSlice, createAsyncThunk, PayloadAction} from "@reduxjs/toolkit";
 import { Post } from "@/types/apiContracts"; // Definir el tipo de Post
 import { getPosts } from "@/networking/postService";
 import APIConstants from "@/constants/APIConstants";
@@ -11,7 +11,7 @@ interface PostState {
   hasMore: boolean;
   offset: number;
   limit: number;
-  lastFetch: Date;
+  // lastFetch: Date;
 }
 
 const initialState: PostState = {
@@ -21,16 +21,15 @@ const initialState: PostState = {
   hasMore: true,
   offset: 0,
   limit: APIConstants.LIST_LIMIT,
-  lastFetch: new Date(new Date().setDate(new Date().getDate() - 7)), // Fecha una semana antes de hoy ToDo: falta arreglar
-};
-
+  // lastFetch: new Date(new Date().setDate(new Date().getDate() - 7)), // Fecha una semana antes de hoy ToDo: falta arreglar
+}
 export const fetchPosts = createAsyncThunk(
   "posts/fetchPosts",
-  async (params: { lastFetch: Date; userId: string }, { getState }) => {
+  async (params: {  userId: string }, { getState }) => {
     const state = getState() as RootState;
     const { offset, limit } = state.posts;
-    const { lastFetch, userId } = params;
-    return await getPosts(lastFetch, userId, offset, limit);
+    const {  userId } = params;
+    return await getPosts( userId, offset, limit);
   }
 );
 
@@ -47,7 +46,7 @@ const postSlice = createSlice({
       .addCase(fetchPosts.fulfilled, (state, action) => {
         state.loading = false;
         state.posts = [...state.posts, ...action.payload];
-        state.lastFetch = new Date();
+        // state.lastFetch = new Date();
         state.hasMore = action.payload.length > 0;
         state.offset += APIConstants.LIST_LIMIT;
       })

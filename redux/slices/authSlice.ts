@@ -1,12 +1,14 @@
 import { createSlice, createAsyncThunk, PayloadAction } from "@reduxjs/toolkit";
 import {
   APIError,
+  EmailType,
   LoginRequest,
   LoginResponse,
   SignupRequest,
+  RejectedPayload,
 } from "@/types/apiContracts";
 import AsyncStorage from "@react-native-async-storage/async-storage";
-import { signup, login } from "@/networking/authService";
+import { signup, login, resendEmail } from "@/networking/authService";
 
 interface AuthState {
   access_token: string | null;
@@ -22,13 +24,45 @@ const initialState: AuthState = {
   error: null,
 };
 
-export const signupAsync = createAsyncThunk(
+export const signupAsync = createAsyncThunk<
+  { message: string; status: number },  // Payload de éxito
+  SignupRequest,  // Argumento recibido (userData)
+  { rejectValue: RejectedPayload }  // Payload en caso de error
+>(
   "auth/signup",
   async (userData: SignupRequest, { rejectWithValue }) => {
     try {
-      await signup(userData);
+      const { status, message } = await signup(userData);  // Desestructuración de la respuesta
+      if (status === 409 || status === 404) {
+        return rejectWithValue({ message, status });  // Manejo del error 409 (email ya registrado)
+      }
+      if (status !== 201) {
+        return rejectWithValue({ message, status });  // Manejo de otros errores
+      }
+      return { message, status };  // Caso de éxito
+    } catch (error: any) {
+      return rejectWithValue({ message: error.message || "Error al registrar", status: 500 });  // Error en la solicitud
+    }
+  }
+);
+export const resendEmailAsync = createAsyncThunk<
+{ message: string; status: number }, // fulfilled payload type
+{ email: string; emailType: EmailType }, // argument type
+{ rejectValue: RejectedPayload } // rejected payload type
+>(
+  "auth/resendEmail",
+  async (userData: {email:string, emailType: EmailType}, { rejectWithValue }) => {
+    try {
+     const responseStatus = await resendEmail(userData);
+     if (responseStatus === 404) {
+      return rejectWithValue({ message: "Email no encontrado", status: 404 });
+    }
+    if (responseStatus === 201) {
+      return { message: "Email enviado con éxito", status: 201 };
+    }
+    throw new Error("Error desconocido al reenviar el email");
     } catch (error: APIError | any) {
-      return rejectWithValue(error.message ?? "Error when sign up");
+      return rejectWithValue(error.message ?? "Error when resend email");
     }
   }
 );
@@ -63,7 +97,10 @@ const authSlice = createSlice({
       })
       .addCase(signupAsync.rejected, (state, action) => {
         state.loading = false;
-        state.error = action.payload as string;
+        state.error = action.payload?.message ?? "Error desconocido";
+        if (action.payload?.status === 409) {
+          console.log("Email ya existente");
+        }
       })
       .addCase(loginAsync.pending, (state) => {
         state.loading = true;
@@ -80,6 +117,25 @@ const authSlice = createSlice({
       .addCase(loginAsync.rejected, (state, action) => {
         state.loading = false;
         state.error = action.payload as string;
+        
+      })
+      .addCase(resendEmailAsync.pending, (state) => {
+        state.loading = true;
+        state.error = null;
+      })
+      .addCase(resendEmailAsync.fulfilled, (state, action) => {
+        state.loading = false;
+        state.error = null;
+        
+        // Maneja el caso de éxito aquí si necesitas hacer algo adicional
+      })
+      .addCase(resendEmailAsync.rejected, (state, action) => {
+        state.loading = false;
+        state.error = action.payload?.message! ;
+        if (action.payload?.status === 404) {
+          // Aquí puedes manejar el caso de email no encontrado
+          console.log("El email no se encontró.");
+        }
       });
   },
 });

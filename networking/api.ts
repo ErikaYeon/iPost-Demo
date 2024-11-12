@@ -45,7 +45,7 @@ export const handleError = (error: any, onRetry?: () => void): APIError => {
       throw new APIError(`Axios Configuration Error: ${error.message}`);
     }
   } else {
-    router.push('/ErrorGeneral');
+    // router.push('/ErrorGeneral');
     throw new APIError(
       `Unexpected Error: ${error.message || "Unknown error occurred."}`
     );

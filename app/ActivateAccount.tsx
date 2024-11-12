@@ -9,9 +9,8 @@ import { lightTheme, darkTheme } from '../ui/styles/Theme';
 import { router } from 'expo-router';
 import { useDispatch, useSelector } from 'react-redux';
 import { AppDispatch, RootState } from '@/redux/store';
-import { signupAsync } from "@/redux/slices/authSlice";
-import { SignupRequest } from "@/types/apiContracts";
-import Placeholders from "@/constants/ProfilePlaceholders";
+import { resendEmailAsync } from "@/redux/slices/authSlice";
+import { EmailType } from "@/types/apiContracts";
 import { styles } from "../ui/styles/LogIn";
 
 
@@ -23,34 +22,19 @@ const ActivateAccount: React.FC = () => {
   const dispatch = useDispatch<AppDispatch>();
   const userProfile = useSelector((state: RootState) => state.profile);
   const email = userProfile.email;
-  const password = userProfile.password;
-  const username = userProfile.username;
   const [errorMessage, setErrorMessage] = useState("");
+  const [successMessage, setSuccessMessage] = useState("");
+  const emailType = EmailType.CONFIRMATION;
 
   const handleReenvio = async () => {
      console.log(email)
-    //  const userData: SignupRequest = {
-    //   email,
-    //   password,
-    //   username,
-    //   name: Placeholders.DEFAULT_PROFILE_NAME,
-    //   lastname: Placeholders.DEFAULT_PROFILE_LASTNAME,
-    // };
-
-    // try {
-    //   const result = await dispatch(signupAsync(userData));
-
-    //   if (signupAsync.fulfilled.match(result)) {
-    //     // setPassword("");
-    //     // setUsername("");
-    //     router.push("/ActivateAccount");
-    //   } else {
-    //     setErrorMessage("Ocurrió un error, intentalo nuevamente");
-    //   }
-    // } catch (error) {
-    //   console.error("Error from signup:", error);
-    //   setErrorMessage("Ocurrió un error, intentalo nuevamente");
-    // }
+    try {
+      const result = await dispatch(resendEmailAsync({email,emailType}));
+        setSuccessMessage("Email enviado con éxito");  
+    } catch (error) {
+      console.error("Error from signup:", error);
+      setErrorMessage("Ocurrió un error, intentalo nuevamente");
+    }
   }
 
  
@@ -95,6 +79,12 @@ const ActivateAccount: React.FC = () => {
       {errorMessage ? (
         <View style={styles.errorBanner}>
           <Text style={styles.errorText}>{errorMessage}</Text>
+        </View>
+      ) : null}
+      {/* Error message banner */}
+      {successMessage ? (
+        <View style={styles.successBanner}>
+          <Text style={styles.errorText}>{successMessage}</Text>
         </View>
       ) : null}
 
