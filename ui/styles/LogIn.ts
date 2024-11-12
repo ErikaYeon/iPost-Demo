@@ -63,4 +63,14 @@ errorBanner: {
     textAlign: 'center',
     fontSize: 16,
   },
+  successBanner: {
+    position: 'absolute', // Position it at the bottom
+    bottom: 0, // Align to the bottom
+    left: 0,
+    right: 0,
+    backgroundColor: theme.colors.primary, // Red background for error
+    padding: 10,
+    borderRadius: 5,
+    alignItems: 'center',
+  },
 });

@@ -1,9 +1,9 @@
 import api from "./api";
 import { handleError } from "./api";
-import { APIError, Post } from "@/types/apiContracts";
+import { APIError, Post, UserShort } from "@/types/apiContracts";
 
 export const getPosts = async (
-  time: Date,
+  // time: Date,
   userId: string,
   offset: number = 0,
   limit: number = 10
@@ -11,7 +11,7 @@ export const getPosts = async (
   try {
     const response = await api.get(`/posts`, {
       params: {
-        time,
+        // time,
         userId,
         offset,
         limit,
