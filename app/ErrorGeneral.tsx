@@ -1,10 +1,15 @@
 import React from 'react';
 import { View, Text, StyleSheet } from 'react-native';
-import ErrorGen from '../../assets/images/icons/errorGeneral.svg'; 
-import CustomButton from './CustomButton'; 
-import { darkTheme } from '../styles/Theme'; 
+import ErrorGen from '../assets/images/icons/errorGeneral.svg'; 
+import CustomButton from '../ui/components/CustomButton'; 
+import { darkTheme } from '../ui/styles/Theme'; 
+import { Router, useRouter } from 'expo-router';
 
-const ErrorGeneral = ({ onRetry, theme = darkTheme }) => { // Default to darkTheme if theme is not passed
+const ErrorGeneral = ({ theme = darkTheme }) => { // Default to darkTheme if theme is not passed
+  const router = useRouter();
+  const onRetry  = () => {
+    router.back();
+  }
   return (
     <View style={[styles.container, { backgroundColor: theme.colors.background }]}>
       <View style={styles.card}>

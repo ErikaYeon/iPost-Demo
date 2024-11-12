@@ -26,7 +26,7 @@ import {
   isPasswordValid,
   isStringWithNoSpaces,
 } from "@/utils/RegexExpressions";
-import { setProfileEmail } from "@/redux/slices/profileSlice";
+import { setProfileEmail , setProfilePassword, setProfileUsername } from "@/redux/slices/profileSlice";
 
 const theme = darkTheme; // Para alternar entre darkTheme y lightTheme manualmente
 const sharedStyles = createSharedStyles(theme);
@@ -58,6 +58,8 @@ const SignUpScreen: React.FC = () => {
     } else {
       setErrorMessage("");
       dispatch(setProfileEmail({ email }));
+      dispatch(setProfilePassword({ password }));
+      dispatch(setProfileUsername({ username }));
       const userData: SignupRequest = {
         email,
         password,
@@ -67,21 +69,21 @@ const SignUpScreen: React.FC = () => {
       };
 
       try {
-        const result = await dispatch(signupAsync(userData));
+        const result = await dispatch(signupAsync(userData)).unwrap();
 
-        if (signupAsync.fulfilled.match(result)) {
-          setPassword("");
-          setUsername("");
+        if (result.status === 201) {
           router.push("/ActivateAccount");
-        } else {
-          setErrorMessage("Ocurrió un error, intentalo nuevamente");
         }
-      } catch (error) {
+      } catch (error: any) {
+        if (error.status === 409 || error.status === 404) {
+          setErrorMessage("Error. El email ya está registrado");
+        } else {
         console.error("Error from signup:", error);
         setErrorMessage("Ocurrió un error, intentalo nuevamente");
       }
     }
-  };
+    };
+  }
 
   return (
     <SafeAreaView style={sharedStyles.screenContainer}>
@@ -183,3 +185,5 @@ const SignUpScreen: React.FC = () => {
 };
 
 export default SignUpScreen;
+
+

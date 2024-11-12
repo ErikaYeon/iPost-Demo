@@ -1,6 +1,7 @@
 import { APIError } from "@/types/apiContracts";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import axios from "axios";
+import { router } from "expo-router";
 
 const api = axios.create({
   baseURL: "https://ipost-api.onrender.com/api",
@@ -23,7 +24,7 @@ api.interceptors.request.use(
   }
 );
 
-export const handleError = (error: any): APIError => {
+export const handleError = (error: any, onRetry?: () => void): APIError => {
   if (axios.isAxiosError(error)) {
     if (error.response) {
       const errorMessage = `API Error: ${
@@ -31,13 +32,20 @@ export const handleError = (error: any): APIError => {
       }`;
       const errorStatus = ` - Status: ${error.response.status}`;
       console.log(errorMessage + errorStatus);
+      if (onRetry) {
+        onRetry();
+      }
+      router.push('/ErrorGeneral');
       throw new APIError(errorMessage);
     } else if (error.request) {
+      router.push('/ErrorConexion');
       throw new APIError("Network Error: No response from server.");
     } else {
+      router.push('/ErrorGeneral');
       throw new APIError(`Axios Configuration Error: ${error.message}`);
     }
   } else {
+    // router.push('/ErrorGeneral');
     throw new APIError(
       `Unexpected Error: ${error.message || "Unknown error occurred."}`
     );

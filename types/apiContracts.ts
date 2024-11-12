@@ -11,6 +11,10 @@ export class APIError extends Error {
     this.code = code;
   }
 }
+export interface RejectedPayload {
+  message: string;
+  status: number;
+}
 
 export interface SignupRequest {
   email: string;
@@ -66,6 +70,10 @@ export enum Gender {
   MEN,
   NON_BINARY,
   PREFER_NOT_TO_ANSWER,
+}
+export enum EmailType{
+  CONFIRMATION,
+  RECOVERY,
 }
 
 export interface UserShort {

@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useState } from 'react';
 import { SafeAreaView, View, Image, Text } from 'react-native';
 import CustomButton from '../ui/components/CustomButton';
 import MessageText from '../ui/components/MessageText'; 
@@ -7,11 +7,37 @@ import HeaderText from '../ui/components/HeaderText';
 import createSharedStyles from '../ui/styles/SharedStyles';
 import { lightTheme, darkTheme } from '../ui/styles/Theme';
 import { router } from 'expo-router';
+import { useDispatch, useSelector } from 'react-redux';
+import { AppDispatch, RootState } from '@/redux/store';
+import { resendEmailAsync } from "@/redux/slices/authSlice";
+import { EmailType } from "@/types/apiContracts";
+import { styles } from "../ui/styles/LogIn";
+
 
 const theme = darkTheme; 
 const sharedStyles = createSharedStyles(theme);
 
+
 const ActivateAccount: React.FC = () => {
+  const dispatch = useDispatch<AppDispatch>();
+  const userProfile = useSelector((state: RootState) => state.profile);
+  const email = userProfile.email;
+  const [errorMessage, setErrorMessage] = useState("");
+  const [successMessage, setSuccessMessage] = useState("");
+  const emailType = EmailType.CONFIRMATION;
+
+  const handleReenvio = async () => {
+     console.log(email)
+    try {
+      const result = await dispatch(resendEmailAsync({email,emailType}));
+        setSuccessMessage("Email enviado con éxito");  
+    } catch (error) {
+      console.error("Error from signup:", error);
+      setErrorMessage("Ocurrió un error, intentalo nuevamente");
+    }
+  }
+
+ 
   return (
     <SafeAreaView style={sharedStyles.screenContainer}>
 
@@ -36,8 +62,8 @@ const ActivateAccount: React.FC = () => {
 
       {/* Botón "Reenviar enlace" */}
       <CustomButton
-        title="Reenviar enlace"
-        onPress={() => console.log('Reenviar enlace')}
+        title="Reenviar enlace"  //ToDo: decidir que hacer
+        onPress={handleReenvio} //ToDo: hacer un fetch especial para este
         type="primary"
         theme={theme}
         style={{ marginBottom: theme.spacing.medium, width: '85%' }}
@@ -46,12 +72,25 @@ const ActivateAccount: React.FC = () => {
       {/* Enlace para "Volver a inicio de sesión" */}
       <LinkText
         text="Volver a inicio de sesión"
-        onPress={() => router.push('/LogIn')}
+        onPress={()=>router.push('/LogIn')}
         theme={theme}
       />
+      {/* Error message banner */}
+      {errorMessage ? (
+        <View style={styles.errorBanner}>
+          <Text style={styles.errorText}>{errorMessage}</Text>
+        </View>
+      ) : null}
+      {/* Error message banner */}
+      {successMessage ? (
+        <View style={styles.successBanner}>
+          <Text style={styles.errorText}>{successMessage}</Text>
+        </View>
+      ) : null}
 
     </SafeAreaView>
   );
 };
+
 
 export default ActivateAccount;
