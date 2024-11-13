@@ -35,3 +35,21 @@ export const addPost = async (postData: CreatePostRequest): Promise<Post> => {
     throw new APIError("Never executed");
   }
 };
+
+export const likePost = async (postId: string, userId: string): Promise<void> => {
+  try {
+    await api.post(`/posts/${postId}/likes`, { userId }); // Evita duplicar 'api/'
+  } catch (error: any) {
+    console.error("Error al agregar el like:", error.response?.data || error.message);
+    throw new APIError("Error al agregar el like");
+  }
+};
+
+export const unlikePost = async (postId: string, userId: string): Promise<void> => {
+  try {
+    await api.delete(`/posts/${postId}/likes/${userId}`); // Evita duplicar 'api/'
+  } catch (error: any) {
+    console.error("Error al quitar el like:", error.response?.data || error.message);
+    throw new APIError("Error al quitar el like");
+  }
+};

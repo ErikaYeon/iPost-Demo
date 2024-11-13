@@ -75,8 +75,9 @@ const home = () => {
                 location={item.location}
                 date={item.createdAt.toString()}
                 images={item.contents}
-                likes={item.likesCount}
+                initialLikes={item.likesCount}
                 comments={item.commentsCount}
+                isLikedByUser={item.isLikedByUser}
                 isVip={item.author.level > 1}
                 crownType={levelToCrown(item.author.level)}
                 commentSection={[]} //ToDo: check how to handle this
@@ -84,6 +85,8 @@ const home = () => {
                 onComment={() => console.log("Commented on post " + item.id)} //ToDo: implement this
                 onSave={() => console.log("Saved post " + item.id)} //ToDo: implement this
                 theme={darkTheme}
+                postId={item.id} // Asegúrate de pasar el postId
+                userId={userProfile.id} // Asegúrate de pasar el userId
               />
             )}
             keyExtractor={(item, index) => `${item.id}-${index}`}
