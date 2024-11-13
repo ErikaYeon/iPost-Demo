@@ -8,17 +8,15 @@ import { AppDispatch, RootState } from "../../redux/store";
 import Placeholders from "@/constants/ProfilePlaceholders";
 import { levelToCrown } from "@/types/mappers";
 import { fetchPosts, addNewPost } from "@/redux/slices/postSlice";
+import {  addPosts } from '@/redux/slices/timelineSlice';
 
 const home = () => {
   const theme = darkTheme;
-
-  const newPost = useSelector((state: RootState) => state.createPost);
-  const dispatch = useDispatch<AppDispatch>();
   const userProfile = useSelector((state: RootState) => state.profile);
-  const { posts, loading, error, hasMore } = useSelector((state: RootState) => state.posts); // Acceder al slice de posts desde el estado global
-
-  const [isFirstLoad, setIsFirstLoad] = useState(true);   // Estado local para gestionar la primera carga
-
+  const localPosts = useSelector((state: RootState) => state.timeline.LocalListPosts)
+  const dispatch = useDispatch<AppDispatch>();
+  const { posts, loading, error, hasMore } = useSelector((state: RootState) => state.posts); 
+  const [hasFetched, setHasFetched] = useState(false);
   // Función para cargar los posts (llama al thunk fetchPosts)
   const loadPosts = (userId: string) => {
     dispatch(fetchPosts({ userId }));
@@ -26,42 +24,17 @@ const home = () => {
 
   // Carga inicial de los posts usando isFirstLoad para que solo se ejecute una vez
   useEffect(() => {
-    console.log("userProfile.id:", userProfile.id, "isFirstLoad:", isFirstLoad);
-    if (userProfile.id && isFirstLoad) {
+    if (userProfile.id && !hasFetched ) {
       loadPosts(userProfile.id);
-      setIsFirstLoad(false); // Aseguramos que solo se ejecute una vez
+      setHasFetched(true);
     }
-  }, [userProfile.id, isFirstLoad]);
+  }, [userProfile.id,  dispatch, hasFetched]);
 
-  // Agrega un nuevo post al estado cuando se detecta un cambio en newPost
   useEffect(() => {
-    console.log("newPost change detected:", newPost);
-    if (newPost.postContent) {
-      const newPostData = {
-        id: "4", // Asigna un ID único para el nuevo post
-        author: {
-          id: userProfile.id,
-          email: userProfile.email ?? "",
-          username: userProfile.username ?? "",
-          name: userProfile.name ?? "",
-          lastname: userProfile.lastname ?? "",
-          level: userProfile.crown,
-          profileImage: userProfile.profileImage ?? Placeholders.DEFAULT_PROFILE_PHOTO,
-          active: true,
-        },
-        createdAt: new Date().toISOString(), // Formato ISO para mantener la serialización en el estado
-        location: newPost.location,
-        title: newPost.postContent, 
-        likesCount: 0, 
-        commentsCount: 0, 
-        contents: newPost.selectedImages ?? [], 
-        likes: [], 
-      };
-      console.log("Adding new post:", newPostData);
-
-      dispatch(addNewPost(newPostData)); // Despacha el nuevo post al estado global
+    if (hasFetched) {
+      dispatch(addPosts(posts))
     }
-  }, [newPost, userProfile, dispatch]);
+  }, [posts, hasFetched, dispatch]);
 
   // Función para scroll infinito
   const handleLoadMore = () => {
@@ -81,18 +54,18 @@ const home = () => {
         },
       ]}
     >
-      {loading && posts.length === 0 ? (
+      {loading && localPosts.length === 0 ? (
         <View style={stylesLocal.loadingContainer}>
           <ActivityIndicator size="large" color="#ffffff" />
         </View>
-      ) : posts.length === 0 ? (
+      ) : localPosts.length === 0 ? (
         <InitialMessage theme={theme} /> // Mensaje inicial si no hay posts
       ) : (
         <View style={stylesLocal.container}>
           {error && <Text style={stylesLocal.errorText}>{error}</Text>}
           <FlatList
             contentContainerStyle={stylesLocal.listContainer}
-            data={posts}
+            data={localPosts}
             renderItem={({ item }) => (
               <Post
                 profilePictureUrl={item.author.profileImage ?? Placeholders.DEFAULT_PROFILE_PHOTO}
@@ -113,7 +86,7 @@ const home = () => {
                 theme={darkTheme}
               />
             )}
-            keyExtractor={(item) => item.id}
+            keyExtractor={(item, index) => `${item.id}-${index}`}
             onEndReached={handleLoadMore}
             onEndReachedThreshold={0.5} 
             ListFooterComponent={loading && hasMore ? <Text>Cargando...</Text> : null} 

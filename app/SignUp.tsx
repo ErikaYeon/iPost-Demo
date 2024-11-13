@@ -26,7 +26,7 @@ import {
   isPasswordValid,
   isStringWithNoSpaces,
 } from "@/utils/RegexExpressions";
-import { setProfileEmail , setProfilePassword, setProfileUsername } from "@/redux/slices/profileSlice";
+import { setProfileEmail ,setProfileUsername } from "@/redux/slices/profileSlice";
 
 const theme = darkTheme; // Para alternar entre darkTheme y lightTheme manualmente
 const sharedStyles = createSharedStyles(theme);
@@ -58,7 +58,6 @@ const SignUpScreen: React.FC = () => {
     } else {
       setErrorMessage("");
       dispatch(setProfileEmail({ email }));
-      dispatch(setProfilePassword({ password }));
       dispatch(setProfileUsername({ username }));
       const userData: SignupRequest = {
         email,

@@ -16,25 +16,22 @@ import {  setAllPostData, setPostContent, setSelectedImages, setLocation, clearP
 import { useDispatch,  useSelector } from 'react-redux';
 import { AppDispatch, RootState } from '../redux/store';
 import { CreatePostRequest } from '@/types/apiContracts';
+import Placeholders from '@/constants/ProfilePlaceholders';
+import { addPost} from '@/redux/slices/timelineSlice';
 
 const theme = darkTheme;
 const sharedStyles = createSharedStyles(theme);
 
 const CreatePost: React.FC = () => {
   const router = useRouter();
-  // const [postContent, setPostContent] = useState('');
-  // const [selectedImages, setSelectedImages] = useState([]);
-  // const [location, setLocation] = useState(''); 
   const dispatch = useDispatch<AppDispatch>();
-  // const {location} = useState{state => state.createPost};
   
-
   const postContent = useSelector((state: RootState) => state.createPost.postContent);
   const selectedImages = useSelector((state: RootState) => state.createPost.selectedImages);
   const location = useSelector((state: RootState) => state.createPost.location);
   const formattedDate = new Date;
   const date = `${formattedDate.getDate().toString().padStart(2, '0')}/${(formattedDate.getMonth() + 1).toString().padStart(2, '0')}/${formattedDate.getFullYear()}`;
-  const userId = useSelector((state: RootState) => state.profile.id);
+  const userProfile = useSelector((state: RootState) => state.profile);
 
   // Obtén la ubicación pasada como parámetro (No se ve la Ubicacion en la pantalla *ARREGLAR*)
   useEffect(() => {
@@ -86,14 +83,42 @@ const CreatePost: React.FC = () => {
     </View>
   );
 
-  const handlePublish = async () => {
-    console.log("Contenido de newPost.selectedImages antes de publicar:", selectedImages);
+  const handleCreatePostRedux = () =>{
+    const generateRandomId = (): string => {
+      return Math.floor(1000 + Math.random() * 9000).toString();
+    };
+    const newPostData = {
+      id: generateRandomId(), 
+      author: {
+        id: userProfile.id,
+        email: userProfile.email ?? "",
+        username: userProfile.username ?? "",
+        name: userProfile.name ?? "",
+        lastname: userProfile.lastname ?? "",
+        level: userProfile.crown,
+        profileImage: userProfile.profileImage ?? Placeholders.DEFAULT_PROFILE_PHOTO,
+        active: true,
+      },
+      createdAt: new Date().toISOString(), 
+      location: location,
+      title: postContent, 
+      likesCount: 0, 
+      commentsCount: 0, 
+      contents: selectedImages ?? [], 
+      likes: [], 
+    };
+    dispatch(addPost(newPostData));
+  }
 
-    dispatch(setDate(date));
-    dispatch(setAllPostData({ postContent, location, selectedImages, date }));
-    
+  const handlePublish = async () => {
+    dispatch(setDate(date));   //creo q no hace falta
+    dispatch(setAllPostData({ postContent, location, selectedImages, date }));  //creo q no hace falta
+    handleCreatePostRedux();
+    dispatch(clearPost());
+    router.push('/(tabs)/home');
+
     const request: CreatePostRequest = {
-      userId: userId, 
+      userId: userProfile.id, 
       location: location, 
       contents: selectedImages ?? [], 
       title: postContent,
@@ -102,18 +127,12 @@ const CreatePost: React.FC = () => {
     try {
       const result = await dispatch(createPostAsync(request));
       if (createPostAsync.fulfilled.match(result)){
-        console.log('Post publicado con datos:', { postContent, location, selectedImages, date });
-        router.push('/(tabs)/home');
-        // dispatch(clearPost());   //despues borrar esta linea!!!
       }
     } catch (error) {
       console.log('Error al crear el Post')
     }
   };
-  // console.log(useState.)
   
-  
-
   return (
     <View style={{ flex: 1, backgroundColor: theme.colors.background }}>
       <StatusBar backgroundColor={theme.colors.background} barStyle="light-content" />
@@ -158,20 +177,12 @@ const CreatePost: React.FC = () => {
           <FlatList
             data={selectedImages}
             renderItem={renderImageItem}
-            keyExtractor={(item) => item}
+            keyExtractor={(item, index) => `${item}-${index}`}
             horizontal
             showsHorizontalScrollIndicator={false}
             style={{ marginVertical: theme.spacing.small }}
           />
         )}
-
-        {/* Mostrar la ubicación seleccionada */}
-        {/*{location && (
-          <View style={{ flexDirection: 'row', alignItems: 'center', marginVertical: theme.spacing.small }}>
-            <LocationIcon width={24} height={24} fill={theme.colors.textPrimary} />
-            <Text style={{ marginLeft: 5, color: theme.colors.textPrimary }}>{location}</Text>
-          </View>
-        )}*/}
 
         {/* Botones de opción */}
         <OptionButton
@@ -196,7 +207,7 @@ const CreatePost: React.FC = () => {
             onPress= {handlePublish}
             type="secondary"
             theme={theme}
-            disabled={!postContent.trim() && selectedImages.length === 0}
+            disabled={!postContent.trim() && selectedImages.length === 0 && !location.trim()}
             style={{
               marginTop: 30,
               marginBottom: 150,

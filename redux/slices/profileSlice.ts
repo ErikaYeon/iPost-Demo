@@ -14,7 +14,7 @@ import { RootState } from "../store";
 interface ProfileState {
   id: string;
   username: string | null;
-  email: string | null;
+  email: string ;
   name: string | null;
   lastname: string | null;
   crown: Crown;
@@ -33,7 +33,7 @@ interface ProfileState {
 const initialState: ProfileState = {
   id: '',
   username: null,
-  email: null,
+  email: '',
   name: null,
   lastname: null,
   crown: Crown.GREY,
