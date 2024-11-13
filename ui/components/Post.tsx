@@ -1,7 +1,8 @@
 // Post.tsx
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { View, Text, Image, TouchableOpacity, FlatList, TextInput, KeyboardAvoidingView, Platform ,  Alert, Share} from 'react-native';
 import Modal from 'react-native-modal';
+import AsyncStorage from '@react-native-async-storage/async-storage';
 import LikeIcon from '../../assets/images/icons/like.svg';
 import LikeColoredIcon from '../../assets/images/icons/like_colored.svg';
 import CommentIcon from '../../assets/images/icons/comment.svg';
@@ -13,6 +14,7 @@ import CrownGrey from '../../assets/images/icons/gamif_crown_0_1.svg';
 import CrownBronze from '../../assets/images/icons/gamif_crown_1.svg';
 import CrownSilver from '../../assets/images/icons/gamif_crown_2.svg';
 import CrownGold from '../../assets/images/icons/gamif_crown_3.svg';
+import { likePost, unlikePost } from '@/networking/postService';
 import styles from '../../ui/styles/PostStyles'; 
 import { Crown } from '@/types/models';
 // import Clipboard from '@react-native-clipboard/clipboard';
@@ -39,7 +41,7 @@ type PostProps = {
   location?: string;
   date: string;
   images: string[];
-  likes: number;
+  initialLikes: number;
   comments: number;
   isVip?: boolean;
   crownType: Crown;
@@ -47,9 +49,13 @@ type PostProps = {
   onLike: () => void;
   onComment: () => void;
   onSave: () => void;
+  postId: string; 
+  userId: string; 
   theme: any;
+  isLikedByUser: boolean;
   isAd:boolean;
 };
+
 const truncateText = (text: string, maxLength: number) => {
   return text.length > maxLength ? `${text.substring(0, maxLength)}...` : text;
 }; //PARA QUE DESPUES DE CIERTA CANT DE CARACTERES APAREZCAN 3 PUNTOS Y NO SE IMPRIMA TODO
@@ -82,19 +88,33 @@ const Post: React.FC<PostProps> = ({
   onLike,
   onComment,
   onSave,
-  likes,
+  initialLikes,
   comments,
+  isLikedByUser,
+  postId,
+  userId,
   theme,
   isAd,
 }) => {
-  const [isLiked, setIsLiked] = useState(false);
+  const [isLiked, setIsLiked] = useState(isLikedByUser);
+  const [likeCount, setLikeCount] = useState(initialLikes);
   const [isSaved, setIsSaved] = useState(false);
   const [isModalVisible, setModalVisible] = useState(false);
   const [commentsList, setCommentsList] = useState(commentSection);
   const [newComment, setNewComment] = useState('');
-  // const dispatch = useDispatch();
-  // const like = useSelector((state: RootState) => state.createPost.likes);
 
+  useEffect(() => {
+    const checkIfLiked = async () => {
+      try {
+        const isLikedValue = await AsyncStorage.getItem(`like_${postId}_${userId}`);
+        setIsLiked(isLikedValue === 'true');
+      } catch (error) {
+        console.error("Error al recuperar el estado de like:", error);
+      }
+    };
+
+    checkIfLiked();
+  }, [postId, userId]);
   
   const renderCrownIcon = (type: Crown) => {
     switch (type) {
@@ -111,12 +131,23 @@ const Post: React.FC<PostProps> = ({
     }
   };
 
-  const toggleLike = () => {
-    setIsLiked(!isLiked);
-    // dispatch(setLike(likes));
-    onLike();
-    // console.log(like)
+  const toggleLike = async () => {
+    try {
+      if (isLiked) {
+        await unlikePost(postId, userId);
+        setLikeCount((prev) => prev - 1);
+        await AsyncStorage.removeItem(`like_${postId}_${userId}`);
+      } else {
+        await likePost(postId, userId);
+        setLikeCount((prev) => prev + 1);
+        await AsyncStorage.setItem(`like_${postId}_${userId}`, 'true');
+      }
+      setIsLiked(!isLiked);
+    } catch (error) {
+      console.error("Error al cambiar el estado de like:", error);
+    }
   };
+
   const toggleSave = () => {
     setIsSaved(!isSaved);
     onSave();
@@ -178,9 +209,9 @@ const Post: React.FC<PostProps> = ({
       </View>
       <Text style={[styles.description, { color: theme.colors.textPrimary }]}>{description}</Text>
       <View style={styles.locationDateContainer}>
-      {location && (
+        {location && (
           <Text style={[styles.location, { color: theme.colors.textSecondary }]}>
-            {truncateText(location, 35)} {/* Cambia 20 por el número máximo de caracteres que prefieras */}
+            {truncateText(location, 35)}
           </Text>
         )}
         <Text style={[styles.date, { color: theme.colors.textSecondary }]}>{truncateDate(date)}</Text>
@@ -196,38 +227,37 @@ const Post: React.FC<PostProps> = ({
           showsHorizontalScrollIndicator={false}
         />
       )}
-    {!isAd && (
-      <View style={styles.interactionContainer}>
-        <View style={styles.leftInteraction}>
-          <TouchableOpacity onPress={toggleLike} style={styles.iconButton}>
-            {isLiked ? (
-              <LikeColoredIcon width={20} height={20} />
-            ) : (
-              <LikeIcon width={20} height={20} />
-            )}
-            <Text style={[styles.counter, { color: theme.colors.textPrimary }]}>{likes + (isLiked ? 1 : 0)}</Text>
-          </TouchableOpacity>
-          <TouchableOpacity onPress={openModal} style={styles.iconButton}>
-            <CommentIcon width={20} height={20} />
-            <Text style={[styles.counter, { color: theme.colors.textPrimary }]}>{commentsList.length}</Text>
-          </TouchableOpacity>
-        </View>
-          <TouchableOpacity onPress={toggleSave} style={styles.iconButton}>
-            {isSaved ? (
-              <SaveColoredIcon width={20} height={20} />
-            ) : (
-              <SaveIcon width={20} height={20} />
-            )}
-          </TouchableOpacity>
+ {!isAd && (
+    <View style={styles.interactionContainer}>
+      <View style={styles.leftInteraction}>
+        <TouchableOpacity onPress={toggleLike} style={styles.iconButton}>
+          {isLiked ? (
+            <LikeColoredIcon width={20} height={20} />
+          ) : (
+            <LikeIcon width={20} height={20} />
+          )}
+          <Text style={[styles.counter, { color: theme.colors.textPrimary }]}>{likeCount}</Text>
+        </TouchableOpacity>
+        <TouchableOpacity onPress={openModal} style={styles.iconButton}>
+          <CommentIcon width={20} height={20} />
+          <Text style={[styles.counter, { color: theme.colors.textPrimary }]}>{commentsList.length}</Text>
+        </TouchableOpacity>
       </View>
-    )}
-
+      <TouchableOpacity onPress={toggleSave} style={styles.iconButton}>
+        {isSaved ? (
+          <SaveColoredIcon width={20} height={20} />
+        ) : (
+          <SaveIcon width={20} height={20} />
+        )}
+      </TouchableOpacity>
+    </View>
+  )}
+   
       {commentsList.length > 0 && !isAd && (
         <>
           <TouchableOpacity onPress={openModal} style={styles.viewAllCommentsButton}>
             <Text style={[styles.viewAllCommentsText, { color: theme.colors.secondary }]}>Ver todos los comentarios</Text>
           </TouchableOpacity>
-
           <View style={styles.firstCommentContainer}>
             <Text style={{ color: theme.colors.textPrimary }}>
               <Text style={styles.commentUsername}>{commentsList[0].username} </Text>

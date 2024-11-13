@@ -34,6 +34,7 @@ const convertAdToPost = (ad: Ads, generateId: () => string): Post => ({
     commentsCount: 0,
     contents: ad.contents,
     likes: [],
+    isLikedByUser: false,
     isAd: true,
   });
 

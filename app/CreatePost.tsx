@@ -108,6 +108,7 @@ const CreatePost: React.FC = () => {
       commentsCount: 0, 
       contents: selectedImages ?? [], 
       likes: [], 
+      isLikedByUser: false,
       isAd: false,
     };
     dispatch(addPost(newPostData));
