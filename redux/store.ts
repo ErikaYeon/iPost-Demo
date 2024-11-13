@@ -4,6 +4,7 @@ import createPostReducer from "./slices/createPostSlice";
 import authReducer from "./slices/authSlice";
 import postReducer from "./slices/postSlice";
 import timelineReducer from './slices/timelineSlice'
+import adsReducer from './slices/adsSlice'
 
 const store = configureStore({
   reducer: {
@@ -12,6 +13,7 @@ const store = configureStore({
     auth: authReducer,
     posts: postReducer,
     timeline: timelineReducer,
+    ads: adsReducer,
   },
 });
 

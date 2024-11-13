@@ -98,6 +98,15 @@ export interface Post {
   contents: string[];
   likes: string[];
   isLikedByUser: boolean;
+  isAd: boolean;
+}
+
+export interface Ads {
+  companyName: string;
+  dateStart: string;
+  dateEnd: string;
+  siteUrl: string;
+  contents : string[];
 }
 
 export interface PageParams {

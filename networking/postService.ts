@@ -1,6 +1,6 @@
 import api from "./api";
 import { handleError } from "./api";
-import { APIError, CreatePostRequest, Post } from "@/types/apiContracts";
+import { Ads, APIError, CreatePostRequest, Post } from "@/types/apiContracts";
 
 export const getPosts = async (
   userId: string,
@@ -51,5 +51,17 @@ export const unlikePost = async (postId: string, userId: string): Promise<void> 
   } catch (error: any) {
     console.error("Error al quitar el like:", error.response?.data || error.message);
     throw new APIError("Error al quitar el like");
+  }
+};
+export const getAdvertising = async (): Promise<Ads[]> => {
+  try{
+    const response = await api.get("/advertising");
+    // console.log(response.data)
+    console.log("Successful get ads");
+    return response.data;
+  }catch (error: any) {
+    console.log('no anda ads')
+    handleError(error);
+    throw new APIError("Never executed");
   }
 };

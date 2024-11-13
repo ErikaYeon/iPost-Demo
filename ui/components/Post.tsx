@@ -1,11 +1,12 @@
 // Post.tsx
 import React, { useState, useEffect } from 'react';
-import { View, Text, Image, TouchableOpacity, FlatList, TextInput, KeyboardAvoidingView, Platform } from 'react-native';
+import { View, Text, Image, TouchableOpacity, FlatList, TextInput, KeyboardAvoidingView, Platform ,  Alert, Share} from 'react-native';
 import Modal from 'react-native-modal';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import LikeIcon from '../../assets/images/icons/like.svg';
 import LikeColoredIcon from '../../assets/images/icons/like_colored.svg';
 import CommentIcon from '../../assets/images/icons/comment.svg';
+import ShareIcon from '../../assets/images/icons/share.svg';
 import SaveIcon from '../../assets/images/icons/save.svg';
 import SaveColoredIcon from '../../assets/images/icons/save_colored.svg';
 import SendCommentIcon from '../../assets/images/icons/send_comment.svg';
@@ -16,6 +17,12 @@ import CrownGold from '../../assets/images/icons/gamif_crown_3.svg';
 import { likePost, unlikePost } from '@/networking/postService';
 import styles from '../../ui/styles/PostStyles'; 
 import { Crown } from '@/types/models';
+// import Clipboard from '@react-native-clipboard/clipboard';
+import * as Clipboard from 'expo-clipboard';
+
+// import {  setLike } from '../../redux/slices/createPostSlice';
+// import { useDispatch,  useSelector } from 'react-redux';
+// import { RootState } from '../../redux/store';
 
 type CommentType = {
   id: string;
@@ -46,6 +53,7 @@ type PostProps = {
   userId: string; 
   theme: any;
   isLikedByUser: boolean;
+  isAd:boolean;
 };
 
 const truncateText = (text: string, maxLength: number) => {
@@ -86,6 +94,7 @@ const Post: React.FC<PostProps> = ({
   postId,
   userId,
   theme,
+  isAd,
 }) => {
   const [isLiked, setIsLiked] = useState(isLikedByUser);
   const [likeCount, setLikeCount] = useState(initialLikes);
@@ -161,18 +170,42 @@ const Post: React.FC<PostProps> = ({
       setNewComment('');
     }
   };
+  // const handleCopyToClipboard = () => {
+  //   const textToCopy = description; 
+  //   Clipboard.setString(textToCopy);
+
+  //   Alert.alert('Texto copiado', 'El texto ha sido copiado al portapapeles');
+  // };
+  const handleShare = async () => {
+    try {
+      const result = await Share.share({
+        message: description,  
+        url: description,  
+      });
+
+    } catch (error) {
+      Alert.alert('Error al compartir');
+    }
+  }
 
   return (
     <View style={[styles.postContainer, { backgroundColor: theme.colors.background }]}>
-      <View style={styles.header}>
-        <Image source={{ uri: profilePictureUrl }} style={styles.profilePicture} />
-        <View style={styles.userInfo}>
-          <View style={styles.nameContainer}>
-            {isVip && renderCrownIcon(crownType)}
-            <Text style={[styles.name, { color: theme.colors.textPrimary }]}>{name}</Text>
+      <View style={styles.headerHeader}>
+        <View style={styles.header}>
+          <Image source={{ uri: profilePictureUrl }} style={styles.profilePicture} />
+          <View style={styles.userInfo}>
+            <View style={styles.nameContainer}>
+              {!isAd && renderCrownIcon(crownType)}
+              <Text style={[styles.name, { color: theme.colors.textPrimary }]}>{name}</Text>
+            </View>
+            <Text style={[styles.username, { color: theme.colors.textSecondary }]}>{isAd ? 'Patrocinado' : username}</Text>
           </View>
-          <Text style={[styles.username, { color: theme.colors.textSecondary }]}>{username}</Text>
-        </View>
+          </View>
+        {isAd && (
+          <TouchableOpacity onPress={handleShare} style={styles.iconButton}>
+            <ShareIcon  width={20} height={20}  />
+            </TouchableOpacity>
+      )}
       </View>
       <Text style={[styles.description, { color: theme.colors.textPrimary }]}>{description}</Text>
       <View style={styles.locationDateContainer}>
@@ -182,6 +215,7 @@ const Post: React.FC<PostProps> = ({
           </Text>
         )}
         <Text style={[styles.date, { color: theme.colors.textSecondary }]}>{truncateDate(date)}</Text>
+        {/* <Text style={[styles.date, { color: theme.colors.textSecondary }]}>{truncateDate(date)}</Text> */}
       </View>
 
       {images.length > 0 && (
@@ -193,33 +227,33 @@ const Post: React.FC<PostProps> = ({
           showsHorizontalScrollIndicator={false}
         />
       )}
-
-<View style={styles.interactionContainer}>
-  <View style={styles.leftInteraction}>
-    <TouchableOpacity onPress={toggleLike} style={styles.iconButton}>
-      {isLiked ? (
-        <LikeColoredIcon width={20} height={20} />
-      ) : (
-        <LikeIcon width={20} height={20} />
-      )}
-      <Text style={[styles.counter, { color: theme.colors.textPrimary }]}>{likeCount}</Text>
-    </TouchableOpacity>
-    <TouchableOpacity onPress={openModal} style={styles.iconButton}>
-      <CommentIcon width={20} height={20} />
-      <Text style={[styles.counter, { color: theme.colors.textPrimary }]}>{commentsList.length}</Text>
-    </TouchableOpacity>
-  </View>
-  <TouchableOpacity onPress={toggleSave} style={styles.iconButton}>
-    {isSaved ? (
-      <SaveColoredIcon width={20} height={20} />
-    ) : (
-      <SaveIcon width={20} height={20} />
-    )}
-  </TouchableOpacity>
-</View>
-
-
-      {commentsList.length > 0 && (
+ {!isAd && (
+    <View style={styles.interactionContainer}>
+      <View style={styles.leftInteraction}>
+        <TouchableOpacity onPress={toggleLike} style={styles.iconButton}>
+          {isLiked ? (
+            <LikeColoredIcon width={20} height={20} />
+          ) : (
+            <LikeIcon width={20} height={20} />
+          )}
+          <Text style={[styles.counter, { color: theme.colors.textPrimary }]}>{likeCount}</Text>
+        </TouchableOpacity>
+        <TouchableOpacity onPress={openModal} style={styles.iconButton}>
+          <CommentIcon width={20} height={20} />
+          <Text style={[styles.counter, { color: theme.colors.textPrimary }]}>{commentsList.length}</Text>
+        </TouchableOpacity>
+      </View>
+      <TouchableOpacity onPress={toggleSave} style={styles.iconButton}>
+        {isSaved ? (
+          <SaveColoredIcon width={20} height={20} />
+        ) : (
+          <SaveIcon width={20} height={20} />
+        )}
+      </TouchableOpacity>
+    </View>
+  )}
+   
+      {commentsList.length > 0 && !isAd && (
         <>
           <TouchableOpacity onPress={openModal} style={styles.viewAllCommentsButton}>
             <Text style={[styles.viewAllCommentsText, { color: theme.colors.secondary }]}>Ver todos los comentarios</Text>
@@ -233,6 +267,8 @@ const Post: React.FC<PostProps> = ({
         </>
       )}
 
+
+{!isAd && (
       <Modal
         isVisible={isModalVisible}
         onBackdropPress={closeModal}
@@ -274,6 +310,8 @@ const Post: React.FC<PostProps> = ({
           </View>
         </KeyboardAvoidingView>
       </Modal>
+)}
+      
 
       <View style={[styles.divider, { backgroundColor: theme.colors.textSecondary }]} />
     </View>

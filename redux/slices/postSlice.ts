@@ -34,6 +34,7 @@ export const fetchPosts = createAsyncThunk(
   }
 );
 
+
 const postSlice = createSlice({
   name: "posts",
   initialState,
@@ -56,7 +57,8 @@ const postSlice = createSlice({
         state.loading = false;
         state.posts = action.payload.map((post) => ({
           ...post,
-          createdAt: new Date(post.createdAt).toISOString(), // Asegúrate de que `createdAt` esté en formato de cadena
+          createdAt: new Date(post.createdAt).toISOString(), 
+          isAd: false,
         }));
         state.hasMore = action.payload.length > 0;
         state.offset += APIConstants.LIST_LIMIT;

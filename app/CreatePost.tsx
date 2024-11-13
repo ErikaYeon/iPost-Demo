@@ -18,6 +18,8 @@ import { AppDispatch, RootState } from '../redux/store';
 import { CreatePostRequest } from '@/types/apiContracts';
 import Placeholders from '@/constants/ProfilePlaceholders';
 import { addPost} from '@/redux/slices/timelineSlice';
+// import { Video } from 'expo-av';
+
 
 const theme = darkTheme;
 const sharedStyles = createSharedStyles(theme);
@@ -42,7 +44,7 @@ const CreatePost: React.FC = () => {
 
   const selectImages = async () => {
     const result = await ImagePicker.launchImageLibraryAsync({
-      mediaTypes: ImagePicker.MediaTypeOptions.Images,
+      mediaTypes: ImagePicker.MediaTypeOptions.All,
       allowsMultipleSelection: true,
       selectionLimit: 10,
       quality: 0.5,
@@ -106,6 +108,8 @@ const CreatePost: React.FC = () => {
       commentsCount: 0, 
       contents: selectedImages ?? [], 
       likes: [], 
+      isLikedByUser: false,
+      isAd: false,
     };
     dispatch(addPost(newPostData));
   }
@@ -207,7 +211,7 @@ const CreatePost: React.FC = () => {
             onPress= {handlePublish}
             type="secondary"
             theme={theme}
-            disabled={!postContent.trim() && selectedImages.length === 0 && !location.trim()}
+            disabled={!(postContent.trim() && selectedImages.length > 0 && location.trim())}
             style={{
               marginTop: 30,
               marginBottom: 150,
