@@ -29,6 +29,13 @@ export interface LoginRequest {
   password: string;
 }
 
+export interface CreatePostRequest {
+  userId: string;
+  location: string;
+  contents: string[];
+  title: string;
+}
+
 export interface LoginResponse {
   id: string;
   username: string;
@@ -83,7 +90,7 @@ export interface UserShort {
 export interface Post {
   id: string;
   author: UserShort;
-  createdAt: Date;
+  createdAt: string;
   location: string;
   title: string;
   likesCount: number;

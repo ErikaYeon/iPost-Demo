@@ -1,13 +1,5 @@
-import React, { useEffect } from "react";
-import {
-  SafeAreaView,
-  FlatList,
-  StatusBar,
-  StyleSheet,
-  View,
-  Text,
-  ActivityIndicator,
-} from "react-native";
+import React, { useEffect, useState } from "react";
+import { SafeAreaView, FlatList, StatusBar, StyleSheet, View, Text, ActivityIndicator } from "react-native";
 import Post from "@/ui/components/Post";
 import { darkTheme } from "../../ui/styles/Theme";
 import InitialMessage from "../../ui/components/InitialMessage";
@@ -15,34 +7,40 @@ import { useSelector, useDispatch } from "react-redux";
 import { AppDispatch, RootState } from "../../redux/store";
 import Placeholders from "@/constants/ProfilePlaceholders";
 import { levelToCrown } from "@/types/mappers";
-import { fetchPosts } from "@/redux/slices/postSlice";
+import { fetchPosts, addNewPost } from "@/redux/slices/postSlice";
+import {  addPosts } from '@/redux/slices/timelineSlice';
 
 const home = () => {
   const theme = darkTheme;
-
-  const dispatch = useDispatch<AppDispatch>();
   const userProfile = useSelector((state: RootState) => state.profile);
-  const { posts, loading, error, hasMore } = useSelector(
-    (state: RootState) => state.posts // Acceder al slice de posts desde el estado global
-  );
-  
-
-  // Función para cargar los posts
+  const localPosts = useSelector((state: RootState) => state.timeline.LocalListPosts)
+  const dispatch = useDispatch<AppDispatch>();
+  const { posts, loading, error, hasMore } = useSelector((state: RootState) => state.posts); 
+  const [hasFetched, setHasFetched] = useState(false);
+  // Función para cargar los posts (llama al thunk fetchPosts)
   const loadPosts = (userId: string) => {
     dispatch(fetchPosts({ userId }));
   };
 
-  // Cargar posts al iniciar el componente
+  // Carga inicial de los posts usando isFirstLoad para que solo se ejecute una vez
   useEffect(() => {
-    if (userProfile.id) {
+    if (userProfile.id && !hasFetched ) {
       loadPosts(userProfile.id);
+      setHasFetched(true);
     }
-  }, [dispatch, userProfile]);
+  }, [userProfile.id,  dispatch, hasFetched]);
 
-  // Función llamada cuando se llega al final del scroll
-  const handleLoadMore = (userId: string | null) => {
-    if (hasMore && !loading && userId) {
-      loadPosts(userId); // Cargar más posts cuando el usuario se acerca al final
+  useEffect(() => {
+    if (hasFetched) {
+      dispatch(addPosts(posts))
+    }
+  }, [posts, hasFetched, dispatch]);
+
+  // Función para scroll infinito
+  const handleLoadMore = () => {
+    console.log("handleLoadMore called, hasMore:", hasMore, "loading:", loading, "userProfile.id:", userProfile.id);
+    if (hasMore && !loading && userProfile.id) {
+      loadPosts(userProfile.id); 
     }
   };
 
@@ -56,23 +54,21 @@ const home = () => {
         },
       ]}
     >
-      {loading ? (
+      {loading && localPosts.length === 0 ? (
         <View style={stylesLocal.loadingContainer}>
-        <ActivityIndicator size="large" color="#ffffff" />
-      </View>
-      ) : posts.length === 0 ? (
-        <InitialMessage theme={theme} />
+          <ActivityIndicator size="large" color="#ffffff" />
+        </View>
+      ) : localPosts.length === 0 ? (
+        <InitialMessage theme={theme} /> // Mensaje inicial si no hay posts
       ) : (
         <View style={stylesLocal.container}>
           {error && <Text style={stylesLocal.errorText}>{error}</Text>}
           <FlatList
             contentContainerStyle={stylesLocal.listContainer}
-            data={posts}
+            data={localPosts}
             renderItem={({ item }) => (
               <Post
-                profilePictureUrl={
-                  item.author.profileImage ?? Placeholders.DEFAULT_PROFILE_PHOTO
-                }
+                profilePictureUrl={item.author.profileImage ?? Placeholders.DEFAULT_PROFILE_PHOTO}
                 name={item.author.name}
                 username={item.author.username}
                 description={item.title}
@@ -90,16 +86,16 @@ const home = () => {
                 theme={darkTheme}
               />
             )}
-            keyExtractor={(item) => item.id}
-            onEndReached={() => handleLoadMore(userProfile.id)}
-            onEndReachedThreshold={0.5}
-            ListFooterComponent={loading ? <Text>Cargando...</Text> : null}
+            keyExtractor={(item, index) => `${item.id}-${index}`}
+            onEndReached={handleLoadMore}
+            onEndReachedThreshold={0.5} 
+            ListFooterComponent={loading && hasMore ? <Text>Cargando...</Text> : null} 
           />
         </View>
       )}
     </SafeAreaView>
   );
-};  
+};
 
 const stylesLocal = StyleSheet.create({
   screenContainer: {

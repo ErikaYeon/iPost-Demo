@@ -12,10 +12,9 @@ import { levelToCrown } from "@/types/mappers";
 import { RootState } from "../store";
 
 interface ProfileState {
-  id: string | null;
-  username: string;
-  email: string;
-  password : string;
+  id: string;
+  username: string | null;
+  email: string ;
   name: string | null;
   lastname: string | null;
   crown: Crown;
@@ -32,10 +31,9 @@ interface ProfileState {
 }
 
 const initialState: ProfileState = {
-  id: null,
-  username: '',
-  email:'',
-  password : '',
+  id: '',
+  username: null,
+  email: '',
   name: null,
   lastname: null,
   crown: Crown.GREY,
@@ -70,10 +68,6 @@ const profileSlice = createSlice({
     setProfileEmail: (state, action: PayloadAction<{ email: string }>) => {
       const { email } = action.payload;
       state.email = email;
-    },
-    setProfilePassword : (state, action: PayloadAction<{ password: string }>) => {
-      const {password} = action.payload;
-      state.password = password;
     },
     setProfileUsername : (state, action: PayloadAction<{ username: string }>) => {
       const {username} = action.payload;
@@ -141,7 +135,7 @@ const profileSlice = createSlice({
 
 export default profileSlice.reducer;
 
-export const { setProfileEmail, setProfileExtraData, clearProfile, setProfilePassword, setProfileUsername } =
+export const { setProfileEmail, setProfileExtraData, clearProfile, setProfileUsername } =
   profileSlice.actions;
 
 export const selectProfile = (state: RootState) => state;

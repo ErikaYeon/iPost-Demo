@@ -1,4 +1,4 @@
-import { createSlice, createAsyncThunk, PayloadAction} from "@reduxjs/toolkit";
+import { createSlice, createAsyncThunk, PayloadAction } from "@reduxjs/toolkit";
 import { Post } from "@/types/apiContracts"; // Definir el tipo de Post
 import { getPosts } from "@/networking/postService";
 import APIConstants from "@/constants/APIConstants";
@@ -11,7 +11,7 @@ interface PostState {
   hasMore: boolean;
   offset: number;
   limit: number;
-  // lastFetch: Date;
+  //lastFetch: Date;
 }
 
 const initialState: PostState = {
@@ -21,14 +21,15 @@ const initialState: PostState = {
   hasMore: true,
   offset: 0,
   limit: APIConstants.LIST_LIMIT,
-  // lastFetch: new Date(new Date().setDate(new Date().getDate() - 7)), // Fecha una semana antes de hoy ToDo: falta arreglar
-}
+  //lastFetch: new Date(new Date().setDate(new Date().getDate() - 7)), // Fecha una semana antes de hoy ToDo: falta arreglar
+};
+
 export const fetchPosts = createAsyncThunk(
   "posts/fetchPosts",
-  async (params: {  userId: string }, { getState }) => {
+  async (params: { userId: string }, { getState }) => {
     const state = getState() as RootState;
     const { offset, limit } = state.posts;
-    const {  userId } = params;
+    const { userId } = params;
     return await getPosts( userId, offset, limit);
   }
 );
@@ -36,7 +37,15 @@ export const fetchPosts = createAsyncThunk(
 const postSlice = createSlice({
   name: "posts",
   initialState,
-  reducers: {},
+  reducers: {
+    addNewPost(state, action: PayloadAction<Post>) {
+      const newPost = {
+        ...action.payload,
+        createdAt: new Date(action.payload.createdAt).toISOString(), // Asegura que `createdAt` sea una cadena en formato ISO
+      };
+      state.posts = [newPost, ...state.posts]; // Agregar el nuevo post al inicio
+    },
+  },
   extraReducers: (builder) => {
     builder
       .addCase(fetchPosts.pending, (state) => {
@@ -45,8 +54,10 @@ const postSlice = createSlice({
       })
       .addCase(fetchPosts.fulfilled, (state, action) => {
         state.loading = false;
-        state.posts = [...state.posts, ...action.payload];
-        // state.lastFetch = new Date();
+        state.posts = action.payload.map((post) => ({
+          ...post,
+          createdAt: new Date(post.createdAt).toISOString(), // Asegúrate de que `createdAt` esté en formato de cadena
+        }));
         state.hasMore = action.payload.length > 0;
         state.offset += APIConstants.LIST_LIMIT;
       })
@@ -56,5 +67,8 @@ const postSlice = createSlice({
       });
   },
 });
+
+// Exporta la nueva acción
+export const { addNewPost } = postSlice.actions;
 
 export default postSlice.reducer;

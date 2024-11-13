@@ -3,6 +3,7 @@ import profileReducer from "./slices/profileSlice";
 import createPostReducer from "./slices/createPostSlice";
 import authReducer from "./slices/authSlice";
 import postReducer from "./slices/postSlice";
+import timelineReducer from './slices/timelineSlice'
 
 const store = configureStore({
   reducer: {
@@ -10,6 +11,7 @@ const store = configureStore({
     createPost: createPostReducer,
     auth: authReducer,
     posts: postReducer,
+    timeline: timelineReducer,
   },
 });
 
