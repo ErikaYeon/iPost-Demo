@@ -7,8 +7,9 @@ import { useSelector, useDispatch } from "react-redux";
 import { AppDispatch, RootState } from "../../redux/store";
 import Placeholders from "@/constants/ProfilePlaceholders";
 import { levelToCrown } from "@/types/mappers";
-import { fetchPosts, addNewPost } from "@/redux/slices/postSlice";
-import {  addPosts } from '@/redux/slices/timelineSlice';
+import { fetchPosts } from "@/redux/slices/postSlice";
+import {  addPost,addPosts } from '@/redux/slices/timelineSlice';
+import { fetchAds, fillPostsFromAds } from "@/redux/slices/adsSlice";
 
 const home = () => {
   const theme = darkTheme;
@@ -16,6 +17,8 @@ const home = () => {
   const localPosts = useSelector((state: RootState) => state.timeline.LocalListPosts)
   const dispatch = useDispatch<AppDispatch>();
   const { posts, loading, error, hasMore } = useSelector((state: RootState) => state.posts); 
+  const  ListAds  = useSelector((state: RootState) => state.ads.ads); 
+  const  ListAdsPost  = useSelector((state: RootState) => state.ads.postsFromAds);
   const [hasFetched, setHasFetched] = useState(false);
   // Función para cargar los posts (llama al thunk fetchPosts)
   const loadPosts = (userId: string) => {
@@ -26,6 +29,8 @@ const home = () => {
   useEffect(() => {
     if (userProfile.id && !hasFetched ) {
       loadPosts(userProfile.id);
+       dispatch(fetchAds())
+      //  dispatch(fillPostsFromAds());
       setHasFetched(true);
     }
   }, [userProfile.id,  dispatch, hasFetched]);
@@ -33,6 +38,13 @@ const home = () => {
   useEffect(() => {
     if (hasFetched) {
       dispatch(addPosts(posts))
+      dispatch(fillPostsFromAds());
+      
+
+      console.log('LISTA ADSPOST LLENA: '+ListAdsPost)
+      dispatch(addPosts(ListAdsPost))
+      // llenarUno();
+      // dispatch(addPosts(ListAds))
     }
   }, [posts, hasFetched, dispatch]);
 
@@ -43,6 +55,30 @@ const home = () => {
       loadPosts(userProfile.id); 
     }
   };
+  // const llenarUno = () =>{
+  //   const vari = ListAds[3];
+  //   const newPostData = {
+  //     id: '67890', 
+  //     author: {
+  //       id: '78689',
+  //       email: " ",
+  //       username: vari.companyName,
+  //       name: vari.companyName,
+  //       lastname: vari.companyName,
+  //       level: userProfile.crown,
+  //       profileImage:  Placeholders.DEFAULT_PROFILE_PHOTO,
+  //       active: true,
+  //     },
+  //     createdAt: new Date().toISOString(), 
+  //     location: '',
+  //     title: vari.siteUrl, 
+  //     likesCount: 0, 
+  //     commentsCount: 0, 
+  //     contents: vari.contents, 
+  //     likes: [], 
+  //   };
+  //   dispatch(addPost(newPostData));
+  // };
 
   return (
     <SafeAreaView
@@ -73,7 +109,8 @@ const home = () => {
                 username={item.author.username}
                 description={item.title}
                 location={item.location}
-                date={item.createdAt.toString()}
+                date={item.createdAt}
+                // date={item.createdAt.toString()}
                 images={item.contents}
                 likes={item.likesCount}
                 comments={item.commentsCount}
@@ -96,7 +133,7 @@ const home = () => {
     </SafeAreaView>
   );
 };
-
+export default home;
 const stylesLocal = StyleSheet.create({
   screenContainer: {
     flex: 1,
@@ -125,4 +162,4 @@ const stylesLocal = StyleSheet.create({
   },
 });
 
-export default home;
+

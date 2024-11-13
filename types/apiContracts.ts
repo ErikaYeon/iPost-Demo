@@ -99,6 +99,14 @@ export interface Post {
   likes: string[];
 }
 
+export interface Ads {
+  companyName: string;
+  dateStart: string;
+  dateEnd: string;
+  siteUrl: string;
+  contents : string[];
+}
+
 export interface PageParams {
   offset: number;
   limit: number;

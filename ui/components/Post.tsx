@@ -154,6 +154,7 @@ const Post: React.FC<PostProps> = ({
           </Text>
         )}
         <Text style={[styles.date, { color: theme.colors.textSecondary }]}>{truncateDate(date)}</Text>
+        {/* <Text style={[styles.date, { color: theme.colors.textSecondary }]}>{truncateDate(date)}</Text> */}
       </View>
 
       {images.length > 0 && (
