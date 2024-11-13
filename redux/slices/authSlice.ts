@@ -9,6 +9,7 @@ import {
 } from "@/types/apiContracts";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import { signup, login, resendEmail } from "@/networking/authService";
+import { refreshAccessToken } from "@/networking/authService";
 
 interface AuthState {
   access_token: string | null;
@@ -81,6 +82,38 @@ export const loginAsync = createAsyncThunk(
   }
 );
 
+// Función de autologin con verificación y renovación del token
+export const autoLoginAsync = createAsyncThunk(
+  "auth/autoLogin",
+  async (_, { rejectWithValue }) => {
+    try {
+      // Obtener los tokens de AsyncStorage
+      const accessToken = await AsyncStorage.getItem("access_token");
+      const refreshToken = await AsyncStorage.getItem("refresh_token");
+
+      // Si el accessToken no existe, intenta renovar el accessToken utilizando el refreshToken
+      if (!accessToken && refreshToken) {
+        const newAccessToken = await refreshAccessToken(refreshToken); // Esta función debería implementar la lógica para obtener un nuevo access token
+        if (!newAccessToken) {
+          throw new Error("No se pudo renovar el token de acceso.");
+        }
+        return { access_token: newAccessToken, refresh_token: refreshToken };
+      }
+
+      // Si ya existe el accessToken, simplemente devolver los tokens
+      if (accessToken) {
+        return { access_token: accessToken, refresh_token: refreshToken };
+      }
+
+      // Si no hay tokens disponibles, retornar error
+      throw new Error("No se encontraron tokens de acceso.");
+    } catch (error: any) {
+      return rejectWithValue(error.message || "Error durante el proceso de auto-login.");
+    }
+  }
+);
+
+
 const authSlice = createSlice({
   name: "auth",
   initialState,
@@ -136,6 +169,20 @@ const authSlice = createSlice({
           // Aquí puedes manejar el caso de email no encontrado
           console.log("El email no se encontró.");
         }
+      })
+      .addCase(autoLoginAsync.pending, (state) => {
+        state.loading = true;
+      })
+      .addCase(autoLoginAsync.fulfilled, (state, action: PayloadAction<{ access_token: string; refresh_token: string | null}>) => {
+        state.loading = false;
+        state.access_token = action.payload.access_token;
+        state.refresh_token = action.payload.refresh_token;
+      })
+      .addCase(autoLoginAsync.rejected, (state, action) => {
+        state.loading = false;
+        state.error = action.payload as string;
+        state.access_token = null;
+        state.refresh_token = null;
       });
   },
 });
