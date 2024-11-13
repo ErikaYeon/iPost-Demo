@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from "react";
-import { SafeAreaView, FlatList, StatusBar, StyleSheet, View, Text, ActivityIndicator } from "react-native";
+import { SafeAreaView, FlatList, StatusBar, StyleSheet, View, Text, ActivityIndicator, RefreshControl } from "react-native";
 import Post from "@/ui/components/Post";
 import { darkTheme } from "../../ui/styles/Theme";
 import InitialMessage from "../../ui/components/InitialMessage";
@@ -16,10 +16,10 @@ const home = () => {
   const userProfile = useSelector((state: RootState) => state.profile);
   const localPosts = useSelector((state: RootState) => state.timeline.LocalListPosts)
   const dispatch = useDispatch<AppDispatch>();
-  const { posts, loading, error, hasMore } = useSelector((state: RootState) => state.posts); 
-  const  ListAds  = useSelector((state: RootState) => state.ads.ads); 
+  const { posts, loading, error, hasMore } = useSelector((state: RootState) => state.posts);
   const  ListAdsPost  = useSelector((state: RootState) => state.ads.postsFromAds);
   const [hasFetched, setHasFetched] = useState(false);
+  const [refreshing, setRefreshing] = useState(false);
   
   // Función para cargar los posts (llama al thunk fetchPosts)
   const loadPosts = (userId: string) => {
@@ -50,6 +50,19 @@ const home = () => {
       loadPosts(userProfile.id); 
     }
   };
+
+  //ToDo: a checkear si funciona
+  const onRefresh = () => {
+    setRefreshing(true);
+    // Simulando un retraso en la carga de los posts
+    setTimeout(() => {
+      if (userProfile.id) {
+        loadPosts(userProfile.id);  // Llamada al fetch
+        
+      }
+      setRefreshing(false);
+    }, 1500);  // Retraso de 1.5 segundos antes de hacer el refresh
+  };
   
 
   return (
@@ -66,7 +79,7 @@ const home = () => {
         <View style={stylesLocal.loadingContainer}>
           <ActivityIndicator size="large" color="#ffffff" />
         </View>
-      ) : localPosts.length === 0 ? (
+      ) : !loading && localPosts.length === 0  ? (
         <InitialMessage theme={theme} /> // Mensaje inicial si no hay posts
       ) : (
         <View style={stylesLocal.container}>
@@ -100,6 +113,12 @@ const home = () => {
             onEndReached={handleLoadMore}
             onEndReachedThreshold={0.5} 
             ListFooterComponent={loading && hasMore ? <Text>Cargando...</Text> : null} 
+            refreshControl={
+              <RefreshControl
+                refreshing={refreshing}
+                onRefresh={onRefresh}  // Llamada a la función onRefresh
+              />
+            }
           />
         </View>
       )}
