@@ -4,37 +4,42 @@ import CustomButton from "../ui/components/CustomButton";
 import InputField from "../ui/components/InputField";
 import LinkText from "../ui/components/LinkText";
 import createSharedStyles from "../ui/styles/SharedStyles";
-import { lightTheme, darkTheme } from "../ui/styles/Theme";
+import { darkTheme } from "../ui/styles/Theme";
 import { styles } from "@/ui/styles/LogIn";
 import { router } from "expo-router";
 import { useDispatch } from "react-redux";
-import { setProfile } from "../redux/slices/profileSlice";
+import { clearProfile } from "../redux/slices/profileSlice";
 import { isEmailValid } from "@/utils/RegexExpressions";
+import { forgotPasswordAsync } from "@/redux/slices/authSlice";
+import { AppDispatch } from "@/redux/store";
 
 const theme = darkTheme; // Para alternar entre light y dark mode
 const sharedStyles = createSharedStyles(theme);
 
 const RestorePassword1: React.FC = () => {
-  const dispatch = useDispatch();
+  const dispatch = useDispatch<AppDispatch>();
   const [email, setEmail] = useState("");
   const [errorMessage, setErrorMessage] = useState("");
 
-  const handleResetPass = () => {
+  const handleResetPass = async () => {
     if (!email) {
       setErrorMessage("Por favor, completa los campos.");
     } else if (!isEmailValid(email)) {
       setErrorMessage("Por favor, ingresa un correo electrónico válido.");
     } else {
-      setErrorMessage("");
-      dispatch(
-        setProfile({
-          email,
-          password: "",
-          username: "",
-        })
-      );
-      setEmail("");
-      router.push("/RestorePssword2");
+      try {
+        setErrorMessage("");
+        dispatch(clearProfile());
+        const resultAction = await dispatch(forgotPasswordAsync({ email }));
+        if (forgotPasswordAsync.fulfilled.match(resultAction)) {
+          console.log("Contraseña correctamente reseteada");
+          router.push("/RestorePssword2");
+        } else {
+          setErrorMessage("Error al recuperar contraseña, intente nuevamente");
+        }
+      } catch (error) {
+        console.error("Error en la recuperación de la contraseña:", error);
+      }
     }
   };
 

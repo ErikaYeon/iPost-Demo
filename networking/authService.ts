@@ -9,36 +9,43 @@ import {
 import api from "./api";
 import { handleError } from "./api";
 
-export const signup = async (data: SignupRequest): Promise<{status: number, message: string}> => {
+export const signup = async (
+  data: SignupRequest
+): Promise<{ status: number; message: string }> => {
   try {
     const response = await api.post("/accounts/signup", data);
     if (response.status === 409 || response.status === 404) {
       return { status: 409, message: "El email ya está registrado" };
     }
     if (response.status !== 201) {
-      return { status: response.status, message: "Error desconocido al crear el usuario" };
+      return {
+        status: response.status,
+        message: "Error desconocido al crear el usuario",
+      };
     }
     console.log("Successful signup.");
-    console.log(response.data)
+    console.log(response.data);
     return { status: 201, message: "Usuario creado con éxito" };
-    
   } catch (error: any) {
-    if(error.status === 409){
+    if (error.status === 409) {
       return { status: 409, message: "Error.El email ya está registrado" };
     }
-    console.log('ENTRA aca ')
+    console.log("ENTRA aca ");
     handleError(error);
     // return { status: 500, message: "Error en la solicitud, por favor intentalo más tarde" };
     throw new APIError("Never executed"); // This 'throw' is never executed, but TypeScript was whining about the method contract.
   }
 };
-export const resendEmail = async (data: {email:string, emailType: EmailType}): Promise<Number> => {
+export const resendEmail = async (data: {
+  email: string;
+  emailType: EmailType;
+}): Promise<Number> => {
   try {
     const response = await api.post("/accounts/resent-email", data);
 
     console.log("Successful resend");
-    console.log(response.data)
-    console.log(response.status)
+    console.log(response.data);
+    console.log(response.status);
     return response.status;
   } catch (error: any) {
     handleError(error);
@@ -56,11 +63,23 @@ export const login = async (data: LoginRequest): Promise<LoginResponse> => {
     console.log("Successful login.");
     return response.data;
   } catch (error: any) {
-    if(error.status ===403){
+    if (error.status === 403) {
       throw new APIError("Error logging in user.");
-    }else{
+    } else {
       handleError(error);
-    throw new APIError("Never executed");
+      throw new APIError("Never executed");
     }
+  }
+};
+
+export const forgotPassword = async (email: string): Promise<Number> => {
+  try {
+    const response = await api.post("/accounts/password/forgot", { email });
+    console.log("Password recovery email sent");
+    console.log(response.data);
+    return response.status;
+  } catch (error: any) {
+    handleError(error);
+    throw new APIError("Error sending password recovery email");
   }
 };

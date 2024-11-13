@@ -8,7 +8,12 @@ import {
   RejectedPayload,
 } from "@/types/apiContracts";
 import AsyncStorage from "@react-native-async-storage/async-storage";
-import { signup, login, resendEmail } from "@/networking/authService";
+import {
+  signup,
+  login,
+  resendEmail,
+  forgotPassword,
+} from "@/networking/authService";
 
 interface AuthState {
   access_token: string | null;
@@ -25,42 +30,45 @@ const initialState: AuthState = {
 };
 
 export const signupAsync = createAsyncThunk<
-  { message: string; status: number },  // Payload de éxito
-  SignupRequest,  // Argumento recibido (userData)
-  { rejectValue: RejectedPayload }  // Payload en caso de error
->(
-  "auth/signup",
-  async (userData: SignupRequest, { rejectWithValue }) => {
-    try {
-      const { status, message } = await signup(userData);  // Desestructuración de la respuesta
-      if (status === 409 || status === 404) {
-        return rejectWithValue({ message, status });  // Manejo del error 409 (email ya registrado)
-      }
-      if (status !== 201) {
-        return rejectWithValue({ message, status });  // Manejo de otros errores
-      }
-      return { message, status };  // Caso de éxito
-    } catch (error: any) {
-      return rejectWithValue({ message: error.message || "Error al registrar", status: 500 });  // Error en la solicitud
+  { message: string; status: number },
+  SignupRequest,
+  { rejectValue: RejectedPayload }
+>("auth/signup", async (userData: SignupRequest, { rejectWithValue }) => {
+  try {
+    const { status, message } = await signup(userData);
+    if (status === 409 || status === 404) {
+      return rejectWithValue({ message, status });
     }
+    if (status !== 201) {
+      return rejectWithValue({ message, status });
+    }
+    return { message, status };
+  } catch (error: any) {
+    return rejectWithValue({
+      message: error.message || "Error al registrar",
+      status: 500,
+    });
   }
-);
+});
 export const resendEmailAsync = createAsyncThunk<
-{ message: string; status: number }, // fulfilled payload type
-{ email: string; emailType: EmailType }, // argument type
-{ rejectValue: RejectedPayload } // rejected payload type
+  { message: string; status: number },
+  { email: string; emailType: EmailType },
+  { rejectValue: RejectedPayload }
 >(
   "auth/resendEmail",
-  async (userData: {email:string, emailType: EmailType}, { rejectWithValue }) => {
+  async (
+    userData: { email: string; emailType: EmailType },
+    { rejectWithValue }
+  ) => {
     try {
-     const responseStatus = await resendEmail(userData);
-     if (responseStatus === 404) {
-      return rejectWithValue({ message: "Email no encontrado", status: 404 });
-    }
-    if (responseStatus === 201) {
-      return { message: "Email enviado con éxito", status: 201 };
-    }
-    throw new Error("Error desconocido al reenviar el email");
+      const responseStatus = await resendEmail(userData);
+      if (responseStatus === 404) {
+        return rejectWithValue({ message: "Email no encontrado", status: 404 });
+      }
+      if (responseStatus === 201) {
+        return { message: "Email enviado con éxito", status: 201 };
+      }
+      throw new Error("Error desconocido al reenviar el email");
     } catch (error: APIError | any) {
       return rejectWithValue(error.message ?? "Error when resend email");
     }
@@ -80,6 +88,31 @@ export const loginAsync = createAsyncThunk(
     }
   }
 );
+
+export const forgotPasswordAsync = createAsyncThunk<
+  { message: string; status: number },
+  { email: string },
+  { rejectValue: RejectedPayload }
+>("auth/forgotPassword", async ({ email }, { rejectWithValue }) => {
+  try {
+    const responseStatus = await forgotPassword(email);
+    if (responseStatus === 404) {
+      return rejectWithValue({ message: "Email no encontrado", status: 404 });
+    }
+    if (responseStatus === 200) {
+      return {
+        message: "Enlace de recuperación enviado con éxito",
+        status: 200,
+      };
+    }
+    throw new Error("Error desconocido al recuperar la contraseña");
+  } catch (error: APIError | any) {
+    return rejectWithValue({
+      message: error.message || "Error al recuperar la contraseña",
+      status: 500,
+    });
+  }
+});
 
 const authSlice = createSlice({
   name: "auth",
@@ -117,7 +150,6 @@ const authSlice = createSlice({
       .addCase(loginAsync.rejected, (state, action) => {
         state.loading = false;
         state.error = action.payload as string;
-        
       })
       .addCase(resendEmailAsync.pending, (state) => {
         state.loading = true;
@@ -126,16 +158,26 @@ const authSlice = createSlice({
       .addCase(resendEmailAsync.fulfilled, (state, action) => {
         state.loading = false;
         state.error = null;
-        
-        // Maneja el caso de éxito aquí si necesitas hacer algo adicional
       })
       .addCase(resendEmailAsync.rejected, (state, action) => {
         state.loading = false;
-        state.error = action.payload?.message! ;
+        state.error = action.payload?.message!;
         if (action.payload?.status === 404) {
-          // Aquí puedes manejar el caso de email no encontrado
           console.log("El email no se encontró.");
         }
+      })
+      .addCase(forgotPasswordAsync.pending, (state) => {
+        state.loading = true;
+        state.error = null;
+      })
+      .addCase(forgotPasswordAsync.fulfilled, (state, action) => {
+        state.loading = false;
+        state.error = null;
+        console.log(action.payload.message);
+      })
+      .addCase(forgotPasswordAsync.rejected, (state, action) => {
+        state.loading = false;
+        state.error = action.payload?.message!;
       });
   },
 });
