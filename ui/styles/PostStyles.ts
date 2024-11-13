@@ -10,6 +10,14 @@ const styles = StyleSheet.create({
     flexDirection: 'row',
     alignItems: 'center',
     marginBottom: 8,
+    textAlign: 'left',
+    
+  },
+  headerHeader: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    justifyContent: 'space-between'
+    
   },
   profilePicture: {
     width: 44,

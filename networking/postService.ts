@@ -39,7 +39,7 @@ export const addPost = async (postData: CreatePostRequest): Promise<Post> => {
 export const getAdvertising = async (): Promise<Ads[]> => {
   try{
     const response = await api.get("/advertising");
-    console.log(response.data)
+    // console.log(response.data)
     console.log("Successful get ads");
     return response.data;
   }catch (error: any) {

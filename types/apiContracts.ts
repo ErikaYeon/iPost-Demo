@@ -97,6 +97,7 @@ export interface Post {
   commentsCount: number;
   contents: string[];
   likes: string[];
+  isAd: boolean;
 }
 
 export interface Ads {

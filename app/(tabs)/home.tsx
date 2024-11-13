@@ -20,6 +20,7 @@ const home = () => {
   const  ListAds  = useSelector((state: RootState) => state.ads.ads); 
   const  ListAdsPost  = useSelector((state: RootState) => state.ads.postsFromAds);
   const [hasFetched, setHasFetched] = useState(false);
+  
   // Función para cargar los posts (llama al thunk fetchPosts)
   const loadPosts = (userId: string) => {
     dispatch(fetchPosts({ userId }));
@@ -30,21 +31,15 @@ const home = () => {
     if (userProfile.id && !hasFetched ) {
       loadPosts(userProfile.id);
        dispatch(fetchAds())
-      //  dispatch(fillPostsFromAds());
+       dispatch(fillPostsFromAds());
       setHasFetched(true);
     }
   }, [userProfile.id,  dispatch, hasFetched]);
 
   useEffect(() => {
     if (hasFetched) {
-      dispatch(addPosts(posts))
       dispatch(fillPostsFromAds());
-      
-
-      console.log('LISTA ADSPOST LLENA: '+ListAdsPost)
-      dispatch(addPosts(ListAdsPost))
-      // llenarUno();
-      // dispatch(addPosts(ListAds))
+      dispatch(addPosts({newPosts: posts, postsFromAds: ListAdsPost}))
     }
   }, [posts, hasFetched, dispatch]);
 
@@ -55,30 +50,7 @@ const home = () => {
       loadPosts(userProfile.id); 
     }
   };
-  // const llenarUno = () =>{
-  //   const vari = ListAds[3];
-  //   const newPostData = {
-  //     id: '67890', 
-  //     author: {
-  //       id: '78689',
-  //       email: " ",
-  //       username: vari.companyName,
-  //       name: vari.companyName,
-  //       lastname: vari.companyName,
-  //       level: userProfile.crown,
-  //       profileImage:  Placeholders.DEFAULT_PROFILE_PHOTO,
-  //       active: true,
-  //     },
-  //     createdAt: new Date().toISOString(), 
-  //     location: '',
-  //     title: vari.siteUrl, 
-  //     likesCount: 0, 
-  //     commentsCount: 0, 
-  //     contents: vari.contents, 
-  //     likes: [], 
-  //   };
-  //   dispatch(addPost(newPostData));
-  // };
+  
 
   return (
     <SafeAreaView
@@ -121,6 +93,7 @@ const home = () => {
                 onComment={() => console.log("Commented on post " + item.id)} //ToDo: implement this
                 onSave={() => console.log("Saved post " + item.id)} //ToDo: implement this
                 theme={darkTheme}
+                isAd ={item.isAd}
               />
             )}
             keyExtractor={(item, index) => `${item.id}-${index}`}

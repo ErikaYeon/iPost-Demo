@@ -1,10 +1,11 @@
 // Post.tsx
 import React, { useState } from 'react';
-import { View, Text, Image, TouchableOpacity, FlatList, TextInput, KeyboardAvoidingView, Platform } from 'react-native';
+import { View, Text, Image, TouchableOpacity, FlatList, TextInput, KeyboardAvoidingView, Platform ,  Alert, Share} from 'react-native';
 import Modal from 'react-native-modal';
 import LikeIcon from '../../assets/images/icons/like.svg';
 import LikeColoredIcon from '../../assets/images/icons/like_colored.svg';
 import CommentIcon from '../../assets/images/icons/comment.svg';
+import ShareIcon from '../../assets/images/icons/share.svg';
 import SaveIcon from '../../assets/images/icons/save.svg';
 import SaveColoredIcon from '../../assets/images/icons/save_colored.svg';
 import SendCommentIcon from '../../assets/images/icons/send_comment.svg';
@@ -14,6 +15,9 @@ import CrownSilver from '../../assets/images/icons/gamif_crown_2.svg';
 import CrownGold from '../../assets/images/icons/gamif_crown_3.svg';
 import styles from '../../ui/styles/PostStyles'; 
 import { Crown } from '@/types/models';
+// import Clipboard from '@react-native-clipboard/clipboard';
+import * as Clipboard from 'expo-clipboard';
+
 // import {  setLike } from '../../redux/slices/createPostSlice';
 // import { useDispatch,  useSelector } from 'react-redux';
 // import { RootState } from '../../redux/store';
@@ -44,6 +48,7 @@ type PostProps = {
   onComment: () => void;
   onSave: () => void;
   theme: any;
+  isAd:boolean;
 };
 const truncateText = (text: string, maxLength: number) => {
   return text.length > maxLength ? `${text.substring(0, maxLength)}...` : text;
@@ -80,6 +85,7 @@ const Post: React.FC<PostProps> = ({
   likes,
   comments,
   theme,
+  isAd,
 }) => {
   const [isLiked, setIsLiked] = useState(false);
   const [isSaved, setIsSaved] = useState(false);
@@ -133,18 +139,42 @@ const Post: React.FC<PostProps> = ({
       setNewComment('');
     }
   };
+  // const handleCopyToClipboard = () => {
+  //   const textToCopy = description; 
+  //   Clipboard.setString(textToCopy);
+
+  //   Alert.alert('Texto copiado', 'El texto ha sido copiado al portapapeles');
+  // };
+  const handleShare = async () => {
+    try {
+      const result = await Share.share({
+        message: description,  
+        url: description,  
+      });
+
+    } catch (error) {
+      Alert.alert('Error al compartir');
+    }
+  }
 
   return (
     <View style={[styles.postContainer, { backgroundColor: theme.colors.background }]}>
-      <View style={styles.header}>
-        <Image source={{ uri: profilePictureUrl }} style={styles.profilePicture} />
-        <View style={styles.userInfo}>
-          <View style={styles.nameContainer}>
-            {isVip && renderCrownIcon(crownType)}
-            <Text style={[styles.name, { color: theme.colors.textPrimary }]}>{name}</Text>
+      <View style={styles.headerHeader}>
+        <View style={styles.header}>
+          <Image source={{ uri: profilePictureUrl }} style={styles.profilePicture} />
+          <View style={styles.userInfo}>
+            <View style={styles.nameContainer}>
+              {!isAd && renderCrownIcon(crownType)}
+              <Text style={[styles.name, { color: theme.colors.textPrimary }]}>{name}</Text>
+            </View>
+            <Text style={[styles.username, { color: theme.colors.textSecondary }]}>{isAd ? 'Patrocinado' : username}</Text>
           </View>
-          <Text style={[styles.username, { color: theme.colors.textSecondary }]}>{username}</Text>
-        </View>
+          </View>
+        {isAd && (
+          <TouchableOpacity onPress={handleShare} style={styles.iconButton}>
+            <ShareIcon  width={20} height={20}  />
+            </TouchableOpacity>
+      )}
       </View>
       <Text style={[styles.description, { color: theme.colors.textPrimary }]}>{description}</Text>
       <View style={styles.locationDateContainer}>
@@ -166,7 +196,7 @@ const Post: React.FC<PostProps> = ({
           showsHorizontalScrollIndicator={false}
         />
       )}
-
+    {!isAd && (
       <View style={styles.interactionContainer}>
         <View style={styles.leftInteraction}>
           <TouchableOpacity onPress={toggleLike} style={styles.iconButton}>
@@ -190,8 +220,9 @@ const Post: React.FC<PostProps> = ({
             )}
           </TouchableOpacity>
       </View>
+    )}
 
-      {commentsList.length > 0 && (
+      {commentsList.length > 0 && !isAd && (
         <>
           <TouchableOpacity onPress={openModal} style={styles.viewAllCommentsButton}>
             <Text style={[styles.viewAllCommentsText, { color: theme.colors.secondary }]}>Ver todos los comentarios</Text>
@@ -206,6 +237,8 @@ const Post: React.FC<PostProps> = ({
         </>
       )}
 
+
+{!isAd && (
       <Modal
         isVisible={isModalVisible}
         onBackdropPress={closeModal}
@@ -247,6 +280,8 @@ const Post: React.FC<PostProps> = ({
           </View>
         </KeyboardAvoidingView>
       </Modal>
+)}
+      
 
       <View style={[styles.divider, { backgroundColor: theme.colors.textSecondary }]} />
     </View>

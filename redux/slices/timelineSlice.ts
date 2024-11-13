@@ -8,20 +8,29 @@ interface TimelineState {
 const initialState: TimelineState = {
     LocalListPosts: [], // Lista vacía de posts
 };
-
 const timelineSlice = createSlice({
   name: 'timeline',
   initialState,
   reducers: {
     // Reducer para agregar un solo post
     addPost(state, action: PayloadAction<Structure>) {
-      state.LocalListPosts.unshift(action.payload); // Agrega el nuevo post al inicio de la lista
+      state.LocalListPosts.unshift(action.payload);
     },
-    // Reducer para agregar múltiples posts
-    addPosts(state, action: PayloadAction<Structure[]>) {
-      state.LocalListPosts = [...state.LocalListPosts, ...action.payload]; // Agrega más posts al final de la lista existente
+    addPosts(state, action: PayloadAction<{ newPosts: Structure[]; postsFromAds: Structure[] }>) {
+    //   state.LocalListPosts = [...state.LocalListPosts, ...action.payload]; 
+    
+    const { newPosts, postsFromAds } = action.payload;
+    
+    newPosts.forEach((post, index) => {
+        state.LocalListPosts.push(post); // Agregar el post local
+    
+        // Cada vez que agregas 5 posts locales, agrega uno de la lista de Ads
+        if ((state.LocalListPosts.length) % 5 === 0 && postsFromAds.length > 0) {
+          const randomIndex = Math.floor(Math.random() * postsFromAds.length); // Seleccionar un índice aleatorio
+          state.LocalListPosts.push(postsFromAds[randomIndex]); // Insertar el post aleatorio
+        }
+      });
     },
-    // Reducer para resetear la lista de posts si fuera necesario
     resetPosts(state) {
       state.LocalListPosts = [];
     },

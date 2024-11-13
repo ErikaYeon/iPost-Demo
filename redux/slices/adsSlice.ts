@@ -23,17 +23,18 @@ const convertAdToPost = (ad: Ads, generateId: () => string): Post => ({
       username: ad.companyName,
       name: ad.companyName,
       lastname: ad.companyName,
-      level: 1, // Puedes ajustar el nivel según corresponda
+      level: 1, 
       profileImage: Placeholders.DEFAULT_PROFILE_PHOTO,
       active: true,
     },
-    createdAt: new Date(ad.dateEnd).toISOString(), // Usa ad.dateEnd o cambia si es necesario
-    location: '',
-    title: ad.siteUrl,
+    createdAt: new Date(ad.dateEnd).toISOString(), 
+    location: 'Promoción valida hasta:',
+    title: '',
     likesCount: 0,
     commentsCount: 0,
     contents: ad.contents,
     likes: [],
+    isAd: true,
   });
 
 const initialState: AdsState = {
@@ -48,7 +49,6 @@ const adsSlice = createSlice({
   reducers: {
     fillPostsFromAds: (state) => {
         state.postsFromAds = state.ads.map(ad => convertAdToPost(ad, generateId));
-        console.log('entra')
       },
   },
   extraReducers: (builder) => {
@@ -59,6 +59,7 @@ const adsSlice = createSlice({
       .addCase(fetchAds.fulfilled, (state, action) => {
         state.status = 'succeeded';
         state.ads = action.payload;
+        state.postsFromAds = state.ads.map(ad => convertAdToPost(ad, generateId))
         })
       .addCase(fetchAds.rejected, (state) => {
         state.status = 'failed';
