@@ -176,17 +176,34 @@ const CreatePost: React.FC = () => {
           style={{ marginBottom: theme.spacing.medium }}
         />
 
-        {/* Mostrar imágenes seleccionadas */}
-        {selectedImages.length > 0 && (
-          <FlatList
-            data={selectedImages}
-            renderItem={renderImageItem}
-            keyExtractor={(item, index) => `${item}-${index}`}
-            horizontal
-            showsHorizontalScrollIndicator={false}
-            style={{ marginVertical: theme.spacing.small }}
-          />
-        )}
+<FlatList
+  data={selectedImages}
+  renderItem={({ item }) => (
+    <View style={{ marginRight: 10, position: 'relative' }}>
+      <Image source={{ uri: item }} style={{ width: 130, height: 130, borderRadius: 8 }} />
+      <TouchableOpacity
+        onPress={() => 
+          dispatch(setSelectedImages(selectedImages.filter((uri) => uri !== item)))
+        }
+        style={{
+          position: 'absolute',
+          top: -5,
+          right: -5,
+          backgroundColor: 'rgba(0,0,0,0.5)',
+          borderRadius: 12,
+          padding: 4,
+        }}
+      >
+        <CloseIcon width={16} height={16} fill="white" />
+      </TouchableOpacity>
+    </View>
+  )}
+  keyExtractor={(item, index) => `${item}-${index}`}
+  horizontal
+  showsHorizontalScrollIndicator={false}
+  style={{ marginVertical: theme.spacing.small }}
+/>
+
 
         {/* Botones de opción */}
         <OptionButton
