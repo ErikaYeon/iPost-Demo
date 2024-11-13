@@ -97,6 +97,15 @@ export interface Post {
   commentsCount: number;
   contents: string[];
   likes: string[];
+  isAd: boolean;
+}
+
+export interface Ads {
+  companyName: string;
+  dateStart: string;
+  dateEnd: string;
+  siteUrl: string;
+  contents : string[];
 }
 
 export interface PageParams {
