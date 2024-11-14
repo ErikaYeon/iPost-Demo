@@ -258,7 +258,7 @@ const Post: React.FC<PostProps> = ({
       <View style={styles.locationDateContainer}>
         {location && (
           <Text style={[styles.location, { color: theme.colors.textSecondary }]}>
-            {truncateText(location, 35)}
+            {truncateText(location, 30)}
           </Text>
         )}
         <Text style={[styles.date, { color: theme.colors.textSecondary }]}>{truncateDate(date)}</Text>
