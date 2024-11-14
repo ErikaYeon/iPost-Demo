@@ -10,14 +10,19 @@ import api from "./api";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 
 // Función de registro
-export const signup = async (data: SignupRequest): Promise<{status: number, message: string}> => {
+export const signup = async (
+  data: SignupRequest
+): Promise<{ status: number; message: string }> => {
   try {
     const response = await api.post("/accounts/signup", data);
     if (response.status === 409 || response.status === 404) {
       return { status: 409, message: "El email ya está registrado" };
     }
     if (response.status !== 201) {
-      return { status: response.status, message: "Error desconocido al crear el usuario" };
+      return {
+        status: response.status,
+        message: "Error desconocido al crear el usuario",
+      };
     }
     console.log("Successful signup.");
     return { status: 201, message: "Usuario creado con éxito" };
@@ -28,7 +33,10 @@ export const signup = async (data: SignupRequest): Promise<{status: number, mess
 };
 
 // Función para reenviar el correo de verificación
-export const resendEmail = async (data: {email: string, emailType: EmailType}): Promise<number> => {
+export const resendEmail = async (data: {
+  email: string;
+  emailType: EmailType;
+}): Promise<number> => {
   try {
     const response = await api.post("/accounts/resent-email", data);
     return response.status;
@@ -71,21 +79,26 @@ export const autoLogin = async (): Promise<LoginResponse | null> => {
     if (!accessToken && !refreshToken) {
       return null;
     }
-    return { access_token: accessToken, refresh_token: refreshToken || "" } as LoginResponse;
+    return {
+      access_token: accessToken,
+      refresh_token: refreshToken || "",
+    } as LoginResponse;
   } catch (error: any) {
     return null;
   }
 };
 
 // Función para renovar el token de acceso
-export const refreshAccessToken = async (refreshToken: string): Promise<string> => {
+export const refreshAccessToken = async (
+  refreshToken: string
+): Promise<LoginResponse> => {
   try {
-    const response = await api.post("/accounts/refresh-token", { 
+    const response = await api.post("/accounts/refresh-token", {
       refresh_token: refreshToken,
     });
     const { access_token } = response.data;
     await AsyncStorage.setItem("access_token", access_token);
-    return access_token;
+    return response.data;
   } catch (error) {
     console.error("Error renewing access token:", error);
     throw new Error("Unable to refresh access token");

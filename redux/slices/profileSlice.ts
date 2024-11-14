@@ -14,7 +14,7 @@ import { RootState } from "../store";
 interface ProfileState {
   id: string;
   username: string | null;
-  email: string ;
+  email: string;
   name: string | null;
   lastname: string | null;
   crown: Crown;
@@ -31,9 +31,9 @@ interface ProfileState {
 }
 
 const initialState: ProfileState = {
-  id: '',
+  id: "",
   username: null,
-  email: '',
+  email: "",
   name: null,
   lastname: null,
   crown: Crown.GREY,
@@ -69,8 +69,14 @@ const profileSlice = createSlice({
       const { email } = action.payload;
       state.email = email;
     },
-    setProfileUsername : (state, action: PayloadAction<{ username: string }>) => {
-      const {username} = action.payload;
+    setProfileUserId: (state, action: PayloadAction<string>) => {
+      state.id = action.payload;
+    },
+    setProfileUsername: (
+      state,
+      action: PayloadAction<{ username: string }>
+    ) => {
+      const { username } = action.payload;
       state.username = username;
     },
     setProfileExtraData: (state, action: PayloadAction<LoginResponse>) => {
@@ -135,7 +141,12 @@ const profileSlice = createSlice({
 
 export default profileSlice.reducer;
 
-export const { setProfileEmail, setProfileExtraData, clearProfile, setProfileUsername } =
-  profileSlice.actions;
+export const {
+  setProfileEmail,
+  setProfileExtraData,
+  clearProfile,
+  setProfileUsername,
+  setProfileUserId,
+} = profileSlice.actions;
 
 export const selectProfile = (state: RootState) => state;
