@@ -6,14 +6,12 @@ interface CommentsState {
   comments: commentType1[];
   isLoading: boolean;
   error: string | null;
-  commentsCount: number;
 }
 
 const initialState: CommentsState = {
   comments: [],
   isLoading: false,
   error: null,
-  commentsCount: 0,
 };
 
 export const fetchCommentsByPostId = createAsyncThunk<commentType1[], string>(
@@ -69,7 +67,6 @@ const commentsSlice = createSlice({
           };
         });
         state.isLoading = false;
-        state.commentsCount = state.comments.length;
       })
       .addCase(fetchCommentsByPostId.rejected, (state, action) => {
         state.isLoading = false;
@@ -81,7 +78,6 @@ const commentsSlice = createSlice({
       })
       .addCase(postComments.fulfilled, (state, action) => {
         state.isLoading = false;
-        state.commentsCount + 1;
       })
       .addCase(postComments.rejected, (state, action) => {
         state.isLoading = false;
