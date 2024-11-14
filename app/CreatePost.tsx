@@ -165,7 +165,11 @@ const CreatePost: React.FC = () => {
         }}
       >
         <HeaderWithIcon
-          iconComponent={() => <CloseIcon width={24} height={24} fill={theme.colors.textPrimary} />}
+          iconComponent={() => (
+            <View style={{ marginLeft: 10 }}>
+              <CloseIcon width={26} height={26} fill={theme.colors.textPrimary} />
+            </View>
+          )}
           title="Nuevo post"
           onPress={() => router.push('/(tabs)/home')}
           theme={theme}
