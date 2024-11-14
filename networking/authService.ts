@@ -60,6 +60,7 @@ const saveTokens = async (accessToken: string, refreshToken: string) => {
 // Función de auto-login
 export const autoLogin = async (): Promise<LoginResponse | null> => {
   try {
+    console.log("ENTRA A LA FUNCION AUTOLOGIN");
     const accessToken = await getAccessToken();
     const refreshToken = await AsyncStorage.getItem("refresh_token");
     if (!accessToken && !refreshToken) {

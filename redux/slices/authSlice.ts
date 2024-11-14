@@ -9,7 +9,7 @@ import {
 } from "@/types/apiContracts";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import { signup, login, resendEmail } from "@/networking/authService";
-import { refreshAccessToken } from "@/networking/authService";
+import { refreshAccessToken } from "@/networking/api"
 
 interface AuthState {
   access_token: string | null;
@@ -90,7 +90,6 @@ export const loginAsync = createAsyncThunk(
   }
 );
 
-// Función de autologin con verificación y renovación del token
 export const autoLoginAsync = createAsyncThunk(
   "auth/autoLogin",
   async (_, { rejectWithValue }) => {
@@ -102,14 +101,14 @@ export const autoLoginAsync = createAsyncThunk(
 
       // Si el accessToken no existe, intenta renovar el accessToken utilizando el refreshToken
       if (!accessToken && refreshToken) {
-        const response = await refreshAccessToken(refreshToken); // Esta función debería implementar la lógica para obtener un nuevo access token
-        if (!response.access_token) {
+        const newAccessToken = await refreshAccessToken(refreshToken);
+        if (!newAccessToken) {
           throw new Error("No se pudo renovar el token de acceso.");
         }
         return {
-          access_token: response.access_token,
+          access_token: newAccessToken, // Aquí ya no esperamos un objeto, sino un string
           refresh_token: refreshToken,
-          userId: userId || response.id,
+          userId: userId || "", // Si no hay userId, se asigna una cadena vacía
         };
       }
 
@@ -131,6 +130,7 @@ export const autoLoginAsync = createAsyncThunk(
     }
   }
 );
+
 
 const authSlice = createSlice({
   name: "auth",
@@ -190,28 +190,25 @@ const authSlice = createSlice({
       .addCase(autoLoginAsync.pending, (state) => {
         state.loading = true;
       })
-      .addCase(
-        autoLoginAsync.fulfilled,
-        (
-          state,
-          action: PayloadAction<{
-            access_token: string;
-            refresh_token: string | null;
-            userId: string;
-          }>
-        ) => {
-          state.loading = false;
-          state.access_token = action.payload.access_token;
-          state.refresh_token = action.payload.refresh_token;
-          state.userId = action.payload.userId;
-        }
-      )
+      .addCase(autoLoginAsync.fulfilled, (state, action: PayloadAction<{
+        access_token: string;
+        refresh_token: string | null;
+        userId: string;
+      }>) => {
+        state.loading = false;
+        state.access_token = action.payload.access_token;
+        state.refresh_token = action.payload.refresh_token;
+        state.userId = action.payload.userId;
+        state.status = "authenticated"; // Se actualiza el estado
+      })
       .addCase(autoLoginAsync.rejected, (state, action) => {
         state.loading = false;
         state.error = action.payload as string;
         state.access_token = null;
         state.refresh_token = null;
+        state.status = "notAuthenticated"; // Se actualiza el estado a no autenticado
       });
+      
   },
 });
 

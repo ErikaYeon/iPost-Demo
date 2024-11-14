@@ -24,18 +24,23 @@ const sharedStyles = createSharedStyles(theme);
 const FirstScreen: React.FC = () => {
   const router = useRouter();
   const dispatch = useDispatch<AppDispatch>();
+
+  // Obtener el estado de la carga y el estado de autenticación desde el store de Redux
+  const loading = useSelector((state: RootState) => state.auth.loading);
   const authStatus = useSelector((state: RootState) => state.auth.status);
 
   useEffect(() => {
     const checkAutoLogin = async () => {
       const resultAction = await dispatch(autoLoginAsync());
       if (autoLoginAsync.fulfilled.match(resultAction)) {
+        // Si la autenticación es exitosa, se establece el perfil del usuario y se navega a la pantalla de inicio
         dispatch(setProfileUserId(resultAction.payload.userId));
         router.push("/(tabs)/home");
       }
     };
 
-    if (authStatus !== "authenticated") {
+    // Solo intentar el auto-login si no está autenticado o en proceso de carga
+    if (authStatus !== "authenticated" && authStatus !== "loading") {
       checkAutoLogin();
     }
   }, [authStatus, dispatch, router]);
@@ -61,8 +66,7 @@ const FirstScreen: React.FC = () => {
             fontWeight: "bold",
             color: theme.colors.textPrimary,
           }}
-        ></Text>
-
+        />
         <Text
           style={{
             fontSize: 32,
@@ -76,27 +80,7 @@ const FirstScreen: React.FC = () => {
       </View>
 
       {/* Contenedor de botones */}
-      {/* <View style={{ width: "100%", alignItems: "center" }}> */}
-      {/* Botón de Iniciar sesión */}
-      {/* <CustomButton
-          title={"Iniciar sesión"}
-          onPress={() => router.push("/LogIn")}
-          type="primary"
-          theme={theme}
-          style={{ marginBottom: theme.spacing.medium, width: "85%" }}
-        />
-
-        
-        <CustomButton
-          title={"Registrarse"}
-          onPress={() => router.push("/SignUp")}
-          type="secondary"
-          theme={theme}
-          style={{ marginBottom: theme.spacing.medium, width: "85%" }}
-        />
-      </View> */}
-
-      {authStatus === "loading" ? (
+      {loading ? (
         <ActivityIndicator size="large" color="#ffffff" />
       ) : (
         <View style={{ width: "100%", alignItems: "center" }}>
@@ -118,6 +102,7 @@ const FirstScreen: React.FC = () => {
       )}
 
       <RegularTextLine text="o continua con" theme={theme} />
+
       <TouchableOpacity
         style={[
           sharedStyles.googleButton,

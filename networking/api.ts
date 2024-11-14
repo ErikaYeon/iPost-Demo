@@ -61,11 +61,12 @@ api.interceptors.response.use(
 );
 
 // Función para renovar el token de acceso
-const refreshAccessToken = async (refreshToken: string): Promise<string | null> => {
+export const refreshAccessToken = async (refreshToken: string): Promise<string | null> => {
   try {
     const response = await api.post("/accounts/refresh-token", {
       refresh_token: refreshToken,
     });
+    console.log("ENTRA A LA FUNCION REFRESH");
     const { access_token } = response.data;
     await AsyncStorage.setItem("access_token", access_token);
     return access_token;
