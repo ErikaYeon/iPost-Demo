@@ -108,6 +108,22 @@ export interface Ads {
   siteUrl: string;
   contents : string[];
 }
+export interface commentType1{
+  id:string,
+  author: UserComment,
+  content:string,
+  createAt:string
+}
+export interface UserComment{
+  id:string,
+  name: string | null,
+  lastname:string | null,
+  nickname:string | null,
+  level:number,
+  profileImage: string | null,
+  active: boolean,
+
+}
 
 export interface PageParams {
   offset: number;

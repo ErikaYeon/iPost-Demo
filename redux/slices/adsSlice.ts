@@ -2,7 +2,6 @@ import { createSlice, createAsyncThunk, PayloadAction } from '@reduxjs/toolkit';
 import { Post, Ads, UserShort } from '@/types/apiContracts';
 import { getAdvertising } from "@/networking/postService";
 import Placeholders from '@/constants/ProfilePlaceholders';
-import { RootState } from '../store';
 
 // Thunk asincrónico para obtener los anuncios
 export const fetchAds = createAsyncThunk('posts/getAdvertising', async () => {

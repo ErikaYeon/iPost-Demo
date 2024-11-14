@@ -19,6 +19,12 @@ import styles from '../../ui/styles/PostStyles';
 import { Crown } from '@/types/models';
 // import Clipboard from '@react-native-clipboard/clipboard';
 import * as Clipboard from 'expo-clipboard';
+import Placeholders from '@/constants/ProfilePlaceholders';
+import { useDispatch, useSelector } from 'react-redux';
+import { AppDispatch, RootState } from '@/redux/store';
+import { addCommentToList, postComments, fetchCommentsByPostId } from '@/redux/slices/commentsSlice';
+import { commentType1 } from '@/types/apiContracts';
+import { levelToCrown } from '@/types/mappers';
 
 // import {  setLike } from '../../redux/slices/createPostSlice';
 // import { useDispatch,  useSelector } from 'react-redux';
@@ -45,7 +51,8 @@ type PostProps = {
   comments: number;
   isVip?: boolean;
   crownType: Crown;
-  commentSection?: CommentType[];
+  // commentSection?: CommentType[];
+  commentSection?: commentType1[];
   onLike: () => void;
   onComment: () => void;
   onSave: () => void;
@@ -102,6 +109,10 @@ const Post: React.FC<PostProps> = ({
   const [isModalVisible, setModalVisible] = useState(false);
   const [commentsList, setCommentsList] = useState(commentSection);
   const [newComment, setNewComment] = useState('');
+  const userProfile = useSelector((state: RootState) => state.profile);
+  const dispatch = useDispatch<AppDispatch>();
+  const ListaReduxComments = useSelector((state: RootState) => state.comments.comments)
+  const { isLoading} = useSelector((state: RootState) => state.comments);
 
   useEffect(() => {
     const checkIfLiked = async () => {
@@ -153,22 +164,44 @@ const Post: React.FC<PostProps> = ({
     onSave();
   };
 
-  const openModal = () => setModalVisible(true);
+  const openModal = async () => {
+    await dispatch(fetchCommentsByPostId(postId))
+     setModalVisible(true) 
+    console.log('lista de redux'+ ListaReduxComments)
+  }
+
   const closeModal = () => setModalVisible(false);
 
   const handleAddComment = () => {
     if (newComment.trim()) {
       const newCommentData = {
         id: (commentsList.length + 1).toString(),
-        username: '@your_username',
+        username: userProfile.name ?? '@your_username',
         text: newComment,
-        profilePictureUrl: 'https://your-profile-picture-url.com',
+        profilePictureUrl: Placeholders.DEFAULT_PROFILE_PHOTO,
         isVip: false,
         crownType: Crown.GREY,
       };
-      setCommentsList([...commentsList, newCommentData]);
+      // setCommentsList([...commentsList, newCommentData]);
       setNewComment('');
     }
+    const Data : commentType1 = {
+      id: (commentsList.length + 1).toString(),
+      content: newComment,
+      createAt: new Date().toISOString(),
+      author: {
+        name: userProfile.name ,
+        nickname: userProfile.username,
+        lastname: userProfile.lastname,
+        id: userProfile.id,
+        profileImage: userProfile.profileImage ?? Placeholders.DEFAULT_PROFILE_PHOTO,
+        level: 1,
+        active: true,
+      }
+    }
+    dispatch(addCommentToList(Data))
+    dispatch(postComments({comment: newComment, authorId: userProfile.id, postId: postId}))
+   
   };
   // const handleCopyToClipboard = () => {
   //   const textToCopy = description; 
@@ -182,7 +215,7 @@ const Post: React.FC<PostProps> = ({
         message: description,  
         url: description,  
       });
-
+      return result;
     } catch (error) {
       Alert.alert('Error al compartir');
     }
@@ -196,7 +229,7 @@ const Post: React.FC<PostProps> = ({
           <View style={styles.userInfo}>
             <View style={styles.nameContainer}>
               {!isAd && renderCrownIcon(crownType)}
-              <Text style={[styles.name, { color: theme.colors.textPrimary }]}>{name}</Text>
+              <Text style={[styles.name, { color: theme.colors.textPrimary }]}>{name }</Text>
             </View>
             <Text style={[styles.username, { color: theme.colors.textSecondary }]}>{isAd ? 'Patrocinado' : username}</Text>
           </View>
@@ -240,7 +273,7 @@ const Post: React.FC<PostProps> = ({
         </TouchableOpacity>
         <TouchableOpacity onPress={openModal} style={styles.iconButton}>
           <CommentIcon width={20} height={20} />
-          <Text style={[styles.counter, { color: theme.colors.textPrimary }]}>{commentsList.length}</Text>
+          <Text style={[styles.counter, { color: theme.colors.textPrimary }]}>{comments}</Text>
         </TouchableOpacity>
       </View>
       <TouchableOpacity onPress={toggleSave} style={styles.iconButton}>
@@ -253,64 +286,69 @@ const Post: React.FC<PostProps> = ({
     </View>
   )}
    
-      {commentsList.length > 0 && !isAd && (
+      {comments > 0 && !isAd && (
         <>
           <TouchableOpacity onPress={openModal} style={styles.viewAllCommentsButton}>
             <Text style={[styles.viewAllCommentsText, { color: theme.colors.secondary }]}>Ver todos los comentarios</Text>
           </TouchableOpacity>
-          <View style={styles.firstCommentContainer}>
+          {/* <View style={styles.firstCommentContainer}>
             <Text style={{ color: theme.colors.textPrimary }}>
-              <Text style={styles.commentUsername}>{commentsList[0].username} </Text>
-              <Text>{commentsList[0].text}</Text>
+              <Text style={styles.commentUsername}>{ListaReduxComments[0].user.name} </Text>
+              <Text>{ListaReduxComments[0].text}</Text>
             </Text>
-          </View>
+          </View> */}
         </>
       )}
 
 
-{!isAd && (
-      <Modal
-        isVisible={isModalVisible}
-        onBackdropPress={closeModal}
-        onSwipeComplete={closeModal}
-        swipeDirection="down"
-        style={styles.modal}
-      >
-        <KeyboardAvoidingView
-          behavior={Platform.OS === 'ios' ? 'padding' : 'height'}
-          style={[styles.modalContent, { backgroundColor: theme.colors.background }]}
-        >
-          <FlatList
-            data={commentsList}
-            keyExtractor={(item) => item.id}
-            renderItem={({ item }) => (
-              <View style={styles.commentContainer}>
-                <Image source={{ uri: item.profilePictureUrl }} style={styles.commentProfilePicture} />
-                <View style={styles.commentTextContainer}>
-                  <View style={styles.commentHeader}>
-                    {item.isVip && renderCrownIcon(item.crownType)}
-                    <Text style={[styles.commentUsername, { color: theme.colors.textPrimary }]}>{item.username}</Text>
-                  </View>
-                  <Text style={[styles.commentText, { color: theme.colors.textSecondary }]}>{item.text}</Text>
+{/* {!isLoading && !isAd && ListaReduxComments.length > 0 &&  ( */}
+{!isLoading && !isAd && (
+  <Modal
+    isVisible={isModalVisible}
+    onBackdropPress={closeModal}
+    onSwipeComplete={closeModal}
+    swipeDirection="down"
+    style={styles.modal}
+  >
+    <KeyboardAvoidingView
+      behavior={Platform.OS === 'ios' ? 'padding' : 'height'}
+      style={[styles.modalContent, { backgroundColor: theme.colors.background }]}
+    >
+      {ListaReduxComments.length > 0 && (
+        <FlatList
+          data={ListaReduxComments}
+          keyExtractor={(item) => item.id}
+          renderItem={({ item }) => (
+            <View style={styles.commentContainer}>
+              <View style={styles.commentTextContainer}>
+                <View style={styles.commentHeader}>
+                  {renderCrownIcon(levelToCrown(1))}  
+                  <Text style={[styles.commentUsername, { color: theme.colors.textPrimary }]}>{item.author.name}</Text>
                 </View>
+                <Text style={[styles.commentText, { color: theme.colors.textSecondary }]}>{item.content}</Text>
               </View>
-            )}
-          />
-          <View style={styles.inputContainer}>
-            <TextInput
-              style={[styles.input, { color: theme.colors.textPrimary }]}
-              placeholder="Agrega un comentario..."
-              placeholderTextColor={theme.colors.textSecondary}
-              value={newComment}
-              onChangeText={setNewComment}
-            />
-            <TouchableOpacity style={styles.sendButton} onPress={handleAddComment}>
-              <SendCommentIcon width={24} height={24} fill={theme.colors.primary} />
-            </TouchableOpacity>
-          </View>
-        </KeyboardAvoidingView>
-      </Modal>
+            </View>
+          )}
+        />
+      )}
+
+      <View style={styles.inputContainer}>
+        <TextInput
+          style={[styles.input, { color: theme.colors.textPrimary }]}
+          placeholder="Agrega un comentario..."
+          placeholderTextColor={theme.colors.textSecondary}
+          value={newComment}
+          onChangeText={setNewComment}
+        />
+        <TouchableOpacity style={styles.sendButton} onPress={handleAddComment}>
+          <SendCommentIcon width={24} height={24} fill={theme.colors.primary} />
+        </TouchableOpacity>
+      </View>
+    </KeyboardAvoidingView>
+  </Modal>
 )}
+
+
       
 
       <View style={[styles.divider, { backgroundColor: theme.colors.textSecondary }]} />
