@@ -3,7 +3,6 @@ import {
   EmailType,
   LoginRequest,
   LoginResponse,
-  RejectedPayload,
   SignupRequest,
 } from "@/types/apiContracts";
 import api from "./api";
@@ -81,5 +80,18 @@ export const forgotPassword = async (email: string): Promise<Number> => {
   } catch (error: any) {
     handleError(error);
     throw new APIError("Error sending password recovery email");
+  }
+};
+
+export const magicLinkLogin = async (token: string): Promise<LoginResponse> => {
+  try {
+    const response = await api.get(`/accounts/magic-link?token=${token}`);
+    if (response.status !== 200) {
+      throw new APIError("Error during magic link login.");
+    }
+    return response.data;
+  } catch (error: any) {
+    handleError(error);
+    throw new APIError("Error when using magic link");
   }
 };

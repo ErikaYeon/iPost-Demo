@@ -13,6 +13,7 @@ import {
   login,
   resendEmail,
   forgotPassword,
+  magicLinkLogin,
 } from "@/networking/authService";
 
 interface AuthState {
@@ -114,6 +115,24 @@ export const forgotPasswordAsync = createAsyncThunk<
   }
 });
 
+export const magicLinkLoginAsync = createAsyncThunk<
+  LoginResponse,
+  { token: string },
+  { rejectValue: RejectedPayload }
+>("auth/magicLinkLogin", async ({ token }, { rejectWithValue }) => {
+  try {
+    const loginResponse = await magicLinkLogin(token);
+    await AsyncStorage.setItem("access_token", loginResponse.access_token);
+    await AsyncStorage.setItem("refresh_token", loginResponse.refresh_token);
+    return loginResponse;
+  } catch (error: APIError | any) {
+    return rejectWithValue({
+      message: error.message || "Error when using magic link",
+      status: 500,
+    });
+  }
+});
+
 const authSlice = createSlice({
   name: "auth",
   initialState,
@@ -176,6 +195,22 @@ const authSlice = createSlice({
         console.log(action.payload.message);
       })
       .addCase(forgotPasswordAsync.rejected, (state, action) => {
+        state.loading = false;
+        state.error = action.payload?.message!;
+      })
+      .addCase(magicLinkLoginAsync.pending, (state) => {
+        state.loading = true;
+        state.error = null;
+      })
+      .addCase(
+        magicLinkLoginAsync.fulfilled,
+        (state, action: PayloadAction<LoginResponse>) => {
+          state.loading = false;
+          state.access_token = action.payload.access_token;
+          state.refresh_token = action.payload.refresh_token;
+        }
+      )
+      .addCase(magicLinkLoginAsync.rejected, (state, action) => {
         state.loading = false;
         state.error = action.payload?.message!;
       });

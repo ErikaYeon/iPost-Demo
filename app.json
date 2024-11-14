@@ -19,7 +19,20 @@
       "adaptiveIcon": {
         "foregroundImage": "./assets/images/icons/ic_launcher_foreground.png",
         "backgroundColor": "#ffffff"
-      }
+      },
+      "package": "com.ipost",
+      "intentFilters": [
+        {
+          "action": "VIEW",
+          "data": [
+            {
+              "scheme": "myapp",
+              "host": "magic-link"
+            }
+          ],
+          "category": ["BROWSABLE", "DEFAULT"]
+        }
+      ]
     },
     "web": {
       "bundler": "metro",
