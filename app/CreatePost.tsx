@@ -51,18 +51,16 @@ const CreatePost: React.FC = () => {
     if (!result.canceled) {
       const mediaItems = await Promise.all(
         result.assets.map(async (asset) => {
+          const isVideo = asset.type === 'video' && asset.uri.endsWith('.mp4');
           const base64 = await FileSystem.readAsStringAsync(asset.uri, {
             encoding: FileSystem.EncodingType.Base64,
           });
-          
-          // Diferenciar entre imágenes y videos usando "mp4" para videos
-          const isVideo = asset.type === 'video' && asset.uri.endsWith('.mp4');
   
           return {
             uri: isVideo 
               ? `data:video/mp4;base64,${base64}`
               : `data:image/jpeg;base64,${base64}`,
-            type: isVideo ? 'video' : 'image', // Define 'video' solo si es un mp4
+            type: isVideo ? 'video' : 'image', // Asegura que el tipo es correcto
           };
         })
       );

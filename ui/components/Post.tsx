@@ -1,7 +1,8 @@
 // Post.tsx
 import React, { useState, useEffect } from 'react';
-import { View, Text, Image, TouchableOpacity, FlatList, TextInput, KeyboardAvoidingView, Platform , Alert, Share} from 'react-native';
+import { View, Text, Image, TouchableOpacity, FlatList, TextInput, KeyboardAvoidingView, Platform , Alert, Share, StyleSheet} from 'react-native';
 import Modal from 'react-native-modal';
+import { Modal as NativeModal } from 'react-native'; // Usa Modal nativo para el modal de imagen completa
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import LikeIcon from '../../assets/images/icons/like.svg';
 import LikeColoredIcon from '../../assets/images/icons/like_colored.svg';
@@ -114,6 +115,18 @@ const Post: React.FC<PostProps> = ({
   const dispatch = useDispatch<AppDispatch>();
   const ListaReduxComments = useSelector((state: RootState) => state.comments.comments)
   const { isLoading} = useSelector((state: RootState) => state.comments);
+  const [isImageModalVisible, setImageModalVisible] = useState(false);
+  const [selectedImageUri, setSelectedImageUri] = useState<string | null>(null);
+
+  const openImageModal = (uri: string) => {
+    setSelectedImageUri(uri);
+    setImageModalVisible(true);
+  };
+
+  const closeImageModal = () => {
+    setSelectedImageUri(null);
+    setImageModalVisible(false);
+  };
 
   useEffect(() => {
     const checkIfLiked = async () => {
@@ -257,21 +270,42 @@ const Post: React.FC<PostProps> = ({
       data={images}
       horizontal
       keyExtractor={(item, index) => index.toString()}
-      renderItem={({ item }) => (
-        item.type === 'image' ? (
-          <Image source={{ uri: item.uri }} style={styles.postImage} />
+      renderItem={({ item }) => {
+        console.log("Renderizando media item:", item);
+        return item.type === 'image' ? (
+          <TouchableOpacity onPress={() => openImageModal(item.uri)}>
+            <Image source={{ uri: item.uri }} style={styles.postImage} />
+          </TouchableOpacity>
         ) : (
           <Video
             source={{ uri: item.uri }}
             style={styles.postImage}
             useNativeControls
             resizeMode="cover"
+            onError={(error) => console.error("Error al cargar el video:", error)} // Verifica errores
           />
-        )
-      )}
+        );
+      }}
       showsHorizontalScrollIndicator={false}
     />
   )}
+
+{selectedImageUri && (
+  <NativeModal
+    visible={isImageModalVisible}
+    transparent={true}
+    animationType="fade"
+    onRequestClose={closeImageModal}
+  >
+    <View style={modalStyles.modalBackground}>
+      <TouchableOpacity onPress={closeImageModal} style={modalStyles.modalCloseButtonContainer}>
+        <Text style={modalStyles.modalCloseButtonText}>Cerrar</Text>
+      </TouchableOpacity>
+      <Image source={{ uri: selectedImageUri }} style={modalStyles.fullscreenImage} />
+    </View>
+  </NativeModal>
+)}
+
  {!isAd && (
     <View style={styles.interactionContainer}>
       <View style={styles.leftInteraction}>
@@ -369,3 +403,32 @@ const Post: React.FC<PostProps> = ({
 };
 
 export default Post;
+
+
+const modalStyles = StyleSheet.create({
+  modalBackground: {
+    flex: 1,
+    backgroundColor: 'black',
+    justifyContent: 'center',
+    alignItems: 'center',
+  },
+  fullscreenImage: {
+    width: '100%',
+    height: '100%',
+    resizeMode: 'contain',
+  },
+  modalCloseButtonContainer: {
+    position: 'absolute',
+    top: 20,
+    right: 20,
+    zIndex: 10,
+  },
+  modalCloseButtonText: {
+    color: 'white',
+    fontSize: 18,
+    backgroundColor: 'rgba(0, 0, 0, 0.5)',
+    paddingVertical: 8,
+    paddingHorizontal: 12,
+    borderRadius: 8,
+  },
+});
