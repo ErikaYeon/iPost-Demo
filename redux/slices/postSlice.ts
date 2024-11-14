@@ -28,6 +28,7 @@ export const fetchPosts = createAsyncThunk(
   "posts/fetchPosts",
   async (params: { userId: string; isRefreshing: boolean }, { getState }) => {
     const state = getState() as RootState;
+    state.posts.offset = 0;
     const { offset, limit, time } = state.posts;
     const { userId, isRefreshing } = params;
     if (isRefreshing) {
