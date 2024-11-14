@@ -154,6 +154,8 @@ const CreatePost: React.FC = () => {
     }
   };
 
+  const isPublishEnabled = postContent.trim() !== '' && selectedImages.length > 0 && location.trim() !== '';
+
   return (
     <View style={{ flex: 1, backgroundColor: theme.colors.background }}>
       <StatusBar backgroundColor={theme.colors.background} barStyle="light-content" />
@@ -220,12 +222,12 @@ const CreatePost: React.FC = () => {
             onPress={handlePublish}
             type="secondary"
             theme={theme}
-            disabled={!(postContent.trim() && selectedImages.length > 0 && location.trim())}
+            disabled={!isPublishEnabled} // Deshabilita si no cumple la condición
             style={{
               marginTop: 30,
               marginBottom: 150,
-              backgroundColor: !postContent.trim() && selectedImages.length === 0 ? '#B5BACB' : theme.colors.primary,
-              borderColor: theme.colors.primary,
+              backgroundColor: isPublishEnabled ? theme.colors.primary : '#B5BACB', // Cambia el color según la condición
+              borderColor: isPublishEnabled ? theme.colors.primary : '#B5BACB',
               width: '95%',
             }}
           />
