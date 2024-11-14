@@ -3,7 +3,6 @@ import {
   EmailType,
   LoginRequest,
   LoginResponse,
-  RejectedPayload,
   SignupRequest,
 } from "@/types/apiContracts";
 import api from "./api";
@@ -18,16 +17,8 @@ export const signup = async (
     if (response.status === 409 || response.status === 404) {
       return { status: 409, message: "El email ya está registrado" };
     }
-    if (response.status !== 201) {
-      return {
-        status: response.status,
-        message: "Error desconocido al crear el usuario",
-      };
-    }
-    console.log("Successful signup.");
     return { status: 201, message: "Usuario creado con éxito" };
-  } catch (error: any) {
-    // Los errores ahora se manejan automáticamente a través del interceptor en api.ts
+  } catch {
     throw new APIError("Error durante el registro.");
   }
 };
@@ -40,7 +31,7 @@ export const resendEmail = async (data: {
   try {
     const response = await api.post("/accounts/resent-email", data);
     return response.status;
-  } catch (error: any) {
+  } catch {
     throw new APIError("Error al reenviar el correo de verificación.");
   }
 };
@@ -49,14 +40,9 @@ export const resendEmail = async (data: {
 export const login = async (data: LoginRequest): Promise<LoginResponse> => {
   try {
     const response = await api.post("/accounts/login", data);
-    if (response.status !== 200) {
-      console.log(`Error logging in user. Code error: ${response.status}`);
-      throw new APIError("Error al iniciar sesión.");
-    }
-    console.log("Successful login.");
     await saveTokens(response.data.access_token, response.data.refresh_token);
     return response.data;
-  } catch (error: any) {
+  } catch {
     throw new APIError("Error al iniciar sesión.");
   }
 };
@@ -83,25 +69,8 @@ export const autoLogin = async (): Promise<LoginResponse | null> => {
       access_token: accessToken,
       refresh_token: refreshToken || "",
     } as LoginResponse;
-  } catch (error: any) {
+  } catch {
     return null;
-  }
-};
-
-// Función para renovar el token de acceso
-export const refreshAccessToken = async (
-  refreshToken: string
-): Promise<LoginResponse> => {
-  try {
-    const response = await api.post("/accounts/refresh-token", {
-      refresh_token: refreshToken,
-    });
-    const { access_token } = response.data;
-    await AsyncStorage.setItem("access_token", access_token);
-    return response.data;
-  } catch (error) {
-    console.error("Error renewing access token:", error);
-    throw new Error("Unable to refresh access token");
   }
 };
 
@@ -109,8 +78,7 @@ export const refreshAccessToken = async (
 const getAccessToken = async (): Promise<string | null> => {
   try {
     return await AsyncStorage.getItem("access_token");
-  } catch (error) {
-    console.error("Error fetching access token:", error);
+  } catch {
     return null;
   }
 };
@@ -127,10 +95,5 @@ const removeTokens = async () => {
 
 // Función de logout
 export const logout = async () => {
-  try {
-    await removeTokens();
-    console.log("Usuario deslogueado");
-  } catch (error) {
-    console.error("Error al cerrar sesión:", error);
-  }
+  await removeTokens();
 };
