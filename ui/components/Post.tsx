@@ -114,12 +114,13 @@ const Post: React.FC<PostProps> = ({
   const [isModalVisible, setModalVisible] = useState(false);
   const [commentsList, setCommentsList] = useState(commentSection);
   const [newComment, setNewComment] = useState("");
+  const [commentsCount, setCommentsCount] = useState(comments); 
   const userProfile = useSelector((state: RootState) => state.profile);
   const dispatch = useDispatch<AppDispatch>();
   const ListaReduxComments = useSelector(
     (state: RootState) => state.comments.comments
   );
-  const { isLoading, commentsCount } = useSelector(
+  const { isLoading} = useSelector(
     (state: RootState) => state.comments
   );
   const [isImageModalVisible, setImageModalVisible] = useState(false);
@@ -201,47 +202,38 @@ const Post: React.FC<PostProps> = ({
 
   const handleAddComment = () => {
     if (newComment.trim()) {
-      const newCommentData = {
-        id: (commentsList.length + 1).toString(),
-        username: userProfile.name ?? "@your_username",
-        text: newComment,
-        profilePictureUrl: Placeholders.DEFAULT_PROFILE_PHOTO,
-        isVip: false,
-        crownType: Crown.GREY,
+      const newCommentData: commentType1 = {
+        id: generarNumeroRandom().toString(),
+        content: newComment,
+        createAt: new Date().toISOString(),
+        author: {
+          name: userProfile.name ?? "@your_username",
+          nickname: userProfile.username ?? "",
+          lastname: userProfile.lastname ?? "",
+          id: userProfile.id,
+          profileImage: userProfile.profileImage ?? Placeholders.DEFAULT_PROFILE_PHOTO,
+          level: 1,
+          active: true,
+        },
       };
-      // setCommentsList([...commentsList, newCommentData]);
-      setNewComment("");
-    }
-    const Data: commentType1 = {
-      id: generarNumeroRandom().toString(),
-      content: newComment,
-      createAt: new Date().toISOString(),
-      author: {
-        name: userProfile.name,
-        nickname: userProfile.username,
-        lastname: userProfile.lastname,
-        id: userProfile.id,
-        profileImage:
-          userProfile.profileImage ?? Placeholders.DEFAULT_PROFILE_PHOTO,
-        level: 1,
-        active: true,
-      },
-    };
-    dispatch(addCommentToList(Data));
+
+    setCommentsList((prevCommentsList) => [...prevCommentsList, newCommentData]);
+
+    setCommentsCount((prevComments) => prevComments + 1);
+
+    setNewComment("");
+
+    dispatch(addCommentToList(newCommentData));
     dispatch(
       postComments({
         comment: newComment,
         authorId: userProfile.id,
         postId: postId,
-      })
-    );
+        })
+      );
+    }
   };
-  // const handleCopyToClipboard = () => {
-  //   const textToCopy = description;
-  //   Clipboard.setString(textToCopy);
 
-  //   Alert.alert('Texto copiado', 'El texto ha sido copiado al portapapeles');
-  // };
   const handleShare = async () => {
     try {
       const result = await Share.share({
@@ -301,7 +293,6 @@ const Post: React.FC<PostProps> = ({
         <Text style={[styles.date, { color: theme.colors.textSecondary }]}>
           {truncateDate(date)}
         </Text>
-        {/* <Text style={[styles.date, { color: theme.colors.textSecondary }]}>{truncateDate(date)}</Text> */}
       </View>
 
       {images.length > 0 && (
@@ -369,9 +360,7 @@ const Post: React.FC<PostProps> = ({
             </TouchableOpacity>
             <TouchableOpacity onPress={openModal} style={styles.iconButton}>
               <CommentIcon width={20} height={20} />
-              <Text
-                style={[styles.counter, { color: theme.colors.textPrimary }]}
-              >
+              <Text style={[styles.counter, { color: theme.colors.textPrimary }]}>
                 {commentsCount}
               </Text>
             </TouchableOpacity>
