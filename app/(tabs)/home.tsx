@@ -96,7 +96,10 @@ const home = () => {
                 location={item.location}
                 date={item.createdAt}
                 // date={item.createdAt.toString()}
-                images={item.contents}
+                images={item.contents.map((content) => ({
+                  uri: content,
+                  type: content.endsWith('.mp4') ? 'video' : 'image'
+                }))}
                 initialLikes={item.likesCount}
                 comments={item.commentsCount}
                 isLikedByUser={item.isLikedByUser}

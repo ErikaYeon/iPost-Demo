@@ -24,8 +24,8 @@ const FirstScreen: React.FC = () => {
 
       {/* Texto "Bienvenidos a iPost" */}
       <View style={{ flexDirection: 'row', justifyContent: 'center', alignItems: 'baseline' }}>
-        <HeaderText text= {('welcome')} theme={theme} />
-        <Text style={{ fontSize: 34, fontWeight: 'bold', color: theme.colors.textPrimary }}> iPost</Text>
+        <HeaderText text= {('Bienvenido a')} theme={theme} />
+        <Text style={{ fontSize: 32, fontWeight: 'bold', color: theme.colors.textPrimary }}> iPost</Text>
       </View> 
 
       {/* Contenedor de botones */}
@@ -33,7 +33,7 @@ const FirstScreen: React.FC = () => {
 
         {/* Botón de Iniciar sesión */}
         <CustomButton
-          title= {('iniciar Sesion')}
+          title= {('Iniciar sesión')}
           onPress={() => router.push('/LogIn')}
           type="primary"
           theme={theme}
@@ -55,7 +55,7 @@ const FirstScreen: React.FC = () => {
 
       {/* Botón de Google con imagen PNG */}
       <TouchableOpacity
-        style={[sharedStyles.googleButton, { marginTop: theme.spacing.xsmall }]}
+        style={[sharedStyles.googleButton, { marginTop: theme.spacing.medium, width: '85%' }]}
         onPress={() => router.push('/LogInFaceId')}
       >
         <Image 

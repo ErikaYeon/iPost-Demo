@@ -140,7 +140,7 @@ const SignUpScreen: React.FC = () => {
 
       {/* Link para iniciar sesión */}
       <View
-        style={{ flexDirection: "row", justifyContent: "center", marginTop: 7 }}
+        style={{ flexDirection: "row", justifyContent: "center", marginTop: 7, marginBottom: 10 }}
       >
         <RegularText text="¿Tienes una cuenta? " theme={theme} />
         <LinkText
@@ -158,12 +158,12 @@ const SignUpScreen: React.FC = () => {
           marginTop: theme.spacing.small,
         }}
       >
-        <RegularTextLine text="O continua con" theme={theme} />
+        <RegularTextLine text="o continua con" theme={theme} />
       </View>
 
       {/* Botón de Google con imagen PNG */}
       <TouchableOpacity
-        style={[sharedStyles.googleButton, { marginTop: theme.spacing.small }]} // Usa los estilos separados
+        style={[sharedStyles.googleButton, { marginTop: theme.spacing.medium }]} // Usa los estilos separados
         onPress={() => console.log("Google")}
       >
         <Image

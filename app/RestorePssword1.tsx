@@ -54,7 +54,7 @@ const RestorePassword1: React.FC = () => {
       </Text>
 
       <InputField
-        label="Correo electrónico"
+        label=""
         placeholder="micorreo@ejemplo.com"
         value={email}
         onChangeText={setEmail}
@@ -77,7 +77,7 @@ const RestorePassword1: React.FC = () => {
       {/* </View>s */}
 
       <LinkText
-        text="Volver al inicio de sesión"
+        text="Volver a inicio de sesión"
         onPress={() => router.push("/LogIn")}
         theme={theme}
       />

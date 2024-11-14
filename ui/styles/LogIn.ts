@@ -31,6 +31,7 @@ export const styles = StyleSheet.create({
     color: theme.colors.textPrimary,
     textAlign: 'center',
     margin: 18,
+    marginBottom: 10,
     paddingHorizontal: 10,
 
   },
