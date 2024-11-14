@@ -138,10 +138,10 @@ const CreatePost: React.FC = () => {
       id: generateRandomId(),
       author: {
         id: userProfile.id,
-        email: userProfile.email ?? "",
-        username: userProfile.username ?? "",
-        name: userProfile.name ?? "",
-        lastname: userProfile.lastname ?? "",
+        email: userProfile.email ?? "iPost@gmail.com",
+        username: userProfile.username ?? "iPost",
+        name: userProfile.name ?? "iPost",
+        lastname: userProfile.lastname ?? "iPost",
         level: userProfile.crown,
         profileImage:
           userProfile.profileImage ?? Placeholders.DEFAULT_PROFILE_PHOTO,

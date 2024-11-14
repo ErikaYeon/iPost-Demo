@@ -119,7 +119,9 @@ const Post: React.FC<PostProps> = ({
   const ListaReduxComments = useSelector(
     (state: RootState) => state.comments.comments
   );
-  const { isLoading } = useSelector((state: RootState) => state.comments);
+  const { isLoading, commentsCount } = useSelector(
+    (state: RootState) => state.comments
+  );
   const [isImageModalVisible, setImageModalVisible] = useState(false);
   const [selectedImageUri, setSelectedImageUri] = useState<string | null>(null);
 
@@ -370,7 +372,7 @@ const Post: React.FC<PostProps> = ({
               <Text
                 style={[styles.counter, { color: theme.colors.textPrimary }]}
               >
-                {comments}
+                {commentsCount}
               </Text>
             </TouchableOpacity>
           </View>
