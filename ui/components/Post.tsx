@@ -1,6 +1,6 @@
 // Post.tsx
 import React, { useState, useEffect } from 'react';
-import { View, Text, Image, TouchableOpacity, FlatList, TextInput, KeyboardAvoidingView, Platform ,  Alert, Share, ActivityIndicator} from 'react-native';
+import { View, Text, Image, TouchableOpacity, FlatList, TextInput, KeyboardAvoidingView, Platform ,  Alert, Share} from 'react-native';
 import Modal from 'react-native-modal';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import LikeIcon from '../../assets/images/icons/like.svg';
@@ -302,53 +302,53 @@ const Post: React.FC<PostProps> = ({
 
 
 {/* {!isLoading && !isAd && ListaReduxComments.length > 0 &&  ( */}
-      {!isLoading && !isAd && (
-        <Modal
-          isVisible={isModalVisible}
-          onBackdropPress={closeModal}
-          onSwipeComplete={closeModal}
-          swipeDirection="down"
-          style={styles.modal}
-        >
-          <KeyboardAvoidingView
-            behavior={Platform.OS === 'ios' ? 'padding' : 'height'}
-            style={[styles.modalContent, { backgroundColor: theme.colors.background }]}
-          >
-            {ListaReduxComments.length > 0 ? (
-              <FlatList
-                data={ListaReduxComments}
-                keyExtractor={(item) => item.id}
-                renderItem={({ item }) => (
-                  <View style={styles.commentContainer}>
-                    <View style={styles.commentTextContainer}>
-                      <View style={styles.commentHeader}>
-                        {renderCrownIcon(levelToCrown(1))}  
-                        <Text style={[styles.commentUsername, { color: theme.colors.textPrimary }]}>{item.author.name}</Text>
-                      </View>
-                      <Text style={[styles.commentText, { color: theme.colors.textSecondary }]}>{item.content}</Text>
-                    </View>
-                  </View>
-                )}
-              />
-            ) : (
-              <ActivityIndicator size="large" color={theme.colors.primary} />
-            )}
-            <View style={styles.inputContainer}>
-              <TextInput
-                style={[styles.input, { color: theme.colors.textPrimary }]}
-                placeholder="Agrega un comentario..."
-                placeholderTextColor={theme.colors.textSecondary}
-                value={newComment}
-                onChangeText={setNewComment}
-              />
-              <TouchableOpacity style={styles.sendButton} onPress={handleAddComment}>
-                <SendCommentIcon width={24} height={24} fill={theme.colors.primary} />
-              </TouchableOpacity>
+{!isLoading && !isAd && (
+  <Modal
+    isVisible={isModalVisible}
+    onBackdropPress={closeModal}
+    onSwipeComplete={closeModal}
+    swipeDirection="down"
+    style={styles.modal}
+  >
+    <KeyboardAvoidingView
+      behavior={Platform.OS === 'ios' ? 'padding' : 'height'}
+      style={[styles.modalContent, { backgroundColor: theme.colors.background }]}
+    >
+      {ListaReduxComments.length > 0 && (
+        <FlatList
+          data={ListaReduxComments}
+          keyExtractor={(item) => item.id}
+          renderItem={({ item }) => (
+            <View style={styles.commentContainer}>
+              <View style={styles.commentTextContainer}>
+                <View style={styles.commentHeader}>
+                  {renderCrownIcon(levelToCrown(1))}  
+                  <Text style={[styles.commentUsername, { color: theme.colors.textPrimary }]}>{item.author.name}</Text>
+                </View>
+                <Text style={[styles.commentText, { color: theme.colors.textSecondary }]}>{item.content}</Text>
+              </View>
             </View>
-          </KeyboardAvoidingView>
-        </Modal>
+          )}
+        />
       )}
-      
+
+      <View style={styles.inputContainer}>
+        <TextInput
+          style={[styles.input, { color: theme.colors.textPrimary }]}
+          placeholder="Agrega un comentario..."
+          placeholderTextColor={theme.colors.textSecondary}
+          value={newComment}
+          onChangeText={setNewComment}
+        />
+        <TouchableOpacity style={styles.sendButton} onPress={handleAddComment}>
+          <SendCommentIcon width={24} height={24} fill={theme.colors.primary} />
+        </TouchableOpacity>
+      </View>
+    </KeyboardAvoidingView>
+  </Modal>
+)}
+
+
       
 
       <View style={[styles.divider, { backgroundColor: theme.colors.textSecondary }]} />
