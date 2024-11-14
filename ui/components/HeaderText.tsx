@@ -14,7 +14,7 @@ const HeaderText: React.FC<HeaderTextProps> = ({ text, theme }) => {
 
 const styles = StyleSheet.create({
   headerText: {
-    fontSize: 33,
+    fontSize: 32,
     marginBottom: 20,
   },
 });

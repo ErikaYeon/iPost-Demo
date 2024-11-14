@@ -25,7 +25,7 @@ const FirstScreen: React.FC = () => {
       {/* Texto "Bienvenidos a iPost" */}
       <View style={{ flexDirection: 'row', justifyContent: 'center', alignItems: 'baseline' }}>
         <HeaderText text= {('Bienvenido a')} theme={theme} />
-        <Text style={{ fontSize: 33, fontWeight: 'bold', color: theme.colors.textPrimary }}> iPost</Text>
+        <Text style={{ fontSize: 32, fontWeight: 'bold', color: theme.colors.textPrimary }}> iPost</Text>
       </View> 
 
       {/* Contenedor de botones */}
@@ -37,7 +37,7 @@ const FirstScreen: React.FC = () => {
           onPress={() => router.push('/LogIn')}
           type="primary"
           theme={theme}
-          style={{marginBottom: theme.spacing.medium, width: '90%' }} 
+          style={{marginBottom: theme.spacing.medium, width: '85%' }} 
         />
 
         {/* Botón de Registrarse */}
@@ -46,7 +46,7 @@ const FirstScreen: React.FC = () => {
           onPress={() => router.push('/SignUp')}
           type="secondary"
           theme={theme}
-          style={{ marginBottom: theme.spacing.medium, width: '90%' }} 
+          style={{ marginBottom: theme.spacing.medium, width: '85%' }} 
         />
       </View>
 
@@ -55,7 +55,7 @@ const FirstScreen: React.FC = () => {
 
       {/* Botón de Google con imagen PNG */}
       <TouchableOpacity
-        style={[sharedStyles.googleButton, { marginTop: theme.spacing.medium, width: '90%' }]}
+        style={[sharedStyles.googleButton, { marginTop: theme.spacing.medium, width: '85%' }]}
         onPress={() => router.push('/LogInFaceId')}
       >
         <Image 
