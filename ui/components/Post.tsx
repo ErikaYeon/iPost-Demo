@@ -19,7 +19,16 @@ import styles from '../../ui/styles/PostStyles';
 import { Crown } from '@/types/models';
 // import Clipboard from '@react-native-clipboard/clipboard';
 import * as Clipboard from 'expo-clipboard';
+<<<<<<< HEAD
 import { Video } from 'expo-av';
+=======
+import Placeholders from '@/constants/ProfilePlaceholders';
+import { useDispatch, useSelector } from 'react-redux';
+import { AppDispatch, RootState } from '@/redux/store';
+import { addCommentToList, postComments, fetchCommentsByPostId } from '@/redux/slices/commentsSlice';
+import { commentType1 } from '@/types/apiContracts';
+import { levelToCrown } from '@/types/mappers';
+>>>>>>> origin/main
 
 // import {  setLike } from '../../redux/slices/createPostSlice';
 // import { useDispatch,  useSelector } from 'react-redux';
@@ -46,7 +55,8 @@ type PostProps = {
   comments: number;
   isVip?: boolean;
   crownType: Crown;
-  commentSection?: CommentType[];
+  // commentSection?: CommentType[];
+  commentSection?: commentType1[];
   onLike: () => void;
   onComment: () => void;
   onSave: () => void;
@@ -154,20 +164,25 @@ const Post: React.FC<PostProps> = ({
     onSave();
   };
 
-  const openModal = () => setModalVisible(true);
+  const openModal = async () => {
+    await dispatch(fetchCommentsByPostId(postId))
+     setModalVisible(true) 
+    console.log('lista de redux'+ ListaReduxComments)
+  }
+
   const closeModal = () => setModalVisible(false);
 
   const handleAddComment = () => {
     if (newComment.trim()) {
       const newCommentData = {
         id: (commentsList.length + 1).toString(),
-        username: '@your_username',
+        username: userProfile.name ?? '@your_username',
         text: newComment,
-        profilePictureUrl: 'https://your-profile-picture-url.com',
+        profilePictureUrl: Placeholders.DEFAULT_PROFILE_PHOTO,
         isVip: false,
         crownType: Crown.GREY,
       };
-      setCommentsList([...commentsList, newCommentData]);
+      // setCommentsList([...commentsList, newCommentData]);
       setNewComment('');
     }
   };
@@ -183,7 +198,7 @@ const Post: React.FC<PostProps> = ({
         message: description,  
         url: description,  
       });
-
+      return result;
     } catch (error) {
       Alert.alert('Error al compartir');
     }
@@ -252,7 +267,7 @@ const Post: React.FC<PostProps> = ({
         </TouchableOpacity>
         <TouchableOpacity onPress={openModal} style={styles.iconButton}>
           <CommentIcon width={20} height={20} />
-          <Text style={[styles.counter, { color: theme.colors.textPrimary }]}>{commentsList.length}</Text>
+          <Text style={[styles.counter, { color: theme.colors.textPrimary }]}>{comments}</Text>
         </TouchableOpacity>
       </View>
       <TouchableOpacity onPress={toggleSave} style={styles.iconButton}>
@@ -265,17 +280,17 @@ const Post: React.FC<PostProps> = ({
     </View>
   )}
    
-      {commentsList.length > 0 && !isAd && (
+      {comments > 0 && !isAd && (
         <>
           <TouchableOpacity onPress={openModal} style={styles.viewAllCommentsButton}>
             <Text style={[styles.viewAllCommentsText, { color: theme.colors.secondary }]}>Ver todos los comentarios</Text>
           </TouchableOpacity>
           <View style={styles.firstCommentContainer}>
             <Text style={{ color: theme.colors.textPrimary }}>
-              <Text style={styles.commentUsername}>{commentsList[0].username} </Text>
-              <Text>{commentsList[0].text}</Text>
+              <Text style={styles.commentUsername}>{ListaReduxComments[0].user.name} </Text>
+              <Text>{ListaReduxComments[0].text}</Text>
             </Text>
-          </View>
+          </View> */}
         </>
       )}
 
@@ -292,8 +307,9 @@ const Post: React.FC<PostProps> = ({
           behavior={Platform.OS === 'ios' ? 'padding' : 'height'}
           style={[styles.modalContent, { backgroundColor: theme.colors.background }]}
         >
+      {ListaReduxComments.length > 0 && (
           <FlatList
-            data={commentsList}
+          data={ListaReduxComments}
             keyExtractor={(item) => item.id}
             renderItem={({ item }) => (
               <View style={styles.commentContainer}>
@@ -308,6 +324,8 @@ const Post: React.FC<PostProps> = ({
               </View>
             )}
           />
+      )}
+
           <View style={styles.inputContainer}>
             <TextInput
               style={[styles.input, { color: theme.colors.textPrimary }]}
