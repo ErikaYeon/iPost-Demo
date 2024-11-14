@@ -11,7 +11,7 @@ interface PostState {
   hasMore: boolean;
   offset: number;
   limit: number;
-  //lastFetch: Date;
+  time: string;
 }
 
 const initialState: PostState = {
@@ -21,19 +21,23 @@ const initialState: PostState = {
   hasMore: true,
   offset: 0,
   limit: APIConstants.LIST_LIMIT,
-  //lastFetch: new Date(new Date().setDate(new Date().getDate() - 7)), // Fecha una semana antes de hoy ToDo: falta arreglar
+  time: new Date().toISOString(),
 };
 
 export const fetchPosts = createAsyncThunk(
   "posts/fetchPosts",
-  async (params: { userId: string }, { getState }) => {
+  async (params: { userId: string; isRefreshing: boolean }, { getState }) => {
     const state = getState() as RootState;
-    const { offset, limit } = state.posts;
-    const { userId } = params;
-    return await getPosts( userId, offset, limit);
+    state.posts.offset = 0;
+    const { offset, limit, time } = state.posts;
+    const { userId, isRefreshing } = params;
+    if (isRefreshing) {
+      return await getPosts(userId, offset, limit, time);
+    } else {
+      return await getPosts(userId, offset, limit);
+    }
   }
 );
-
 
 const postSlice = createSlice({
   name: "posts",
@@ -42,9 +46,9 @@ const postSlice = createSlice({
     addNewPost(state, action: PayloadAction<Post>) {
       const newPost = {
         ...action.payload,
-        createdAt: new Date(action.payload.createdAt).toISOString(), // Asegura que `createdAt` sea una cadena en formato ISO
+        createdAt: new Date(action.payload.createdAt).toISOString(),
       };
-      state.posts = [newPost, ...state.posts]; // Agregar el nuevo post al inicio
+      state.posts = [newPost, ...state.posts];
     },
   },
   extraReducers: (builder) => {
@@ -54,14 +58,18 @@ const postSlice = createSlice({
         state.error = null;
       })
       .addCase(fetchPosts.fulfilled, (state, action) => {
+        state.posts = [];
+        console.log(action.payload);
         state.loading = false;
         state.posts = action.payload.map((post) => ({
           ...post,
-          createdAt: new Date(post.createdAt).toISOString(), 
+          createdAt: new Date(post.createdAt).toISOString(),
           isAd: false,
         }));
         state.hasMore = action.payload.length > 0;
         state.offset += APIConstants.LIST_LIMIT;
+        state.time = new Date().toISOString();
+        console.log("LOS POST QUE TRAJO" + state.posts.length);
       })
       .addCase(fetchPosts.rejected, (state, action) => {
         state.loading = false;
