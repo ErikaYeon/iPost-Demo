@@ -19,6 +19,7 @@ import styles from '../../ui/styles/PostStyles';
 import { Crown } from '@/types/models';
 // import Clipboard from '@react-native-clipboard/clipboard';
 import * as Clipboard from 'expo-clipboard';
+import { Video } from 'expo-av';
 
 // import {  setLike } from '../../redux/slices/createPostSlice';
 // import { useDispatch,  useSelector } from 'react-redux';
@@ -40,7 +41,7 @@ type PostProps = {
   description: string;
   location?: string;
   date: string;
-  images: string[];
+  images: { uri: string; type: string }[];
   initialLikes: number;
   comments: number;
   isVip?: boolean;
@@ -218,15 +219,26 @@ const Post: React.FC<PostProps> = ({
         {/* <Text style={[styles.date, { color: theme.colors.textSecondary }]}>{truncateDate(date)}</Text> */}
       </View>
 
-      {images.length > 0 && (
-        <FlatList
-          data={images}
-          horizontal
-          keyExtractor={(item, index) => index.toString()}
-          renderItem={({ item }) => <Image source={{ uri: item }} style={styles.postImage} />}
-          showsHorizontalScrollIndicator={false}
-        />
+  {images.length > 0 && (
+    <FlatList
+      data={images}
+      horizontal
+      keyExtractor={(item, index) => index.toString()}
+      renderItem={({ item }) => (
+        item.type === 'image' ? (
+          <Image source={{ uri: item.uri }} style={styles.postImage} />
+        ) : (
+          <Video
+            source={{ uri: item.uri }}
+            style={styles.postImage}
+            useNativeControls
+            resizeMode="cover"
+          />
+        )
       )}
+      showsHorizontalScrollIndicator={false}
+    />
+  )}
  {!isAd && (
     <View style={styles.interactionContainer}>
       <View style={styles.leftInteraction}>

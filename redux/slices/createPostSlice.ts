@@ -6,7 +6,7 @@ import { APIError, CreatePostRequest, Post } from "@/types/apiContracts";
 
 interface CreatePostState {
   postContent: string;
-  selectedImages: string[];
+  selectedImages: { uri: string; type: string }[]; 
   location: string;
   date: string;
   loading: boolean;
@@ -18,7 +18,7 @@ interface CreatePostState {
 
 interface PartialPostData {
   postContent: string;
-  selectedImages: string[];
+  selectedImages: { uri: string; type: string }[]; 
   location: string;
   date: string;
 }
@@ -57,17 +57,17 @@ const createPostSlice = createSlice({
     setLocation(state, action: PayloadAction<string>) {
       state.location = action.payload;
     },
-    setSelectedImages(state, action: PayloadAction<string[]>) {
+    setSelectedImages(state, action: PayloadAction<{ uri: string; type: string }[]>) {
       state.selectedImages = action.payload;
-    },
+    },    
     setDate(state, action: PayloadAction<string>) {
       state.date = action.payload;
     },
     setLike: (state, action: PayloadAction<number>) => {
       state.likes = action.payload;
     },
-    setAllPostData(state, action: PayloadAction<PartialPostData>) { // Acción para establecer todos los datos al mismo tiempo
-        const { postContent, selectedImages, location, date} = action.payload;
+    setAllPostData(state, action: PayloadAction<PartialPostData>) { // Acción actualizada
+      const { postContent, selectedImages, location, date } = action.payload;
       state.postContent = postContent;
       state.selectedImages = selectedImages;
       state.location = location;
