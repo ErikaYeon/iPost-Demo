@@ -59,8 +59,8 @@ const styles = StyleSheet.create({
     fontSize: 15,
   },
   postImage: {
-    width: 300,
-    height: 300,
+    width: 325,
+    height: 325,
     borderRadius: 8,
     marginRight: 10,
   },

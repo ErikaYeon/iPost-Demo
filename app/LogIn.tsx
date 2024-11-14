@@ -106,7 +106,7 @@ const LogInScreen: React.FC = () => {
       />
 
       <View
-        style={{ flexDirection: "row", justifyContent: "center", marginTop: 7 }}
+        style={{ flexDirection: "row", justifyContent: "center", marginTop: 7, marginBottom: 10 }}
       >
         <RegularText text="¿No tienes una cuenta? " theme={theme} />
         <LinkText
@@ -115,11 +115,11 @@ const LogInScreen: React.FC = () => {
           theme={theme}
         />
       </View>
-
+      
       <RegularTextLine text="o continua con" theme={theme} />
 
       <TouchableOpacity
-        style={[sharedStyles.googleButton, { marginTop: theme.spacing.xsmall }]}
+        style={[sharedStyles.googleButton, { marginTop: theme.spacing.medium }]}
         onPress={() => console.log("Google")}
       >
         <Image

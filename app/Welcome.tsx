@@ -46,7 +46,7 @@ const FirstScreen: React.FC = () => {
         source={require("../assets/images/icons/LogoiPost.png")}
         style={{ width: 180, height: 180 }}
       />
-
+      {/* Texto "Bienvenidos a iPost" */}
       <View
         style={{
           flexDirection: "row",
@@ -54,10 +54,18 @@ const FirstScreen: React.FC = () => {
           alignItems: "baseline",
         }}
       >
-        <HeaderText text="Bienvenidos a" theme={theme} />
+        <HeaderText text="Bienvenido a" theme={theme} />
         <Text
           style={{
             fontSize: 34,
+            fontWeight: "bold",
+            color: theme.colors.textPrimary,
+          }}
+        ></Text>
+
+        <Text
+          style={{
+            fontSize: 32,
             fontWeight: "bold",
             color: theme.colors.textPrimary,
           }}
@@ -66,6 +74,27 @@ const FirstScreen: React.FC = () => {
           iPost
         </Text>
       </View>
+
+      {/* Contenedor de botones */}
+      {/* <View style={{ width: "100%", alignItems: "center" }}> */}
+      {/* Botón de Iniciar sesión */}
+      {/* <CustomButton
+          title={"Iniciar sesión"}
+          onPress={() => router.push("/LogIn")}
+          type="primary"
+          theme={theme}
+          style={{ marginBottom: theme.spacing.medium, width: "85%" }}
+        />
+
+        
+        <CustomButton
+          title={"Registrarse"}
+          onPress={() => router.push("/SignUp")}
+          type="secondary"
+          theme={theme}
+          style={{ marginBottom: theme.spacing.medium, width: "85%" }}
+        />
+      </View> */}
 
       {authStatus === "loading" ? (
         <ActivityIndicator size="large" color="#ffffff" />
@@ -90,7 +119,10 @@ const FirstScreen: React.FC = () => {
 
       <RegularTextLine text="o continua con" theme={theme} />
       <TouchableOpacity
-        style={[sharedStyles.googleButton, { marginTop: theme.spacing.xsmall }]}
+        style={[
+          sharedStyles.googleButton,
+          { marginTop: theme.spacing.medium, width: "85%" },
+        ]}
         onPress={() => router.push("/LogInFaceId")}
       >
         <Image
