@@ -1,4 +1,3 @@
-import { APIError } from "@/types/apiContracts";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import axios from "axios";
 import { router } from "expo-router";
@@ -25,18 +24,25 @@ api.interceptors.request.use(
   }
 );
 
-// Interceptor para manejar el error 401 y renovar el token
+// Interceptor para manejar el error 403 y renovar el token
 api.interceptors.response.use(
-  (response) => response, // Si la respuesta es exitosa, simplemente devuélvela
+  (response) => response, // 
   async (error) => {
     const originalRequest = error.config;
+    const refreshToken = await AsyncStorage.getItem("refresh_token");
 
-    // Si el error es 401 y no hemos intentado ya renovar el token
-    if (error.response?.status === 401 && !originalRequest._retry) {
+    // Inicializar retry_count en originalRequest si no está definido
+    if (!originalRequest._retry_count) {
+      originalRequest._retry_count = 0;
+    }
+
+    // Si el error es 403 y no hemos intentado ya renovar el token
+    if (error.response?.status === 403 && !originalRequest._retry && refreshToken && originalRequest._retry_count < 4) {
       originalRequest._retry = true; // Evita un bucle infinito de intentos
+      originalRequest._retry_count += 1; // Aumenta el contador de reintentos
 
       // Intenta renovar el token de acceso
-      const newAccessToken = await refreshAccessToken();
+      const newAccessToken = await refreshAccessToken(refreshToken);
 
       if (newAccessToken) {
         // Si la renovación fue exitosa, configura el nuevo token en el encabezado de la solicitud original
@@ -51,37 +57,8 @@ api.interceptors.response.use(
         router.push("/LogIn");
       }
     }
-
-    return Promise.reject(error); // Si no es un 401 o la renovación falla, rechaza el error
+    return Promise.reject(error); // Si no es un 403 o la renovación falla, rechaza el error
   }
 );
-
-export const handleError = (error: any, onRetry?: () => void): APIError => {
-  if (axios.isAxiosError(error)) {
-    if (error.response) {
-      const errorMessage = `API Error: ${
-        error.response.data?.message || "Error desconocido"
-      }`;
-      const errorStatus = ` - Status: ${error.response.status}`;
-      console.log(errorMessage + errorStatus);
-      if (onRetry) {
-        onRetry();
-      }
-      router.push('/ErrorGeneral');
-      throw new APIError(errorMessage);
-    } else if (error.request) {
-      router.push('/ErrorConexion');
-      throw new APIError("Network Error: No response from server.");
-    } else {
-      router.push('/ErrorGeneral');
-      throw new APIError(`Axios Configuration Error: ${error.message}`);
-    }
-  } else {
-    // router.push('/ErrorGeneral');
-    throw new APIError(
-      `Unexpected Error: ${error.message || "Unknown error occurred."}`
-    );
-  }
-};
 
 export default api;

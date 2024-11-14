@@ -16,6 +16,7 @@ interface AuthState {
   refresh_token: string | null;
   loading: boolean;
   error: string | null;
+  status: 'idle' | 'loading' | 'authenticated' | 'notAuthenticated';
 }
 
 const initialState: AuthState = {
@@ -23,6 +24,7 @@ const initialState: AuthState = {
   refresh_token: null,
   loading: false,
   error: null,
+  status: 'notAuthenticated',
 };
 
 export const signupAsync = createAsyncThunk<
