@@ -1,5 +1,14 @@
 import React, { useEffect, useState } from "react";
-import { SafeAreaView, FlatList, StatusBar, StyleSheet, View, Text, ActivityIndicator, RefreshControl } from "react-native";
+import {
+  SafeAreaView,
+  FlatList,
+  StatusBar,
+  StyleSheet,
+  View,
+  Text,
+  ActivityIndicator,
+  RefreshControl,
+} from "react-native";
 import Post from "@/ui/components/Post";
 import { darkTheme } from "../../ui/styles/Theme";
 import InitialMessage from "../../ui/components/InitialMessage";
@@ -8,62 +17,74 @@ import { AppDispatch, RootState } from "../../redux/store";
 import Placeholders from "@/constants/ProfilePlaceholders";
 import { levelToCrown } from "@/types/mappers";
 import { fetchPosts } from "@/redux/slices/postSlice";
-import {  addPost,addPosts } from '@/redux/slices/timelineSlice';
+import { addPost, addPosts } from "@/redux/slices/timelineSlice";
 import { fetchAds, fillPostsFromAds } from "@/redux/slices/adsSlice";
 
 const home = () => {
   const theme = darkTheme;
   const userProfile = useSelector((state: RootState) => state.profile);
-  const localPosts = useSelector((state: RootState) => state.timeline.LocalListPosts)
+  const localPosts = useSelector(
+    (state: RootState) => state.timeline.LocalListPosts
+  );
   const dispatch = useDispatch<AppDispatch>();
-  const { posts, loading, error, hasMore } = useSelector((state: RootState) => state.posts);
-  const  ListAdsPost  = useSelector((state: RootState) => state.ads.postsFromAds);
+  const { posts, loading, error, hasMore } = useSelector(
+    (state: RootState) => state.posts
+  );
+  const ListAdsPost = useSelector((state: RootState) => state.ads.postsFromAds);
   const [hasFetched, setHasFetched] = useState(false);
   const [refreshing, setRefreshing] = useState(false);
-  
+
   // Función para cargar los posts (llama al thunk fetchPosts)
-  const loadPosts = (userId: string) => {
-    dispatch(fetchPosts({ userId }));
+  const loadPosts = (userId: string, isRefreshing: boolean) => {
+    if (isRefreshing) {
+      dispatch(fetchPosts({ userId, isRefreshing }));
+    } else {
+      dispatch(fetchPosts({ userId, isRefreshing: false }));
+    }
   };
 
   // Carga inicial de los posts usando isFirstLoad para que solo se ejecute una vez
   useEffect(() => {
-    if (userProfile.id && !hasFetched ) {
-      loadPosts(userProfile.id);
-       dispatch(fetchAds())
-       dispatch(fillPostsFromAds());
+    if (userProfile.id && !hasFetched) {
+      loadPosts(userProfile.id, false);
+      dispatch(fetchAds());
+      dispatch(fillPostsFromAds());
       setHasFetched(true);
     }
-  }, [userProfile.id,  dispatch, hasFetched]);
+  }, [userProfile.id, dispatch, hasFetched]);
 
   useEffect(() => {
     if (hasFetched) {
       dispatch(fillPostsFromAds());
-      dispatch(addPosts({newPosts: posts, postsFromAds: ListAdsPost}))
+      dispatch(addPosts({ newPosts: posts, postsFromAds: ListAdsPost }));
     }
   }, [posts, hasFetched, dispatch]);
 
   // Función para scroll infinito
   const handleLoadMore = () => {
-    console.log("handleLoadMore called, hasMore:", hasMore, "loading:", loading, "userProfile.id:", userProfile.id);
+    console.log(
+      "handleLoadMore called, hasMore:",
+      hasMore,
+      "loading:",
+      loading,
+      "userProfile.id:",
+      userProfile.id
+    );
     if (hasMore && !loading && userProfile.id) {
-      loadPosts(userProfile.id); 
+      loadPosts(userProfile.id, false);
     }
   };
 
-  //ToDo: a checkear si funciona
   const onRefresh = () => {
     setRefreshing(true);
     // Simulando un retraso en la carga de los posts
     setTimeout(() => {
       if (userProfile.id) {
-        loadPosts(userProfile.id);  // Llamada al fetch
-        
+        loadPosts(userProfile.id, true); // Llamada al fetch
       }
       setRefreshing(false);
-    }, 1500);  // Retraso de 1.5 segundos antes de hacer el refresh
+    }, 1500); // Retraso de 1.5 segundos antes de hacer el refresh
   };
-  
 
   return (
     <SafeAreaView
@@ -79,7 +100,7 @@ const home = () => {
         <View style={stylesLocal.loadingContainer}>
           <ActivityIndicator size="large" color="#ffffff" />
         </View>
-      ) : !loading && localPosts.length === 0  ? (
+      ) : !loading && localPosts.length === 0 ? (
         <InitialMessage theme={theme} /> // Mensaje inicial si no hay posts
       ) : (
         <View style={stylesLocal.container}>
@@ -89,7 +110,9 @@ const home = () => {
             data={localPosts}
             renderItem={({ item }) => (
               <Post
-                profilePictureUrl={item.author.profileImage ?? Placeholders.DEFAULT_PROFILE_PHOTO}
+                profilePictureUrl={
+                  item.author.profileImage ?? Placeholders.DEFAULT_PROFILE_PHOTO
+                }
                 name={item.author.name}
                 username={item.author.username}
                 description={item.title}
@@ -98,7 +121,7 @@ const home = () => {
                 // date={item.createdAt.toString()}
                 images={item.contents.map((content) => ({
                   uri: content,
-                  type: content.endsWith('.mp4') ? 'video' : 'image'
+                  type: content.endsWith(".mp4") ? "video" : "image",
                 }))}
                 initialLikes={item.likesCount}
                 comments={item.commentsCount}
@@ -112,17 +135,19 @@ const home = () => {
                 theme={darkTheme}
                 postId={item.id} // Asegúrate de pasar el postId
                 userId={userProfile.id} // Asegúrate de pasar el userId
-                isAd ={item.isAd}
+                isAd={item.isAd}
               />
             )}
             keyExtractor={(item, index) => `${item.id}-${index}`}
             onEndReached={handleLoadMore}
-            onEndReachedThreshold={0.5} 
-            ListFooterComponent={loading && hasMore ? <Text>Cargando...</Text> : null} 
+            onEndReachedThreshold={0.5}
+            ListFooterComponent={
+              loading && hasMore ? <Text>Cargando...</Text> : null
+            }
             refreshControl={
               <RefreshControl
                 refreshing={refreshing}
-                onRefresh={onRefresh}  // Llamada a la función onRefresh
+                onRefresh={onRefresh} // Llamada a la función onRefresh
               />
             }
           />
@@ -160,6 +185,3 @@ const stylesLocal = StyleSheet.create({
     alignItems: "center",
   },
 });
-
-
-

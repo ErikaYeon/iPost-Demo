@@ -69,9 +69,6 @@ const profileSlice = createSlice({
       const { email } = action.payload;
       state.email = email;
     },
-    setProfileUserId: (state, action: PayloadAction<string>) => {
-      state.id = action.payload;
-    },
     setProfileUsername: (
       state,
       action: PayloadAction<{ username: string }>
@@ -146,7 +143,6 @@ export const {
   setProfileExtraData,
   clearProfile,
   setProfileUsername,
-  setProfileUserId,
 } = profileSlice.actions;
 
 export const selectProfile = (state: RootState) => state;

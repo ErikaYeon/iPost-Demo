@@ -43,20 +43,6 @@ import {
 } from "@/redux/slices/commentsSlice";
 import { commentType1 } from "@/types/apiContracts";
 import { levelToCrown } from "@/types/mappers";
-import { router } from "expo-router";
-
-// import {  setLike } from '../../redux/slices/createPostSlice';
-// import { useDispatch,  useSelector } from 'react-redux';
-// import { RootState } from '../../redux/store';
-
-type CommentType = {
-  id: string;
-  username: string;
-  text: string;
-  profilePictureUrl: string;
-  isVip?: boolean;
-  crownType: Crown;
-};
 
 type PostProps = {
   profilePictureUrl: string;
@@ -128,12 +114,15 @@ const Post: React.FC<PostProps> = ({
   const [isModalVisible, setModalVisible] = useState(false);
   const [commentsList, setCommentsList] = useState(commentSection);
   const [newComment, setNewComment] = useState("");
+  const [commentsCount, setCommentsCount] = useState(comments); 
   const userProfile = useSelector((state: RootState) => state.profile);
   const dispatch = useDispatch<AppDispatch>();
   const ListaReduxComments = useSelector(
     (state: RootState) => state.comments.comments
   );
-  const { isLoading } = useSelector((state: RootState) => state.comments);
+  const { isLoading} = useSelector(
+    (state: RootState) => state.comments
+  );
   const [isImageModalVisible, setImageModalVisible] = useState(false);
   const [selectedImageUri, setSelectedImageUri] = useState<string | null>(null);
 
@@ -207,49 +196,44 @@ const Post: React.FC<PostProps> = ({
 
   const closeModal = () => setModalVisible(false);
 
+  function generarNumeroRandom() {
+    return Math.floor(Math.random() * 900) + 100;
+  }
+
   const handleAddComment = () => {
     if (newComment.trim()) {
-      const newCommentData = {
-        id: (commentsList.length + 1).toString(),
-        username: userProfile.name ?? "@your_username",
-        text: newComment,
-        profilePictureUrl: Placeholders.DEFAULT_PROFILE_PHOTO,
-        isVip: false,
-        crownType: Crown.GREY,
+      const newCommentData: commentType1 = {
+        id: generarNumeroRandom().toString(),
+        content: newComment,
+        createAt: new Date().toISOString(),
+        author: {
+          name: userProfile.name ?? "@your_username",
+          nickname: userProfile.username ?? "",
+          lastname: userProfile.lastname ?? "",
+          id: userProfile.id,
+          profileImage: userProfile.profileImage ?? Placeholders.DEFAULT_PROFILE_PHOTO,
+          level: 1,
+          active: true,
+        },
       };
-      // setCommentsList([...commentsList, newCommentData]);
-      setNewComment("");
-    }
-    const Data: commentType1 = {
-      id: (commentsList.length + 1).toString(),
-      content: newComment,
-      createAt: new Date().toISOString(),
-      author: {
-        name: userProfile.name,
-        nickname: userProfile.username,
-        lastname: userProfile.lastname,
-        id: userProfile.id,
-        profileImage:
-          userProfile.profileImage ?? Placeholders.DEFAULT_PROFILE_PHOTO,
-        level: 1,
-        active: true,
-      },
-    };
-    dispatch(addCommentToList(Data));
+
+    setCommentsList((prevCommentsList) => [...prevCommentsList, newCommentData]);
+
+    setCommentsCount((prevComments) => prevComments + 1);
+
+    setNewComment("");
+
+    dispatch(addCommentToList(newCommentData));
     dispatch(
       postComments({
         comment: newComment,
         authorId: userProfile.id,
         postId: postId,
-      })
-    );
+        })
+      );
+    }
   };
-  // const handleCopyToClipboard = () => {
-  //   const textToCopy = description;
-  //   Clipboard.setString(textToCopy);
 
-  //   Alert.alert('Texto copiado', 'El texto ha sido copiado al portapapeles');
-  // };
   const handleShare = async () => {
     try {
       const result = await Share.share({
@@ -309,7 +293,6 @@ const Post: React.FC<PostProps> = ({
         <Text style={[styles.date, { color: theme.colors.textSecondary }]}>
           {truncateDate(date)}
         </Text>
-        {/* <Text style={[styles.date, { color: theme.colors.textSecondary }]}>{truncateDate(date)}</Text> */}
       </View>
 
       {images.length > 0 && (
@@ -377,10 +360,8 @@ const Post: React.FC<PostProps> = ({
             </TouchableOpacity>
             <TouchableOpacity onPress={openModal} style={styles.iconButton}>
               <CommentIcon width={20} height={20} />
-              <Text
-                style={[styles.counter, { color: theme.colors.textPrimary }]}
-              >
-                {comments}
+              <Text style={[styles.counter, { color: theme.colors.textPrimary }]}>
+                {commentsCount}
               </Text>
             </TouchableOpacity>
           </View>
@@ -409,16 +390,9 @@ const Post: React.FC<PostProps> = ({
               Ver todos los comentarios
             </Text>
           </TouchableOpacity>
-          {/* <View style={styles.firstCommentContainer}>
-            <Text style={{ color: theme.colors.textPrimary }}>
-              <Text style={styles.commentUsername}>{ListaReduxComments[0].user.name} </Text>
-              <Text>{ListaReduxComments[0].text}</Text>
-            </Text>
-          </View> */}
         </>
       )}
 
-      {/* {!isLoading && !isAd && ListaReduxComments.length > 0 &&  ( */}
       {!isLoading && !isAd && (
         <Modal
           isVisible={isModalVisible}
@@ -442,7 +416,7 @@ const Post: React.FC<PostProps> = ({
                   <View style={styles.commentContainer}>
                     <View style={styles.commentTextContainer}>
                       <View style={styles.commentHeader}>
-                        {renderCrownIcon(levelToCrown(1))}
+                        {renderCrownIcon(levelToCrown(item.author.level))}
                         <Text
                           style={[
                             styles.commentUsername,

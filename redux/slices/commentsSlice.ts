@@ -1,8 +1,6 @@
-import { createSlice, createAsyncThunk, PayloadAction } from '@reduxjs/toolkit';
-import { getComments, setComment } from '../../networking/commentService'
-import { commentType1 } from '@/types/apiContracts';
-
-
+import { createSlice, createAsyncThunk, PayloadAction } from "@reduxjs/toolkit";
+import { getComments, setComment } from "../../networking/commentService";
+import { commentType1 } from "@/types/apiContracts";
 
 interface CommentsState {
   comments: commentType1[];
@@ -16,38 +14,44 @@ const initialState: CommentsState = {
   error: null,
 };
 
-
 export const fetchCommentsByPostId = createAsyncThunk<commentType1[], string>(
-  'posts/getComments',
+  "posts/getComments",
   async (postId: string, { rejectWithValue }) => {
     try {
       const comments = await getComments(postId);
       return comments;
     } catch (error: any) {
-      return rejectWithValue(error.message || 'Error fetching comments');
+      return rejectWithValue(error.message || "Error fetching comments");
     }
   }
 );
 
 export const postComments = createAsyncThunk(
-    'posts/setComment',
-    async ({ postId, authorId, comment }: { postId: string, authorId: string, comment: string }, { rejectWithValue }) => {
-      try {
-        await setComment(postId, authorId, comment);  
-      } catch (error: any) {
-        return rejectWithValue(error.message || 'Error set comment');
-      }
+  "posts/setComment",
+  async (
+    {
+      postId,
+      authorId,
+      comment,
+    }: { postId: string; authorId: string; comment: string },
+    { rejectWithValue }
+  ) => {
+    try {
+      await setComment(postId, authorId, comment);
+    } catch (error: any) {
+      return rejectWithValue(error.message || "Error set comment");
     }
-  );
+  }
+);
 
 // Slice de Redux Toolkit
 const commentsSlice = createSlice({
-  name: 'comments',
+  name: "comments",
   initialState,
   reducers: {
-    addCommentToList (state, action) {
-        state.comments.push(action.payload);
-      },
+    addCommentToList(state, action) {
+      state.comments.push(action.payload);
+    },
   },
   extraReducers: (builder) => {
     builder
@@ -58,11 +62,10 @@ const commentsSlice = createSlice({
       .addCase(fetchCommentsByPostId.fulfilled, (state, action) => {
         // state.comments = action.payload;
         state.comments = action.payload.map((comment) => {
-            return {
-              ...comment,
-              
-            };
-          });
+          return {
+            ...comment,
+          };
+        });
         state.isLoading = false;
       })
       .addCase(fetchCommentsByPostId.rejected, (state, action) => {
@@ -84,4 +87,4 @@ const commentsSlice = createSlice({
 });
 
 export default commentsSlice.reducer;
-export const {addCommentToList} = commentsSlice.actions
+export const { addCommentToList } = commentsSlice.actions;
