@@ -8,6 +8,7 @@ import RegularText from '@/ui/components/RegularText';
 import createSharedStyles from '@/ui/styles/SharedStyles';
 import { lightTheme, darkTheme } from '@/ui/styles/Theme';
 import LogInScreen from './LogIn';
+import EditProfile from './EditProfile';
 import Welcome from './Welcome';
 import store from '../redux/store';
 import { Provider } from 'react-redux';
