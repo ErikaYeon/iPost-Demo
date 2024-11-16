@@ -65,7 +65,7 @@ const EditProfile: React.FC = () => {
         <Text style={styles.subtitle}>Toca la foto para cambiarla</Text>
       </View>
 
-      <EditProfileHeader />
+      <EditProfileHeader /> 
 
       <ScrollView contentContainerStyle={styles.contentContainer}>
         <InputRow label="Nombre:" value={firstName} onChangeText={setFirstName} />
