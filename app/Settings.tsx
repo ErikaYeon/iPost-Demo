@@ -1,5 +1,5 @@
 import React, { useState } from "react";
-import { SafeAreaView, View, Text, StatusBar } from "react-native";
+import { SafeAreaView, View, Text, StatusBar, StyleSheet } from "react-native";
 import HeaderWithIcon from "../ui/components/HeaderWithIcon";
 import BackIcon from "../assets/images/icons/navigate_before.svg";
 import LightModeIcon from "../assets/images/icons/light_mode.svg";
@@ -8,16 +8,34 @@ import SelectableOption from "../ui/components/SelectableOption";
 import SettingsOption from "../ui/components/SettingsOption";
 import SettingsStyles from "../ui/styles/SettingsStyles"; // Importa los estilos desde SettingsStyles.ts
 import { darkTheme, lightTheme } from "../ui/styles/Theme";
+import ConfirmLogout from "../ui/components/ConfirmLogout";
+import ConfirmDeleteAccount from "../ui/components/ConfirmDeleteAccount"; // Importa el nuevo componente
 
 const SettingsScreen: React.FC = () => {
   const [themeMode, setThemeMode] = useState<"light" | "dark">("dark");
   const [language, setLanguage] = useState("Español");
+  const [isLogoutVisible, setLogoutVisible] = useState(false); // Controla la visibilidad de ConfirmLogout
+  const [isDeleteAccountVisible, setDeleteAccountVisible] = useState(false); // Controla la visibilidad de ConfirmDeleteAccount
 
   const theme = themeMode === "dark" ? darkTheme : lightTheme;
 
   const handlePasswordChange = () => console.log("Cambiar contraseña presionado");
-  const handleLogout = () => console.log("Cerrar sesión presionado");
-  const handleDeleteAccount = () => console.log("Eliminar cuenta presionado");
+  const handleLogout = () => setLogoutVisible(true); // Muestra ConfirmLogout
+  const handleDeleteAccount = () => setDeleteAccountVisible(true); // Muestra ConfirmDeleteAccount
+
+  const handleConfirmLogout = () => {
+    setLogoutVisible(false); // Oculta ConfirmLogout
+    console.log("Sesión cerrada");
+  };
+
+  const handleCancelLogout = () => setLogoutVisible(false); // Cancela ConfirmLogout
+
+  const handleConfirmDeleteAccount = () => {
+    setDeleteAccountVisible(false); // Oculta ConfirmDeleteAccount
+    console.log("Cuenta eliminada permanentemente");
+  };
+
+  const handleCancelDeleteAccount = () => setDeleteAccountVisible(false); // Cancela ConfirmDeleteAccount
 
   const themeSelectedBackgroundColor = themeMode === "dark" ? "#FFFFFF" : "#12C1A4";
   const themeSelectedTextColor = themeMode === "dark" ? "#201E43" : "#FFFFFF";
@@ -119,6 +137,26 @@ const SettingsScreen: React.FC = () => {
           />
         </View>
       </View>
+
+      {/* Ventana emergente de ConfirmLogout */}
+      {isLogoutVisible && (
+        <ConfirmLogout
+          visible={isLogoutVisible}
+          onCancel={handleCancelLogout}
+          onConfirm={handleConfirmLogout}
+          theme={theme}
+        />
+      )}
+
+      {/* Ventana emergente de ConfirmDeleteAccount */}
+      {isDeleteAccountVisible && (
+        <ConfirmDeleteAccount
+          visible={isDeleteAccountVisible}
+          onCancel={handleCancelDeleteAccount}
+          onConfirm={handleConfirmDeleteAccount}
+          theme={theme}
+        />
+      )}
     </SafeAreaView>
   );
 };

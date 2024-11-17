@@ -1,5 +1,5 @@
 import React from 'react';
-import { TouchableOpacity, Text, ViewStyle } from 'react-native';
+import { TouchableOpacity, Text, ViewStyle, TextStyle } from 'react-native';
 import createStyles from '../styles/ButtonStyles';
 
 interface ButtonProps {
@@ -7,17 +7,26 @@ interface ButtonProps {
   onPress: () => void;
   type?: 'primary' | 'secondary';
   disabled?: boolean;
-  style?: ViewStyle;              
-  theme: any;                      
+  style?: ViewStyle;               // Personalización del estilo del botón
+  textStyle?: TextStyle;           // Personalización del estilo del texto
+  theme: any;                      // Tema dinámico
 }
 
-const CustomButton: React.FC<ButtonProps> = ({ title, onPress, type = 'primary', disabled = false, style, theme }) => {
+const CustomButton: React.FC<ButtonProps> = ({ 
+  title, 
+  onPress, 
+  type = 'primary', 
+  disabled = false, 
+  style, 
+  textStyle, 
+  theme 
+}) => {
   const styles = createStyles(theme);
 
   return (
     <TouchableOpacity
       style={[
-        { alignSelf: 'center' }, // Hace que el botón se centre en su contenedor
+        { alignSelf: 'center' }, // Centrar el botón
         styles.button,
         styles[type],
         disabled && styles.disabled,
@@ -27,7 +36,10 @@ const CustomButton: React.FC<ButtonProps> = ({ title, onPress, type = 'primary',
       disabled={disabled}
     >
       <Text 
-        style={type === 'primary' ? styles.buttonTextPrimary : styles.buttonTextSecondary}
+        style={[
+          type === 'primary' ? styles.buttonTextPrimary : styles.buttonTextSecondary,
+          textStyle, // Sobrescribir estilos del texto
+        ]}
       >
         {title}
       </Text>
