@@ -1,5 +1,5 @@
 import React from 'react';
-import { View, Text, TouchableOpacity, StyleSheet } from 'react-native';
+import { View, Text, TouchableOpacity, StyleSheet, Dimensions } from 'react-native';
 
 interface HeaderWithIconProps {
   iconComponent: () => React.ReactNode; // Cambiado a función para asegurar que devuelve un componente React
@@ -23,9 +23,14 @@ const HeaderWithIcon: React.FC<HeaderWithIconProps> = ({ iconComponent, title, o
         </TouchableOpacity>
         <Text style={[styles.title, { color: theme.colors.textPrimary }]}>{title}</Text>
       </View>
-      
-      {/* Línea debajo del encabezado con un margen inferior */}
-      <View style={[styles.line, { borderBottomColor: '#B5BACB', width: '100%', marginBottom: theme.spacing.medium }]} />
+
+      {/* Línea debajo del encabezado */}
+      <View
+        style={[
+          styles.line,
+          { borderBottomColor: theme.colors.textSecondary, marginBottom: theme.spacing.medium },
+        ]}
+      />
     </View>
   );
 };
@@ -34,16 +39,20 @@ const styles = StyleSheet.create({
   container: {
     flexDirection: 'row',
     alignItems: 'center',
-    paddingBottom: 5, 
+    paddingBottom: 5,
   },
   title: {
     marginLeft: 10,
     fontSize: 20,
     fontWeight: 'bold',
+    marginBottom: 5,
   },
   line: {
     borderBottomWidth: 1,
-    marginTop: 5,
+    width: Dimensions.get('window').width, // Asegura que ocupe todo el ancho de la pantalla
+    marginLeft: 0, // Elimina cualquier margen izquierdo
+    marginRight: 0, // Asegura que no haya margen derecho tampoco
+    alignSelf: 'center', // Alinea correctamente en caso de algún desajuste
   },
 });
 
