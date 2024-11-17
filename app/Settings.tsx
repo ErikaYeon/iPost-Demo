@@ -1,19 +1,12 @@
 import React, { useState } from "react";
-import {
-  SafeAreaView,
-  View,
-  Text,
-  StatusBar,
-  StyleSheet,
-  Platform,
-  Dimensions,
-} from "react-native";
+import { SafeAreaView, View, Text, StatusBar } from "react-native";
 import HeaderWithIcon from "../ui/components/HeaderWithIcon";
 import BackIcon from "../assets/images/icons/navigate_before.svg";
 import LightModeIcon from "../assets/images/icons/light_mode.svg";
 import DarkModeIcon from "../assets/images/icons/dark_mode.svg";
 import SelectableOption from "../ui/components/SelectableOption";
 import SettingsOption from "../ui/components/SettingsOption";
+import SettingsStyles from "../ui/styles/SettingsStyles"; // Importa los estilos desde SettingsStyles.ts
 import { darkTheme, lightTheme } from "../ui/styles/Theme";
 
 const SettingsScreen: React.FC = () => {
@@ -33,11 +26,11 @@ const SettingsScreen: React.FC = () => {
   const languageSelectedTextColor = themeMode === "light" ? "#FFFFFF" : theme.colors.background;
 
   return (
-    <SafeAreaView style={[styles.safeArea, { backgroundColor: theme.colors.background }]}>
+    <SafeAreaView style={[SettingsStyles.safeArea, { backgroundColor: theme.colors.background }]}>
       <StatusBar backgroundColor={theme.colors.background} barStyle="light-content" />
 
       {/* Header */}
-      <View style={styles.headerContainer}>
+      <View style={SettingsStyles.headerContainer}>
         <HeaderWithIcon
           iconComponent={() => (
             <BackIcon width={24} height={24} fill={theme.colors.textPrimary} />
@@ -49,10 +42,10 @@ const SettingsScreen: React.FC = () => {
       </View>
 
       {/* Body */}
-      <View style={styles.container}>
+      <View style={SettingsStyles.container}>
         {/* Tema */}
-        <Text style={[styles.sectionTitle, { color: theme.colors.textPrimary }]}>Tema</Text>
-        <View style={styles.optionContainer}>
+        <Text style={[SettingsStyles.sectionTitle, { color: theme.colors.textPrimary }]}>Tema</Text>
+        <View style={SettingsStyles.optionContainer}>
           <SelectableOption
             isSelected={themeMode === "light"}
             onPress={() => setThemeMode("light")}
@@ -76,8 +69,8 @@ const SettingsScreen: React.FC = () => {
         </View>
 
         {/* Idioma */}
-        <Text style={[styles.sectionTitle, { color: theme.colors.textPrimary }]}>Idioma</Text>
-        <View style={styles.optionContainer}>
+        <Text style={[SettingsStyles.sectionTitle, { color: theme.colors.textPrimary }]}>Idioma</Text>
+        <View style={SettingsStyles.optionContainer}>
           <SelectableOption
             isSelected={language === "Español"}
             onPress={() => setLanguage("Español")}
@@ -100,11 +93,11 @@ const SettingsScreen: React.FC = () => {
 
         {/* Opciones adicionales */}
         <View
-            style={[
-              styles.fullWidthDivider,
-              { backgroundColor: theme.colors.textSecondary },
-            ]}
-          />
+          style={[
+            SettingsStyles.fullWidthDivider,
+            { backgroundColor: theme.colors.textSecondary },
+          ]}
+        />
         <View>
           <SettingsOption
             text="Cambiar contraseña"
@@ -129,37 +122,5 @@ const SettingsScreen: React.FC = () => {
     </SafeAreaView>
   );
 };
-
-const styles = StyleSheet.create({
-  safeArea: {
-    flex: 1,
-    paddingTop: Platform.OS === "android" ? StatusBar.currentHeight + 10 : 30,
-  },
-  headerContainer: {
-    paddingHorizontal: 16,
-    paddingBottom: 10,
-  },
-  container: {
-    paddingHorizontal: 16,
-  },
-  sectionTitle: {
-    fontSize: 16,
-    fontWeight: "bold",
-    marginBottom: 10,
-  },
-  optionContainer: {
-    flexDirection: "row",
-    borderWidth: 1,
-    borderColor: darkTheme.colors.textSecondary,
-    borderRadius: 8,
-    overflow: "hidden",
-    marginBottom: 20,
-  },
-  fullWidthDivider: {
-    height: 1,
-    width: Dimensions.get("window").width, // Asegura que ocupe todo el ancho
-    alignSelf: "center",
-  },
-});
 
 export default SettingsScreen;
