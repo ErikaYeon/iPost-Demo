@@ -21,11 +21,10 @@ const sharedStyles = createSharedStyles(theme);
 const index = () => {
   // return <Redirect href="/home" />;
   return (
-    <Provider store={store} >
-      <Redirect href="/home" />
+    <Provider store={store}>
+      <Redirect href="/Welcome" />
     </Provider>
-    
-  )
+  );
 };
 
 export default index;
