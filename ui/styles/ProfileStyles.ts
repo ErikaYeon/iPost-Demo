@@ -44,7 +44,7 @@ export const createProfileScreenStyles = (theme: any) =>
       justifyContent: "center",
       alignItems: "center",
       borderBottomWidth: 2,
-      borderBottomColor: theme.colors.textPrimary, // Color del borde
+      borderBottomColor: '#B5BACB', // Color del borde
       backgroundColor: theme.colors.background,
     },
     tabButton: {
