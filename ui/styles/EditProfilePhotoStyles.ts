@@ -17,6 +17,11 @@ export const createEditProfilePhotoStyles = (theme: Theme) =>
       height: 330,
       borderRadius: 0,
     },
+    coverImage: {
+      width: "100%",
+      height: 160, // Ajusta según el diseño
+      resizeMode: "cover", // Asegura que la imagen ocupe todo el espacio
+    },    
     optionContainer: {
       marginTop: -15
     },
