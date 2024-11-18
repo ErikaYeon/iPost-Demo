@@ -8,7 +8,7 @@ import BackIcon from "../assets/images/icons/navigate_before.svg";
 import { darkTheme } from "../ui/styles/Theme";
 import styles from "../ui/styles/ChangePasswordStyles";
 import { useDispatch } from "react-redux";
-import { changePasswordAsync } from "@/redux/slices/authSlice"; // Falta crear esto
+//import { changePasswordAsync } from "@/redux/slices/authSlice"; // Falta crear esto
 import { AppDispatch } from "@/redux/store";
 
 const theme = darkTheme;

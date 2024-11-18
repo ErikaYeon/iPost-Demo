@@ -41,11 +41,11 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     paddingBottom: 5,
     paddingTop: 7,
-    paddingLeft: 10,
+    paddingLeft: 0,
   },
   title: {
     marginLeft: 10,
-    fontSize: 20,
+    fontSize: 18,
     fontWeight: 'bold',
     marginBottom: 5,
   },

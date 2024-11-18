@@ -1,115 +1,194 @@
 import React, { useState } from "react";
-import {
-  SafeAreaView,
-  View,
-  StatusBar,
-  Platform,
-  StyleSheet,
-} from "react-native";
-import CustomButton from "../ui/components/CustomButton";
+import { SafeAreaView, View, Text, StatusBar } from "react-native";
 import HeaderWithIcon from "../ui/components/HeaderWithIcon";
-import InputField from "../ui/components/InputField";
-import LinkText from "../ui/components/LinkText";
 import BackIcon from "../assets/images/icons/navigate_before.svg";
-import { darkTheme } from "../ui/styles/Theme";
+import BackIconLightMode from "../assets/images/icons/navigate_before_lightMode.svg";
+import LightModeIcon from "../assets/images/icons/light_mode.svg";
+import DarkModeIcon from "../assets/images/icons/dark_mode.svg";
+import LightModeSelectedIcon from "../assets/images/icons/light_mode_selected.svg";
+import SelectableOption from "../ui/components/SelectableOption";
+import SettingsOption from "../ui/components/SettingsOption";
+import SettingsStyles from "../ui/styles/SettingsStyles";
+import { darkTheme, lightTheme } from "../ui/styles/Theme";
+import ConfirmLogout from "../ui/components/ConfirmLogout";
+import ConfirmDeleteAccount from "../ui/components/ConfirmDeleteAccount";
 
-const theme = darkTheme;
+const SettingsScreen: React.FC = () => {
+  const [themeMode, setThemeMode] = useState<"light" | "dark">("dark");
+  const [language, setLanguage] = useState("Español");
+  const [isLogoutVisible, setLogoutVisible] = useState(false);
+  const [isDeleteAccountVisible, setDeleteAccountVisible] = useState(false);
 
-const ChangePasswordScreen: React.FC = () => {
-  const [currentPassword, setCurrentPassword] = useState("");
-  const [newPassword, setNewPassword] = useState("");
+  const theme = themeMode === "dark" ? darkTheme : lightTheme;
 
-  const handleChangePassword = () => {
-    console.log("Contraseña cambiada");
-    // Implementar lógica para cambiar contraseña aquí
-  };
+  const containerBackgroundColor = themeMode === "dark" ? "#383860" : "#DCDCE4";
+  const themeSelectedBackgroundColor = themeMode === "dark" ? "#EEEEEE" : theme.colors.background;
+  const lightModeTextColor = themeMode === "dark" ? "#EEEEEE" : "#201E43";
+  const darkModeTextColor = themeMode === "dark" ? "#383860" : "#201E43";
+  const languageSelectedBackgroundColor = themeSelectedBackgroundColor;
+  const languageSelectedTextColor = themeMode === "dark" ? "#383860" : "#201E43";
+
+  const renderSelectableOption = ({
+    isSelected,
+    onPress,
+    text,
+    icon,
+    selectedTextColor,
+    unselectedTextColor,
+  }: {
+    isSelected: boolean;
+    onPress: () => void;
+    text: string;
+    icon?: JSX.Element;
+    selectedTextColor: string;
+    unselectedTextColor: string;
+  }) => (
+    <SelectableOption
+      isSelected={isSelected}
+      onPress={onPress}
+      text={text}
+      icon={icon}
+      selectedBackgroundColor={themeSelectedBackgroundColor}
+      unselectedBackgroundColor={containerBackgroundColor}
+      selectedTextColor={selectedTextColor}
+      unselectedTextColor={unselectedTextColor}
+    />
+  );
+
+  const renderSettingsOption = ({
+    text,
+    onPress,
+    color,
+    dividerColor,
+  }: {
+    text: string;
+    onPress: () => void;
+    color: string;
+    dividerColor: string;
+  }) => (
+    <SettingsOption text={text} onPress={onPress} color={color} dividerColor={dividerColor} />
+  );
 
   return (
-    <View style={styles.container}>
-      <StatusBar
-        backgroundColor={theme.colors.background}
-        barStyle="light-content"
-      />
-      <SafeAreaView style={styles.safeArea}>
+    <SafeAreaView style={[SettingsStyles.safeArea, { backgroundColor: theme.colors.background }]}>
+      <StatusBar backgroundColor={theme.colors.background} barStyle="light-content" />
+
+      {/* Header */}
+      <View style={SettingsStyles.headerContainer}>
         <HeaderWithIcon
-          iconComponent={() => (
-            <BackIcon width={24} height={24} fill={theme.colors.textPrimary} />
-          )}
-          title="Cambiar contraseña"
+          iconComponent={() =>
+            themeMode === "light" ? (
+              <BackIconLightMode width={15} height={15} fill={theme.colors.textPrimary} />
+            ) : (
+              <BackIcon width={18} height={18} fill={theme.colors.textPrimary} />
+            )
+          }
+          title="Ajustes"
           onPress={() => console.log("Volver")}
           theme={theme}
         />
-      </SafeAreaView>
-
-      <View style={styles.contentContainer}>
-        <InputField
-          label="Contraseña actual"
-          placeholder="**************"
-          value={currentPassword}
-          onChangeText={setCurrentPassword}
-          secureTextEntry
-          theme={theme}
-          style={styles.inputField} // Aplicando estilo al componente directamente
-        />
-
-        <InputField
-          label="Contraseña nueva"
-          placeholder="**************"
-          value={newPassword}
-          onChangeText={setNewPassword}
-          secureTextEntry
-          theme={theme}
-          style={styles.inputField} // Aplicando estilo al componente directamente
-        />
-
-        <CustomButton
-          title="Cambiar"
-          onPress={handleChangePassword}
-          type="primary"
-          theme={theme}
-          style={styles.button}
-        />
-
-        <LinkText
-          text="Olvidé mi contraseña"
-          onPress={() => console.log("Olvidé mi contraseña")}
-          theme={theme}
-          style={styles.link}
-        />
       </View>
-    </View>
+
+      {/* Body */}
+      <View style={SettingsStyles.container}>
+        {/* Tema */}
+        <Text style={[SettingsStyles.sectionTitle, { color: theme.colors.textPrimary }]}>Tema</Text>
+        <View style={[SettingsStyles.optionContainer, { backgroundColor: containerBackgroundColor }]}>
+          {renderSelectableOption({
+            isSelected: themeMode === "light",
+            onPress: () => setThemeMode("light"),
+            text: "Claro",
+            icon: themeMode === "light" ? (
+              <LightModeSelectedIcon width={24} height={24} />
+            ) : (
+              <LightModeIcon width={24} height={24} />
+            ),
+            selectedTextColor: lightModeTextColor,
+            unselectedTextColor: "#EEEEEE",
+          })}
+          {renderSelectableOption({
+            isSelected: themeMode === "dark",
+            onPress: () => setThemeMode("dark"),
+            text: "Oscuro",
+            icon: <DarkModeIcon width={24} height={24} />,
+            selectedTextColor: darkModeTextColor,
+            unselectedTextColor: "#201E43",
+          })}
+        </View>
+
+        {/* Idioma */}
+        <Text style={[SettingsStyles.sectionTitle, { color: theme.colors.textPrimary }]}>Idioma</Text>
+        <View style={[SettingsStyles.optionContainer, { backgroundColor: containerBackgroundColor }]}>
+          {renderSelectableOption({
+            isSelected: language === "Español",
+            onPress: () => setLanguage("Español"),
+            text: "Español",
+            selectedTextColor: languageSelectedTextColor,
+            unselectedTextColor: theme.colors.textSecondary,
+          })}
+          {renderSelectableOption({
+            isSelected: language === "Inglés",
+            onPress: () => setLanguage("Inglés"),
+            text: "Inglés",
+            selectedTextColor: languageSelectedTextColor,
+            unselectedTextColor: theme.colors.textSecondary,
+          })}
+        </View>
+
+        {/* Opciones adicionales */}
+        <View
+          style={[
+            SettingsStyles.fullWidthDivider,
+            { backgroundColor: theme.colors.textSecondary },
+          ]}
+        />
+        <View>
+          {renderSettingsOption({
+            text: "Cambiar contraseña",
+            onPress: () => console.log("Cambiar contraseña presionado"),
+            color: theme.colors.textPrimary,
+            dividerColor: theme.colors.textSecondary,
+          })}
+          {renderSettingsOption({
+            text: "Cerrar sesión",
+            onPress: () => setLogoutVisible(true),
+            color: theme.colors.textPrimary,
+            dividerColor: theme.colors.textSecondary,
+          })}
+          {renderSettingsOption({
+            text: "Eliminar cuenta",
+            onPress: () => setDeleteAccountVisible(true),
+            color: theme.colors.error,
+            dividerColor: theme.colors.textSecondary,
+          })}
+        </View>
+      </View>
+
+      {/* Ventanas emergentes */}
+      {isLogoutVisible && (
+        <ConfirmLogout
+          visible={isLogoutVisible}
+          onCancel={() => setLogoutVisible(false)}
+          onConfirm={() => {
+            setLogoutVisible(false);
+            console.log("Sesión cerrada");
+          }}
+          theme={theme}
+        />
+      )}
+      {isDeleteAccountVisible && (
+        <ConfirmDeleteAccount
+          visible={isDeleteAccountVisible}
+          onCancel={() => setDeleteAccountVisible(false)}
+          onConfirm={() => {
+            setDeleteAccountVisible(false);
+            console.log("Cuenta eliminada permanentemente");
+          }}
+          theme={theme}
+        />
+      )}
+    </SafeAreaView>
   );
 };
 
-const styles = StyleSheet.create({
-  container: {
-    flex: 1,
-    backgroundColor: theme.colors.background,
-  },
-  safeArea: {
-    backgroundColor: theme.colors.background,
-    paddingTop: Platform.OS === "android" ? StatusBar.currentHeight : 0,
-  },
-  contentContainer: {
-    paddingHorizontal: 16,
-    paddingTop: 20,
-    alignItems: "center",
-  },
-  inputField: {
-    width: "90%", // Aplicando directamente al InputField
-    marginBottom: 20,
-    alignSelf: "center", // Asegura que se centre incluso si cambia el padre
-  },
-  button: {
-    width: "90%", // Ancho consistente con los inputs
-    marginTop: 10,
-    marginBottom: 20,
-    backgroundColor: theme.colors.primary,
-    alignSelf: "center", // Asegura el centrado
-  },
-  link: {
-    alignSelf: "center",
-  },
-});
-
-export default ChangePasswordScreen;
+export default SettingsScreen;

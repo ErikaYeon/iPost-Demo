@@ -1,5 +1,5 @@
 import { StyleSheet, Platform, StatusBar, Dimensions } from "react-native";
-import { darkTheme } from "../../ui/styles/Theme"; // Asegúrate de ajustar la ruta si es necesario
+import { darkTheme, lightTheme } from "../../ui/styles/Theme"; // Asegúrate de ajustar la ruta si es necesario
 
 const SettingsStyles = StyleSheet.create({
   safeArea: {
@@ -21,7 +21,7 @@ const SettingsStyles = StyleSheet.create({
   optionContainer: {
     flexDirection: "row",
     borderWidth: 1,
-    borderColor: darkTheme.colors.textSecondary,
+    borderColor: darkTheme.colors.textSecondary, // Ajusta el color dinámicamente en el componente principal si es necesario
     borderRadius: 8,
     overflow: "hidden",
     marginBottom: 20,
@@ -30,6 +30,7 @@ const SettingsStyles = StyleSheet.create({
     height: 1,
     width: Dimensions.get("window").width, // Asegura que ocupe todo el ancho
     alignSelf: "center",
+    backgroundColor: darkTheme.colors.textSecondary, // O asigna dinámicamente en el componente principal
   },
 });
 

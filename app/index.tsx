@@ -22,7 +22,7 @@ const index = () => {
   // return <Redirect href="/home" />;
   return (
     <Provider store={store} >
-      <Redirect href="/ChangePassword" />
+      <Redirect href="/Settings" />
     </Provider>
     
   )
