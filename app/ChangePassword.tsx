@@ -1,25 +1,29 @@
 import React, { useState } from "react";
-import { SafeAreaView, View, Text, StatusBar, Platform } from "react-native";
-import CustomButton from "../ui/components/CustomButton";
+import { SafeAreaView, View, Text, StatusBar } from "react-native";
 import HeaderWithIcon from "../ui/components/HeaderWithIcon";
-import InputField from "../ui/components/InputField";
-import LinkText from "../ui/components/LinkText";
 import BackIcon from "../assets/images/icons/navigate_before.svg";
-import { darkTheme } from "../ui/styles/Theme";
-import styles from "../ui/styles/ChangePasswordStyles";
+import BackIconLightMode from "../assets/images/icons/navigate_before_lightMode.svg";
+import InputField from "../ui/components/InputField";
+import CustomButton from "../ui/components/CustomButton";
+import LinkText from "../ui/components/LinkText";
+import { createChangePasswordStyles } from "../ui/styles/ChangePasswordStyles";
+import { darkTheme, lightTheme } from "../ui/styles/Theme";
 import { useDispatch } from "react-redux";
-//import { changePasswordAsync } from "@/redux/slices/authSlice"; // Falta crear esto
+// import { changePasswordAsync } from "@/redux/slices/authSlice"; // Si implementas esta acción
 import { AppDispatch } from "@/redux/store";
 
-const theme = darkTheme;
-
 const ChangePasswordScreen: React.FC = () => {
+  // Establecer manualmente el tema aquí (elige entre darkTheme o lightTheme)
+  const theme = darkTheme; // Cambia esto a lightTheme si prefieres el modo claro
+
   const dispatch = useDispatch<AppDispatch>();
   const [currentPassword, setCurrentPassword] = useState("");
   const [newPassword, setNewPassword] = useState("");
   const [confirmPassword, setConfirmPassword] = useState("");
   const [errorMessage, setErrorMessage] = useState("");
   const [successMessage, setSuccessMessage] = useState("");
+
+  const styles = createChangePasswordStyles(theme); // Genera estilos dinámicamente
 
   const handleChangePassword = async () => {
     if (!currentPassword || !newPassword || !confirmPassword) {
@@ -60,13 +64,17 @@ const ChangePasswordScreen: React.FC = () => {
     <View style={styles.container}>
       <StatusBar
         backgroundColor={theme.colors.background}
-        barStyle="light-content"
+        barStyle={theme === darkTheme ? "light-content" : "dark-content"}
       />
       <SafeAreaView style={styles.safeArea}>
         <HeaderWithIcon
-          iconComponent={() => (
-            <BackIcon width={15} height={15} fill={theme.colors.textPrimary} />
-          )}
+          iconComponent={() =>
+            theme === lightTheme ? (
+              <BackIconLightMode width={18} height={18} fill={theme.colors.textPrimary} />
+            ) : (
+              <BackIcon width={18} height={18} fill={theme.colors.textPrimary} />
+            )
+          }
           title="Cambiar contraseña"
           onPress={() => console.log("Volver")}
           theme={theme}

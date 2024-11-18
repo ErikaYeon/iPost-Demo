@@ -11,6 +11,7 @@ interface InputRowProps {
   onPressSelectable?: () => void;
   isDropdownVisible?: boolean;
   genderInputRef?: RefObject<TouchableOpacity>;
+  theme: any; // Agregado para manejar el tema
 }
 
 const InputRow: React.FC<InputRowProps> = ({
@@ -22,7 +23,10 @@ const InputRow: React.FC<InputRowProps> = ({
   onPressSelectable,
   isDropdownVisible,
   genderInputRef,
+  theme,
 }) => {
+  const styles = createStyles(theme);
+
   return (
     <View style={styles.inputRow}>
       <Text style={styles.inputLabel}>{label}</Text>
@@ -36,7 +40,7 @@ const InputRow: React.FC<InputRowProps> = ({
           <Icon
             name={isDropdownVisible ? "keyboard-arrow-up" : "keyboard-arrow-down"}
             size={26}
-            color="#201E43"
+            color='#201E43'
           />
         </TouchableOpacity>
       ) : (
@@ -52,39 +56,42 @@ const InputRow: React.FC<InputRowProps> = ({
   );
 };
 
-const styles = StyleSheet.create({
-  inputRow: {
-    flexDirection: "row",
-    alignItems: "center",
-    width: "100%",
-    marginBottom: 8,
-  },
-  inputLabel: {
-    width: 93,
-    fontSize: 14,
-    color: "#FFFF",
-    fontWeight: "bold",
-    marginRight: 8,
-  },
-  inputField: {
-    flex: 1,
-    backgroundColor: "#F5F5F5",
-    borderRadius: 6,
-    height: 32,
-    paddingHorizontal: 10,
-    flexDirection: "row",
-    alignItems: "center",
-    justifyContent: "space-between",
-  },
-  multilineInput: {
-    height: 80,
-    textAlignVertical: "top",
-  },
-  selectableText: {
-    fontSize: 14,
-    color: "#201E43",
-    flex: 1,
-  },
-});
+const createStyles = (theme: any) =>
+  StyleSheet.create({
+    inputRow: {
+      flexDirection: "row",
+      alignItems: "center",
+      width: "100%",
+      marginBottom: theme.spacing.small,
+    },
+    inputLabel: {
+      width: 93,
+      fontSize: theme.fonts.small,
+      color: theme.colors.textPrimary,
+      fontWeight: "bold",
+      marginRight: theme.spacing.small,
+    },
+    inputField: {
+      flex: 1,
+      backgroundColor: theme.colors.secondary,
+      borderRadius: 5,
+      borderColor: "#B5BACB", // Color del borde
+      borderWidth: 1, // Espesor del borde
+      height: 32,
+      paddingHorizontal: theme.spacing.small,
+      flexDirection: "row",
+      alignItems: "center",
+      justifyContent: "space-between",
+    },
+    multilineInput: {
+      height: 80,
+      textAlignVertical: "top",
+    },
+    selectableText: {
+      fontSize: theme.fonts.small,
+      color: '#201E43',
+      flex: 1,
+    },
+  });
 
 export default InputRow;

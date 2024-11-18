@@ -1,7 +1,8 @@
 import React from "react";
 import { View, Text, StyleSheet } from "react-native";
 
-const ProfileAdditionalInfo: React.FC = () => {
+const ProfileAdditionalInfo: React.FC<{ theme: any }> = ({ theme }) => {
+  const styles = createStyles(theme);
   return (
     <View style={styles.container}>
       <Text style={styles.bio}>- Comer, rezar, amar 🙏{"\n"} - Mamá de 🐶🐴</Text>
@@ -12,24 +13,25 @@ const ProfileAdditionalInfo: React.FC = () => {
   );
 };
 
-const styles = StyleSheet.create({
-  container: {
-    paddingHorizontal: 16,
-    marginTop: 12,
-  },
-  bio: {
-    color: "#FFF",
-    fontSize: 14,
-    marginBottom: 4,
-  },
-  followInfo: {
-    color: "#FFF",
-    fontSize: 14,
-    marginVertical:10,
-  },
-  boldText: {
-    fontWeight: "bold",
-  },
-});
+const createStyles = (theme: any) =>
+  StyleSheet.create({
+    container: {
+      paddingHorizontal: 16,
+      marginTop: 12,
+    },
+    bio: {
+      color: theme.colors.textPrimary,
+      fontSize: theme.fonts.small,
+      marginBottom: 4,
+    },
+    followInfo: {
+      color: theme.colors.textPrimary,
+      fontSize: theme.fonts.small,
+      marginVertical: 10,
+    },
+    boldText: {
+      fontWeight: "bold",
+    },
+  });
 
 export default ProfileAdditionalInfo;
