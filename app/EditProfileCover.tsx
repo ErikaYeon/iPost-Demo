@@ -5,17 +5,19 @@ import OptionButton from "../ui/components/OptionButton";
 import CustomButton from "../ui/components/CustomButton";
 import * as ImagePicker from "expo-image-picker";
 import { createEditProfilePhotoStyles } from "../ui/styles/EditProfilePhotoStyles"; // Puedes usar los mismos estilos o crear otros específicos
-import { darkTheme } from "../ui/styles/Theme";
+import { darkTheme, lightTheme } from "../ui/styles/Theme";
 import BackIcon from "../assets/images/icons/navigate_before.svg";
 import BackIconLightMode from "../assets/images/icons/navigate_before_lightMode.svg";
 import CameraIcon from "../assets/images/icons/camera.svg";
 import UploadIcon from "../assets/images/icons/photo.svg";
+import CameraIconLight from "../assets/images/icons/camera_lightMode.svg";
+import UploadIconLight from "../assets/images/icons/photo_lightMode.svg";
 import { useRouter } from "expo-router";
 
 const EditProfileCover: React.FC = () => {
   const [selectedImage, setSelectedImage] = useState<string | null>(null);
   const router = useRouter();
-  const theme = darkTheme; // Cambiar a `lightTheme` si es necesario
+  const theme = darkTheme; // Cambiar a `darkTheme` si es necesario
   const styles = createEditProfilePhotoStyles(theme);
 
   const handleTakePhoto = async () => {
@@ -28,7 +30,7 @@ const EditProfileCover: React.FC = () => {
     const result = await ImagePicker.launchCameraAsync({
       mediaTypes: ImagePicker.MediaTypeOptions.Images,
       allowsEditing: true,
-      aspect: [16, 7], // Define el aspecto 16:9 para la foto de portada
+      aspect: [16, 7], // Define el aspecto para la foto de portada
       quality: 0.8,
     });
 
@@ -47,7 +49,7 @@ const EditProfileCover: React.FC = () => {
     const result = await ImagePicker.launchImageLibraryAsync({
       mediaTypes: ImagePicker.MediaTypeOptions.Images,
       allowsEditing: true,
-      aspect: [16, 7], // Define el aspecto 16:9 para la foto de portada
+      aspect: [16, 7], // Define el aspecto para la foto de portada
       quality: 0.8,
     });
 
@@ -71,13 +73,13 @@ const EditProfileCover: React.FC = () => {
     <SafeAreaView style={styles.container}>
       <StatusBar
         backgroundColor={theme.colors.background}
-        barStyle={theme.isDark ? "light-content" : "dark-content"}
+        barStyle={theme === darkTheme ? "light-content" : "dark-content"}
       />
 
       {/* Header */}
       <HeaderWithIcon
         iconComponent={() =>
-          theme.isDark ? (
+          theme === darkTheme ? (
             <BackIcon width={18} height={18} fill={theme.colors.textPrimary} />
           ) : (
             <BackIconLightMode
@@ -105,13 +107,25 @@ const EditProfileCover: React.FC = () => {
       {/* Contenedor de Opciones */}
       <View style={styles.optionContainer}>
         <OptionButton
-          iconComponent={() => <CameraIcon width={24} height={24} />}
+          iconComponent={() =>
+            theme === darkTheme ? (
+              <CameraIcon width={24} height={24} />
+            ) : (
+              <CameraIconLight width={24} height={24} />
+            )
+          }
           text="Tomar foto"
           onPress={handleTakePhoto}
           theme={theme}
         />
         <OptionButton
-          iconComponent={() => <UploadIcon width={24} height={24} />}
+          iconComponent={() =>
+            theme === darkTheme ? (
+              <UploadIcon width={24} height={24} />
+            ) : (
+              <UploadIconLight width={24} height={24} />
+            )
+          }
           text="Subir imagen"
           onPress={handleUploadImage}
           theme={theme}

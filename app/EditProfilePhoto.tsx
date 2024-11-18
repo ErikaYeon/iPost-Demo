@@ -5,17 +5,19 @@ import OptionButton from "../ui/components/OptionButton";
 import CustomButton from "../ui/components/CustomButton";
 import * as ImagePicker from "expo-image-picker";
 import { createEditProfilePhotoStyles } from "../ui/styles/EditProfilePhotoStyles";
-import { darkTheme } from "../ui/styles/Theme";
+import { darkTheme, lightTheme } from "../ui/styles/Theme";
 import BackIcon from "../assets/images/icons/navigate_before.svg";
 import BackIconLightMode from "../assets/images/icons/navigate_before_lightMode.svg";
 import CameraIcon from "../assets/images/icons/camera.svg";
 import UploadIcon from "../assets/images/icons/photo.svg";
+import CameraIconLight from "../assets/images/icons/camera_lightMode.svg";
+import UploadIconLight from "../assets/images/icons/photo_lightMode.svg";
 import { useRouter } from "expo-router";
 
 const EditProfilePhoto: React.FC = () => {
   const [selectedImage, setSelectedImage] = useState<string | null>(null);
   const router = useRouter();
-  const theme = darkTheme; // Cambiar a `lightTheme` si es necesario
+  const theme = lightTheme; // Cambiar a `lightTheme` si es necesario
   const styles = createEditProfilePhotoStyles(theme);
 
   const handleTakePhoto = async () => {
@@ -105,13 +107,25 @@ const EditProfilePhoto: React.FC = () => {
       {/* Contenedor de Opciones */}
       <View style={styles.optionContainer}>
         <OptionButton
-          iconComponent={() => <CameraIcon width={24} height={24} />}
+          iconComponent={() =>
+            theme === darkTheme ? (
+              <CameraIcon width={24} height={24} />
+            ) : (
+              <CameraIconLight width={24} height={24} />
+            )
+          }
           text="Tomar foto"
           onPress={handleTakePhoto}
           theme={theme}
         />
         <OptionButton
-          iconComponent={() => <UploadIcon width={24} height={24} />}
+          iconComponent={() =>
+            theme === darkTheme ? (
+              <UploadIcon width={24} height={24} />
+            ) : (
+              <UploadIconLight width={24} height={24} />
+            )
+          }
           text="Subir imagen"
           onPress={handleUploadImage}
           theme={theme}
