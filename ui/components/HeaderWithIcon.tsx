@@ -40,6 +40,8 @@ const styles = StyleSheet.create({
     flexDirection: 'row',
     alignItems: 'center',
     paddingBottom: 5,
+    paddingTop: 7,
+    paddingLeft: 10,
   },
   title: {
     marginLeft: 10,
