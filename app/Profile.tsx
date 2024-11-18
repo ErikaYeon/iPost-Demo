@@ -11,7 +11,7 @@ import { darkTheme, lightTheme } from "@/ui/styles/Theme"; // Importamos únicam
 
 const ProfileScreen: React.FC = () => {
   const [activeTab, setActiveTab] = useState("post"); // Estado para el tab activo
-  const theme = lightTheme; // Usamos el tema oscuro por defecto
+  const theme = darkTheme; // Usamos el tema oscuro por defecto
   const styles = createProfileScreenStyles(theme); // Genera estilos dinámicos con el tema oscuro
 
   const photosToDisplay = activeTab === "post" ? postsData : savedData;

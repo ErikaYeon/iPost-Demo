@@ -26,10 +26,40 @@ export const createProfileScreenStyles = (theme: any) =>
       height: screenWidth / 3 - 2,
       borderRadius: theme.borderRadius,
     },
-    followButton: {
-      backgroundColor: theme.colors.primary,
-      borderRadius: theme.borderRadius * 2,
-      paddingHorizontal: theme.spacing.large,
-      paddingVertical: theme.spacing.small,
+    followButtonContainer: {
+      alignItems: "center",
+      marginVertical: 6,
     },
+    followButton: {
+      paddingVertical: 10,
+      borderRadius: 30,
+    },
+    followButtonText: {
+      fontSize: 16,
+      fontWeight: "bold",
+      textAlign: "center",
+    },    
+    tabsContainer2: {
+      flexDirection: "row",
+      justifyContent: "center",
+      alignItems: "center",
+      borderBottomWidth: 2,
+      borderBottomColor: theme.colors.textPrimary, // Color del borde
+      backgroundColor: theme.colors.background,
+    },
+    tabButton: {
+      alignItems: "center",
+      justifyContent: "center",
+      paddingVertical: 10,
+    },
+    tabButtonDisabled: {
+      alignItems: "center",
+      justifyContent: "center",
+      paddingVertical: 10,
+    },
+    tabButtonText: {
+      fontSize: 14,
+      fontWeight: "bold",
+      color: theme.colors.textPrimary, // Siempre mantiene este color
+    },  
   });

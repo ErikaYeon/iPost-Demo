@@ -1,50 +1,66 @@
 import React, { useState } from "react";
-import { View } from "react-native";
-import { SafeAreaView } from "react-native-safe-area-context"; // Importa SafeAreaView
+import { View, TouchableOpacity, Text, Dimensions } from "react-native";
+import { SafeAreaView } from "react-native-safe-area-context";
 import ProfileHeader from "@/ui/components/ProfileHeader";
 import ProfileAdditionalInfo from "@/ui/components/ProfileAdditionalInfo";
-import TabButton from "@/ui/components/TabButton";
-import CustomButton from "../ui/components/CustomButton";
 import PostImageGrid from "@/ui/components/PostImageGrid";
-import styles from "@/ui/styles/ProfileStyles";
-import { postsData, savedData } from "@/assets/mockdata";
-import { darkTheme, lightTheme } from "../ui/styles/Theme"; // Asegúrate de ajustar la ruta si es necesario
-
-
-const theme = darkTheme;
+import { postsData } from "@/assets/mockdata";
+import { createProfileScreenStyles } from "@/ui/styles/ProfileStyles";
+import { darkTheme, lightTheme } from "@/ui/styles/Theme";
 
 const OtherProfileScreen: React.FC = () => {
-  const [activeTab, setActiveTab] = useState("post");
+  const [isFollowing, setIsFollowing] = useState(false);
+  const theme = lightTheme;
+  const styles = createProfileScreenStyles(theme);
 
-
-  const photosToDisplay = activeTab === "post" ? postsData : savedData;
-
-  const handleFollow = () => {
-    console.log("Follow button pressed");
-  };
-  
+  const screenWidth = Dimensions.get("window").width;
+  const buttonWidth = screenWidth * 0.85;
 
   return (
-    <SafeAreaView style={[styles.container, { flex: 1 }]}> 
-  
-      <ProfileHeader />
+    <SafeAreaView style={styles.container}>
+      {/* Header de Perfil sin íconos de edición */}
+      <ProfileHeader theme={theme} isOtherProfile={true} />
 
-      <ProfileAdditionalInfo />
+      {/* Información Adicional */}
+      <ProfileAdditionalInfo theme={theme} />
 
-      <CustomButton
-          title="Cambiar"
-          onPress={handleFollow}
-          type="primary"
-          theme={theme}
-          style={styles.followButton}
-        />
-
-      <View style={styles.tabsContainer}>
-        <TabButton text="POST"/>
+      {/* Botón de Seguir/Dejar de Seguir */}
+      <View style={styles.followButtonContainer}>
+        <TouchableOpacity
+          style={[
+            styles.followButton,
+            isFollowing
+              ? {
+                  backgroundColor: theme.colors.background,
+                  borderWidth: 1,
+                  borderColor: "#B5BACB",
+                }
+              : { backgroundColor: theme.colors.primary },
+            { width: buttonWidth },
+          ]}
+          onPress={() => setIsFollowing(!isFollowing)}
+        >
+          <Text
+            style={[
+              styles.followButtonText,
+              isFollowing ? { color: theme.colors.textPrimary } : { color: theme.colors.textOnPrimary },
+            ]}
+          >
+            {isFollowing ? "Dejar de Seguir" : "Seguir"}
+          </Text>
+        </TouchableOpacity>
       </View>
 
-      <View style={{ flex: 1 }}>
-        <PostImageGrid posts={photosToDisplay} />
+      {/* Tabs */}
+      <View style={styles.tabsContainer2}>
+        <View style={styles.tabButtonDisabled}>
+          <Text style={styles.tabButtonText}>POST</Text>
+        </View>
+      </View>
+
+      {/* Grilla de Imágenes */}
+      <View style={styles.gridContainer}>
+        <PostImageGrid posts={postsData} theme={theme} />
       </View>
     </SafeAreaView>
   );

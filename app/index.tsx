@@ -15,14 +15,14 @@ import { Provider } from 'react-redux';
 import { Redirect } from 'expo-router';
 
 
-const theme = lightTheme;  // Para alternar entre light y dark mode manualmente
+const theme = darkTheme;  // Para alternar entre light y dark mode manualmente
 const sharedStyles = createSharedStyles(theme);
 
 const index = () => {
   // return <Redirect href="/home" />;
   return (
     <Provider store={store} >
-      <Redirect href="/EditProfile" />
+      <Redirect href="/OtherProfile" />
     </Provider>
     
   )

@@ -4,7 +4,7 @@ import CrownIcon from "../../assets/images/icons/gamif_crown_3.svg";
 import EditIcon from "../../assets/images/icons/edit.svg";
 import SettingsIcon from "../../assets/images/icons/settings.svg";
 
-const ProfileHeader: React.FC<{ theme: any }> = ({ theme }) => {
+const ProfileHeader: React.FC<{ theme: any; isOtherProfile?: boolean }> = ({ theme, isOtherProfile = false }) => {
   const styles = createStyles(theme);
   return (
     <>
@@ -27,14 +27,16 @@ const ProfileHeader: React.FC<{ theme: any }> = ({ theme }) => {
             </View>
             <Text style={styles.username}>@maria_gnz</Text>
           </View>
-          <View style={styles.iconsContainer}>
-            <TouchableOpacity style={styles.icon}>
-              <EditIcon width={20} height={20} />
-            </TouchableOpacity>
-            <TouchableOpacity style={styles.icon}>
-              <SettingsIcon width={20} height={20} />
-            </TouchableOpacity>
-          </View>
+          {!isOtherProfile && (
+            <View style={styles.iconsContainer}>
+              <TouchableOpacity style={styles.icon}>
+                <EditIcon width={20} height={20} />
+              </TouchableOpacity>
+              <TouchableOpacity style={styles.icon}>
+                <SettingsIcon width={20} height={20} />
+              </TouchableOpacity>
+            </View>
+          )}
         </View>
       </View>
     </>
