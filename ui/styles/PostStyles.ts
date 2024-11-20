@@ -157,6 +157,45 @@ const styles = StyleSheet.create({
     paddingHorizontal: 15,
     borderRadius: 5,
   },
+  singleImage: {
+    width: "100%",
+    height: 300,
+    resizeMode: "contain",
+    borderRadius: 8,
+  },
+  playPauseButton: {
+    position: "absolute",
+    top: "50%",
+    left: "50%",
+    transform: [{ translateX: -40 }, { translateY: -40 }],
+    width: 80,
+    height: 80,
+    alignItems: "center",
+    justifyContent: "center",
+  },
+  playIcon: {
+    width: 0,
+    height: 0,
+    borderLeftWidth: 30,
+    borderLeftColor: "white",
+    borderTopWidth: 20,
+    borderTopColor: "transparent",
+    borderBottomWidth: 20,
+    borderBottomColor: "transparent",
+  },
+  pauseIcon: {
+    flexDirection: "row",
+    justifyContent: "center", // Centra ambas barras
+    alignItems: "center", // Asegura que estén alineadas verticalmente
+    width: 40, // Ancho total del ícono
+    height: 40, // Altura total del ícono
+  },
+  pauseBar: {
+    width: 12, // Ancho de cada barra
+    height: 40, // Altura de las barras
+    backgroundColor: "white",
+    marginHorizontal: 4, // Espaciado entre las barras
+  },
 });
 
 export default styles;

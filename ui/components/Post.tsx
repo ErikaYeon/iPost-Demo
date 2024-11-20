@@ -1,5 +1,5 @@
 // Post.tsx
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useRef } from "react";
 import {
   View,
   Text,
@@ -12,6 +12,7 @@ import {
   Alert,
   Share,
   StyleSheet,
+  Dimensions,
 } from "react-native";
 import Modal from "react-native-modal";
 import { Modal as NativeModal } from "react-native"; // Usa Modal nativo para el modal de imagen completa
@@ -21,7 +22,7 @@ import LikeColoredIcon from "../../assets/images/icons/like_colored.svg";
 import CommentIcon from "../../assets/images/icons/comment.svg";
 import ShareIcon from "../../assets/images/icons/share.svg";
 import SaveIcon from "../../assets/images/icons/save.svg";
-import SaveColoredIcon from "../../assets/images/icons/save_colored.svg";
+import SaveColoredIcon from "../../assets/images/icons/saved.svg";
 import SendCommentIcon from "../../assets/images/icons/send_comment.svg";
 import CrownGrey from "../../assets/images/icons/gamif_crown_0_1.svg";
 import CrownBronze from "../../assets/images/icons/gamif_crown_1.svg";
@@ -136,6 +137,9 @@ const Post: React.FC<PostProps> = ({
     setImageModalVisible(false);
   };
 
+  const [playingVideos, setPlayingVideos] = useState<{ [key: string]: boolean }>({});
+  const videoRef = useRef<Video>(null); // Referencia al componente de video
+
   useEffect(() => {
     const checkIfLiked = async () => {
       try {
@@ -246,6 +250,21 @@ const Post: React.FC<PostProps> = ({
     }
   };
 
+// Alternar el estado de un video específico
+  const togglePlayPause = async (videoId: string) => {
+    if (videoRef.current) {
+      if (playingVideos[videoId]) {
+        await videoRef.current.pauseAsync();
+      } else {
+        await videoRef.current.playAsync();
+      }
+      setPlayingVideos((prev) => ({
+        ...prev,
+        [videoId]: !prev[videoId],
+      }));
+    }
+  };
+
   return (
     <View
       style={[
@@ -295,31 +314,57 @@ const Post: React.FC<PostProps> = ({
         </Text>
       </View>
 
-      {images.length > 0 && (
+      {images.length === 1 ? (
+        <View style={{ alignItems: "center", justifyContent: "center", width: "100%" }}>
+          <Image source={{ uri: images[0].uri }} style={styles.singleImage} />
+        </View>
+      ) : (
         <FlatList
           data={images}
           horizontal
           keyExtractor={(item, index) => index.toString()}
-          renderItem={({ item }) => {
-            return item.type === "image" ? (
-              <TouchableOpacity onPress={() => openImageModal(item.uri)}>
-                <Image source={{ uri: item.uri }} style={styles.postImage} />
-              </TouchableOpacity>
-            ) : (
-              <Video
-                source={{ uri: item.uri }}
-                style={styles.postImage}
-                useNativeControls
-                resizeMode="cover"
-                onError={(error) =>
-                  console.error("Error al cargar el video:", error)
-                } // Verifica errores
-              />
-            );
-          }}
+          renderItem={({ item }) => (
+            <View style={{ flex: 1, alignItems: "center", justifyContent: "center" }}>
+              {item.type === "image" ? (
+                <TouchableOpacity onPress={() => openImageModal(item.uri)}>
+                  <Image source={{ uri: item.uri }} style={styles.postImage} />
+                </TouchableOpacity>
+              ) : (
+                <View style={{ position: "relative" }}>
+                  <Video
+                    ref={videoRef}
+                    source={{ uri: item.uri }}
+                    style={styles.postImage}
+                    resizeMode="cover"
+                    isLooping
+                  />
+                  <TouchableOpacity
+                    style={styles.playPauseButton}
+                    onPress={() => togglePlayPause(item.uri)} // Usa `item.uri` o `item.id` como identificador único
+                  >
+                    {playingVideos[item.uri] ? (
+                      <View style={styles.pauseIcon}>
+                        <View style={styles.pauseBar} />
+                        <View style={styles.pauseBar} />
+                      </View>
+                    ) : (
+                      <View style={styles.playIcon} />
+                    )}
+                  </TouchableOpacity>
+                </View>
+              )}
+            </View>
+          )}
+
           showsHorizontalScrollIndicator={false}
+          pagingEnabled
+          snapToAlignment="start"
+          decelerationRate="fast"
+          contentContainerStyle={{ marginHorizontal: 0, paddingHorizontal: 0 }}
         />
       )}
+
+
 
       {selectedImageUri && (
         <NativeModal
@@ -367,7 +412,7 @@ const Post: React.FC<PostProps> = ({
           </View>
           <TouchableOpacity onPress={toggleSave} style={styles.iconButton}>
             {isSaved ? (
-              <SaveColoredIcon width={20} height={20} />
+              <SaveColoredIcon width={19} height={19} />
             ) : (
               <SaveIcon width={20} height={20} />
             )}
@@ -473,7 +518,7 @@ const Post: React.FC<PostProps> = ({
   );
 };
 
-export default Post;
+
 
 const modalStyles = StyleSheet.create({
   modalBackground: {
@@ -481,6 +526,13 @@ const modalStyles = StyleSheet.create({
     backgroundColor: "black",
     justifyContent: "center",
     alignItems: "center",
+  },
+  postImage: {
+    width: Dimensions.get("window").width,
+    height: 300, 
+    resizeMode: "cover", 
+    margin: 0, 
+    padding: 0,
   },
   fullscreenImage: {
     width: "100%",
@@ -502,3 +554,5 @@ const modalStyles = StyleSheet.create({
     borderRadius: 8,
   },
 });
+
+export default Post;
