@@ -8,9 +8,9 @@ import { postsData } from "@/assets/mockdata";
 import { createProfileScreenStyles } from "@/ui/styles/ProfileStyles";
 import { darkTheme, lightTheme } from "@/ui/styles/Theme";
 
-const OtherProfileScreen: React.FC = () => {
+const otherProfile = () => {
   const [isFollowing, setIsFollowing] = useState(false);
-  const theme = lightTheme;
+  const theme = darkTheme;
   const styles = createProfileScreenStyles(theme);
 
   const screenWidth = Dimensions.get("window").width;
@@ -43,7 +43,9 @@ const OtherProfileScreen: React.FC = () => {
           <Text
             style={[
               styles.followButtonText,
-              isFollowing ? { color: theme.colors.textPrimary } : { color: theme.colors.textOnPrimary },
+              isFollowing
+                ? { color: theme.colors.textPrimary }
+                : { color: theme.colors.textPrimary },
             ]}
           >
             {isFollowing ? "Dejar de Seguir" : "Seguir"}
@@ -60,10 +62,11 @@ const OtherProfileScreen: React.FC = () => {
 
       {/* Grilla de Imágenes */}
       <View style={styles.gridContainer}>
-        <PostImageGrid posts={postsData} theme={theme} />
+        {/* <PostImageGrid posts={postsData} theme={theme} /> */}
+        <PostImageGrid posts={postsData} />
       </View>
     </SafeAreaView>
   );
 };
 
-export default OtherProfileScreen;
+export default otherProfile;

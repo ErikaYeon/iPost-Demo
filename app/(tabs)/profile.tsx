@@ -42,7 +42,8 @@ const ProfileScreen: React.FC = () => {
 
       {/* Grilla de Imágenes */}
       <View style={styles.gridContainer}>
-        <PostImageGrid posts={photosToDisplay} theme={theme} />
+        {/* <PostImageGrid posts={photosToDisplay} theme={theme} /> */}
+        <PostImageGrid posts={photosToDisplay} />
       </View>
     </SafeAreaView>
   );

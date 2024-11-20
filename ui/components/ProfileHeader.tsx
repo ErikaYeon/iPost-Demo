@@ -3,19 +3,27 @@ import { View, Image, Text, TouchableOpacity, StyleSheet } from "react-native";
 import CrownIcon from "../../assets/images/icons/gamif_crown_3.svg";
 import EditIcon from "../../assets/images/icons/edit.svg";
 import SettingsIcon from "../../assets/images/icons/settings.svg";
+import { router } from "expo-router";
 
-const ProfileHeader: React.FC<{ theme: any; isOtherProfile?: boolean }> = ({ theme, isOtherProfile = false }) => {
+const ProfileHeader: React.FC<{ theme: any; isOtherProfile?: boolean }> = ({
+  theme,
+  isOtherProfile = false,
+}) => {
   const styles = createStyles(theme);
   return (
     <>
       <Image
-        source={{ uri: "https://img.freepik.com/foto-gratis/fondo-mar-playa-vacio_74190-313.jpg" }}
+        source={{
+          uri: "https://img.freepik.com/foto-gratis/fondo-mar-playa-vacio_74190-313.jpg",
+        }}
         style={styles.coverImage}
       />
       <View style={styles.profileInfoContainer}>
         <View style={styles.profilePictureContainer}>
           <Image
-            source={{ uri: "https://img.freepik.com/foto-gratis/selfie-retrato-videollamada_23-2149186122.jpg" }}
+            source={{
+              uri: "https://img.freepik.com/foto-gratis/selfie-retrato-videollamada_23-2149186122.jpg",
+            }}
             style={styles.profilePicture}
           />
         </View>
@@ -29,10 +37,16 @@ const ProfileHeader: React.FC<{ theme: any; isOtherProfile?: boolean }> = ({ the
           </View>
           {!isOtherProfile && (
             <View style={styles.iconsContainer}>
-              <TouchableOpacity style={styles.icon}>
+              <TouchableOpacity
+                style={styles.icon}
+                onPress={() => router.push("/EditProfile")}
+              >
                 <EditIcon width={20} height={20} />
               </TouchableOpacity>
-              <TouchableOpacity style={styles.icon}>
+              <TouchableOpacity
+                style={styles.icon}
+                onPress={() => router.push("/Settings")}
+              >
                 <SettingsIcon width={20} height={20} />
               </TouchableOpacity>
             </View>

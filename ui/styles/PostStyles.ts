@@ -1,5 +1,5 @@
 // PostStyles.ts
-import { StyleSheet } from 'react-native';
+import { StyleSheet } from "react-native";
 
 const styles = StyleSheet.create({
   postContainer: {
@@ -7,17 +7,15 @@ const styles = StyleSheet.create({
     padding: 10,
   },
   header: {
-    flexDirection: 'row',
-    alignItems: 'center',
+    flexDirection: "row",
+    alignItems: "center",
     marginBottom: 8,
-    textAlign: 'left',
-    
+    textAlign: "left",
   },
   headerHeader: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    justifyContent: 'space-between'
-    
+    flexDirection: "row",
+    alignItems: "center",
+    justifyContent: "space-between",
   },
   profilePicture: {
     width: 44,
@@ -26,18 +24,18 @@ const styles = StyleSheet.create({
     marginRight: 10,
   },
   userInfo: {
-    justifyContent: 'center',
+    justifyContent: "center",
   },
   nameContainer: {
-    flexDirection: 'row',
-    alignItems: 'center',
+    flexDirection: "row",
+    alignItems: "center",
   },
   crownIcon: {
     marginRight: 5,
   },
   name: {
     fontSize: 15,
-    fontWeight: 'bold',
+    fontWeight: "bold",
   },
   username: {
     fontSize: 15,
@@ -47,13 +45,13 @@ const styles = StyleSheet.create({
     marginVertical: 5,
   },
   locationDateContainer: {
-    flexDirection: 'row',
-    justifyContent: 'space-between',
+    flexDirection: "row",
+    justifyContent: "space-between",
     marginBottom: 8,
   },
   location: {
     fontSize: 15,
-    fontStyle: 'italic',
+    fontStyle: "italic",
   },
   date: {
     fontSize: 15,
@@ -65,18 +63,19 @@ const styles = StyleSheet.create({
     marginRight: 10,
   },
   interactionContainer: {
-    flexDirection: 'row',
-    justifyContent: 'space-between',
-    alignItems: 'center',
+    flexDirection: "row",
+    justifyContent: "space-between",
+    alignItems: "center",
     marginTop: 10,
+    marginBottom: 10,
     paddingHorizontal: 10,
   },
   leftInteraction: {
-    flexDirection: 'row',
+    flexDirection: "row",
   },
   iconButton: {
-    flexDirection: 'row',
-    alignItems: 'center',
+    flexDirection: "row",
+    alignItems: "center",
     marginRight: 15,
   },
   counter: {
@@ -84,43 +83,43 @@ const styles = StyleSheet.create({
     fontSize: 14,
   },
   viewAllCommentsButton: {
-    alignSelf: 'flex-start',
+    alignSelf: "flex-start",
     marginTop: 8,
     marginBottom: 5,
     paddingVertical: 3,
     paddingHorizontal: 8,
     borderRadius: 10,
-    backgroundColor: '#0C7A79',
+    backgroundColor: "#0C7A79",
   },
   viewAllCommentsText: {
     fontSize: 14,
-    fontWeight: 'bold',
+    fontWeight: "bold",
   },
   firstCommentContainer: {
-    flexDirection: 'row',
-    flexWrap: 'wrap',
+    flexDirection: "row",
+    flexWrap: "wrap",
     marginTop: 5,
   },
   commentUsername: {
-    fontWeight: 'bold',
+    fontWeight: "bold",
   },
   divider: {
     height: 1,
-    alignSelf: 'stretch',
+    alignSelf: "stretch",
     marginTop: 10,
   },
   modal: {
-    justifyContent: 'flex-end',
+    justifyContent: "flex-end",
     margin: 0,
   },
   modalContent: {
-    maxHeight: '90%',
+    maxHeight: "90%",
     borderRadius: 10,
     padding: 10,
   },
   commentContainer: {
-    flexDirection: 'row',
-    alignItems: 'center',
+    flexDirection: "row",
+    alignItems: "center",
     marginVertical: 10,
   },
   commentProfilePicture: {
@@ -133,20 +132,20 @@ const styles = StyleSheet.create({
     flex: 1,
   },
   commentHeader: {
-    flexDirection: 'row',
-    alignItems: 'center',
+    flexDirection: "row",
+    alignItems: "center",
   },
   commentText: {
     fontSize: 14,
   },
   inputContainer: {
-    flexDirection: 'row',
-    alignItems: 'center',
+    flexDirection: "row",
+    alignItems: "center",
     padding: 10,
   },
   input: {
     flex: 1,
-    borderColor: '#ddd',
+    borderColor: "#ddd",
     borderWidth: 1,
     borderRadius: 5,
     padding: 8,

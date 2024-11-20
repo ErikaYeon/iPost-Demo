@@ -23,7 +23,10 @@ const EditProfileCover: React.FC = () => {
   const handleTakePhoto = async () => {
     const permission = await ImagePicker.requestCameraPermissionsAsync();
     if (!permission.granted) {
-      Alert.alert("Permiso denegado", "Se necesita acceso a la cámara para tomar fotos.");
+      Alert.alert(
+        "Permiso denegado",
+        "Se necesita acceso a la cámara para tomar fotos."
+      );
       return;
     }
 
@@ -42,7 +45,10 @@ const EditProfileCover: React.FC = () => {
   const handleUploadImage = async () => {
     const permission = await ImagePicker.requestMediaLibraryPermissionsAsync();
     if (!permission.granted) {
-      Alert.alert("Permiso denegado", "Se necesita acceso a la galería para subir imágenes.");
+      Alert.alert(
+        "Permiso denegado",
+        "Se necesita acceso a la galería para subir imágenes."
+      );
       return;
     }
 
@@ -60,13 +66,13 @@ const EditProfileCover: React.FC = () => {
 
   const handleCancel = () => {
     console.log("Cancelado");
-    router.push("/profile"); // Regresa al perfil
+    router.back(); // Regresa al perfil
   };
 
   const handleSave = () => {
     console.log("Guardar", selectedImage);
     // Implementa la lógica para guardar la imagen seleccionada
-    router.push("/profile"); // Regresa al perfil
+    router.back(); // Regresa al perfil
   };
 
   return (
@@ -90,7 +96,7 @@ const EditProfileCover: React.FC = () => {
           )
         }
         title="Editar foto de portada"
-        onPress={() => router.push("/profile")}
+        onPress={() => router.back()}
         theme={theme}
       />
 

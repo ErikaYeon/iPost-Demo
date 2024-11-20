@@ -17,13 +17,16 @@ import { useRouter } from "expo-router";
 const EditProfilePhoto: React.FC = () => {
   const [selectedImage, setSelectedImage] = useState<string | null>(null);
   const router = useRouter();
-  const theme = lightTheme; // Cambiar a `lightTheme` si es necesario
+  const theme = darkTheme; // Cambiar a `lightTheme` si es necesario
   const styles = createEditProfilePhotoStyles(theme);
 
   const handleTakePhoto = async () => {
     const permission = await ImagePicker.requestCameraPermissionsAsync();
     if (!permission.granted) {
-      Alert.alert("Permiso denegado", "Se necesita acceso a la cámara para tomar fotos.");
+      Alert.alert(
+        "Permiso denegado",
+        "Se necesita acceso a la cámara para tomar fotos."
+      );
       return;
     }
 
@@ -42,7 +45,10 @@ const EditProfilePhoto: React.FC = () => {
   const handleUploadImage = async () => {
     const permission = await ImagePicker.requestMediaLibraryPermissionsAsync();
     if (!permission.granted) {
-      Alert.alert("Permiso denegado", "Se necesita acceso a la galería para subir imágenes.");
+      Alert.alert(
+        "Permiso denegado",
+        "Se necesita acceso a la galería para subir imágenes."
+      );
       return;
     }
 
@@ -60,13 +66,13 @@ const EditProfilePhoto: React.FC = () => {
 
   const handleCancel = () => {
     console.log("Cancelado");
-    router.push("/profile"); // Regresa al perfil
+    router.back(); // Regresa al perfil
   };
 
   const handleSave = () => {
     console.log("Guardar", selectedImage);
     // Implementa la lógica para guardar la imagen seleccionada
-    router.push("/profile"); // Regresa al perfil
+    router.back(); // Regresa al perfil
   };
 
   return (
@@ -90,7 +96,7 @@ const EditProfilePhoto: React.FC = () => {
           )
         }
         title="Editar foto de perfil"
-        onPress={() => router.push("/profile")}
+        onPress={() => router.back()}
         theme={theme}
       />
 

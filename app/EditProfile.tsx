@@ -16,6 +16,7 @@ import Dropdown from "../ui/components/Dropdown";
 import BackIcon from "../assets/images/icons/navigate_before.svg";
 import BackIconLightMode from "../assets/images/icons/navigate_before_lightMode.svg";
 import { darkTheme, lightTheme } from "../ui/styles/Theme";
+import { router } from "expo-router";
 
 const theme = darkTheme; // Cambia manualmente entre `darkTheme` y `lightTheme`
 
@@ -27,9 +28,15 @@ const EditProfile: React.FC = () => {
   const [nickname, setNickname] = useState("La Mari");
   const [username, setUsername] = useState("maria_gnz");
   const [gender, setGender] = useState("Mujer");
-  const [description, setDescription] = useState("Comer, rezar, amar 🙏 Mamá de 🐶🐴");
+  const [description, setDescription] = useState(
+    "Comer, rezar, amar 🙏 Mamá de 🐶🐴"
+  );
   const [genderDropdownVisible, setGenderDropdownVisible] = useState(false);
-  const [dropdownPosition, setDropdownPosition] = useState({ top: 0, left: 0, width: 0 });
+  const [dropdownPosition, setDropdownPosition] = useState({
+    top: 0,
+    left: 0,
+    width: 0,
+  });
 
   const genderInputRef = useRef<View>(null);
 
@@ -61,13 +68,21 @@ const EditProfile: React.FC = () => {
         <HeaderWithIcon
           iconComponent={() =>
             theme.isDark ? (
-              <BackIcon width={15} height={15} fill={theme.colors.textPrimary} />
+              <BackIcon
+                width={15}
+                height={15}
+                fill={theme.colors.textPrimary}
+              />
             ) : (
-              <BackIconLightMode width={15} height={15} fill={theme.colors.textPrimary} />
+              <BackIconLightMode
+                width={15}
+                height={15}
+                fill={theme.colors.textPrimary}
+              />
             )
           }
           title="Editar perfil"
-          onPress={() => console.log("Volver")}
+          onPress={() => router.back()}
           theme={theme}
         />
       </SafeAreaView>
@@ -80,17 +95,39 @@ const EditProfile: React.FC = () => {
       <EditProfileHeader theme={theme} />
 
       <ScrollView contentContainerStyle={styles.contentContainer}>
-        <InputRow label="Nombre:" value={firstName} onChangeText={setFirstName} theme={theme} />
-        <InputRow label="Apellido:" value={lastName} onChangeText={setLastName} theme={theme} />
-        <InputRow label="Nickname:" value={nickname} onChangeText={setNickname} theme={theme} />
-        <InputRow label="Usuario:" value={username} onChangeText={setUsername} theme={theme} />
+        <InputRow
+          label="Nombre:"
+          value={firstName}
+          onChangeText={setFirstName}
+          theme={theme}
+        />
+        <InputRow
+          label="Apellido:"
+          value={lastName}
+          onChangeText={setLastName}
+          theme={theme}
+        />
+        <InputRow
+          label="Nickname:"
+          value={nickname}
+          onChangeText={setNickname}
+          theme={theme}
+        />
+        <InputRow
+          label="Usuario:"
+          value={username}
+          onChangeText={setUsername}
+          theme={theme}
+        />
         <InputRow
           label="Género:"
           value={gender}
           isSelectable
           isDropdownVisible={genderDropdownVisible}
           genderInputRef={genderInputRef}
-          onPressSelectable={() => setGenderDropdownVisible(!genderDropdownVisible)}
+          onPressSelectable={() =>
+            setGenderDropdownVisible(!genderDropdownVisible)
+          }
           theme={theme}
         />
         <InputRow

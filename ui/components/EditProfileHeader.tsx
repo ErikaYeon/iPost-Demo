@@ -1,20 +1,32 @@
+import { router } from "expo-router";
 import React from "react";
-import { View, Image, StyleSheet } from "react-native";
+import { View, Image, StyleSheet, TouchableOpacity } from "react-native";
 
 const EditProfileHeader: React.FC<{ theme: any }> = ({ theme }) => {
   const styles = createStyles(theme);
   return (
     <>
-      <Image
-        source={{ uri: "https://img.freepik.com/foto-gratis/fondo-mar-playa-vacio_74190-313.jpg" }}
-        style={styles.coverImage}
-      />
+      <View>
+        <TouchableOpacity onPress={() => router.push("/EditProfileCover")}>
+          <Image
+            source={{
+              uri: "https://img.freepik.com/foto-gratis/fondo-mar-playa-vacio_74190-313.jpg",
+            }}
+            style={styles.coverImage}
+          />
+        </TouchableOpacity>
+      </View>
+
       <View style={styles.profileInfoContainer}>
         <View style={styles.profilePictureContainer}>
-          <Image
-            source={{ uri: "https://img.freepik.com/foto-gratis/selfie-retrato-videollamada_23-2149186122.jpg" }}
-            style={styles.profilePicture}
-          />
+          <TouchableOpacity onPress={() => router.push("/EditProfilePhoto")}>
+            <Image
+              source={{
+                uri: "https://img.freepik.com/foto-gratis/selfie-retrato-videollamada_23-2149186122.jpg",
+              }}
+              style={styles.profilePicture}
+            />
+          </TouchableOpacity>
         </View>
       </View>
     </>

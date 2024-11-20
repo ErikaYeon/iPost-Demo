@@ -12,6 +12,7 @@ import SettingsStyles from "../ui/styles/SettingsStyles";
 import { darkTheme, lightTheme } from "../ui/styles/Theme";
 import ConfirmLogout from "../ui/components/ConfirmLogout";
 import ConfirmDeleteAccount from "../ui/components/ConfirmDeleteAccount";
+import { router } from "expo-router";
 
 const SettingsScreen: React.FC = () => {
   const [themeMode, setThemeMode] = useState<"light" | "dark">("dark");
@@ -22,11 +23,13 @@ const SettingsScreen: React.FC = () => {
   const theme = themeMode === "dark" ? darkTheme : lightTheme;
 
   const containerBackgroundColor = themeMode === "dark" ? "#383860" : "#DCDCE4";
-  const themeSelectedBackgroundColor = themeMode === "dark" ? "#EEEEEE" : theme.colors.background;
+  const themeSelectedBackgroundColor =
+    themeMode === "dark" ? "#EEEEEE" : theme.colors.background;
   const lightModeTextColor = themeMode === "dark" ? "#EEEEEE" : "#201E43";
   const darkModeTextColor = themeMode === "dark" ? "#383860" : "#201E43";
   const languageSelectedBackgroundColor = themeSelectedBackgroundColor;
-  const languageSelectedTextColor = themeMode === "dark" ? "#383860" : "#201E43";
+  const languageSelectedTextColor =
+    themeMode === "dark" ? "#383860" : "#201E43";
 
   const renderSelectableOption = ({
     isSelected,
@@ -66,25 +69,46 @@ const SettingsScreen: React.FC = () => {
     color: string;
     dividerColor: string;
   }) => (
-    <SettingsOption text={text} onPress={onPress} color={color} dividerColor={dividerColor} />
+    <SettingsOption
+      text={text}
+      onPress={onPress}
+      color={color}
+      dividerColor={dividerColor}
+    />
   );
 
   return (
-    <SafeAreaView style={[SettingsStyles.safeArea, { backgroundColor: theme.colors.background }]}>
-      <StatusBar backgroundColor={theme.colors.background} barStyle="light-content" />
+    <SafeAreaView
+      style={[
+        SettingsStyles.safeArea,
+        { backgroundColor: theme.colors.background },
+      ]}
+    >
+      <StatusBar
+        backgroundColor={theme.colors.background}
+        barStyle="light-content"
+      />
 
       {/* Header */}
       <View style={SettingsStyles.headerContainer}>
         <HeaderWithIcon
           iconComponent={() =>
             themeMode === "light" ? (
-              <BackIconLightMode width={15} height={15} fill={theme.colors.textPrimary} />
+              <BackIconLightMode
+                width={15}
+                height={15}
+                fill={theme.colors.textPrimary}
+              />
             ) : (
-              <BackIcon width={18} height={18} fill={theme.colors.textPrimary} />
+              <BackIcon
+                width={18}
+                height={18}
+                fill={theme.colors.textPrimary}
+              />
             )
           }
           title="Ajustes"
-          onPress={() => console.log("Volver")}
+          onPress={() => router.back()}
           theme={theme}
         />
       </View>
@@ -92,17 +116,30 @@ const SettingsScreen: React.FC = () => {
       {/* Body */}
       <View style={SettingsStyles.container}>
         {/* Tema */}
-        <Text style={[SettingsStyles.sectionTitle, { color: theme.colors.textPrimary }]}>Tema</Text>
-        <View style={[SettingsStyles.optionContainer, { backgroundColor: containerBackgroundColor }]}>
+        <Text
+          style={[
+            SettingsStyles.sectionTitle,
+            { color: theme.colors.textPrimary },
+          ]}
+        >
+          Tema
+        </Text>
+        <View
+          style={[
+            SettingsStyles.optionContainer,
+            { backgroundColor: containerBackgroundColor },
+          ]}
+        >
           {renderSelectableOption({
             isSelected: themeMode === "light",
             onPress: () => setThemeMode("light"),
             text: "Claro",
-            icon: themeMode === "light" ? (
-              <LightModeSelectedIcon width={24} height={24} />
-            ) : (
-              <LightModeIcon width={24} height={24} />
-            ),
+            icon:
+              themeMode === "light" ? (
+                <LightModeSelectedIcon width={24} height={24} />
+              ) : (
+                <LightModeIcon width={24} height={24} />
+              ),
             selectedTextColor: lightModeTextColor,
             unselectedTextColor: "#EEEEEE",
           })}
@@ -117,8 +154,20 @@ const SettingsScreen: React.FC = () => {
         </View>
 
         {/* Idioma */}
-        <Text style={[SettingsStyles.sectionTitle, { color: theme.colors.textPrimary }]}>Idioma</Text>
-        <View style={[SettingsStyles.optionContainer, { backgroundColor: containerBackgroundColor }]}>
+        <Text
+          style={[
+            SettingsStyles.sectionTitle,
+            { color: theme.colors.textPrimary },
+          ]}
+        >
+          Idioma
+        </Text>
+        <View
+          style={[
+            SettingsStyles.optionContainer,
+            { backgroundColor: containerBackgroundColor },
+          ]}
+        >
           {renderSelectableOption({
             isSelected: language === "Español",
             onPress: () => setLanguage("Español"),
@@ -145,7 +194,7 @@ const SettingsScreen: React.FC = () => {
         <View>
           {renderSettingsOption({
             text: "Cambiar contraseña",
-            onPress: () => console.log("Cambiar contraseña presionado"),
+            onPress: () => router.push("/ChangePassword"),
             color: theme.colors.textPrimary,
             dividerColor: theme.colors.textSecondary,
           })}

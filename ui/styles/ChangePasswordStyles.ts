@@ -33,27 +33,35 @@ export const createChangePasswordStyles = (theme: Theme) =>
       textDecorationLine: "underline",
     },
     errorBanner: {
-      marginTop: theme.spacing.small,
-      padding: theme.spacing.medium,
-      backgroundColor: theme.colors.error,
-      borderRadius: theme.borderRadius,
-      width: "90%",
+      position: "absolute", // Position it at the bottom
+      bottom: 0, // Align to the bottom
+      left: 0,
+      right: 0,
+      backgroundColor: theme.colors.error, // Red background for error
+      padding: 10,
+      borderRadius: 5,
+      alignItems: "center",
     },
     errorText: {
-      color: theme.colors.background,
-      fontSize: theme.fonts.small,
+      color: "#FFFFFF", // White text
+      textAlign: "center",
+      fontSize: 16,
     },
     successBanner: {
-      marginTop: theme.spacing.small,
-      padding: theme.spacing.medium,
-      backgroundColor: theme.colors.primary,
-      borderRadius: theme.borderRadius,
-      width: "90%",
+      position: "absolute", // Position it at the bottom
+      bottom: 0, // Align to the bottom
+      left: 0,
+      right: 0,
+      backgroundColor: theme.colors.primary, // Red background for error
+      padding: 10,
+      borderRadius: 5,
+      alignItems: "center",
     },
-    successText: {
-      color: theme.colors.background,
-      fontSize: theme.fonts.small,
-    },
+    // successText: {
+    //   color: '#FFFFFF', // White text
+    //   textAlign: 'center',
+    //   fontSize: 16,
+    // },
   });
 
 export default createChangePasswordStyles;
