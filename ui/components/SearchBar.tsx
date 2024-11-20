@@ -41,6 +41,8 @@ const styles = StyleSheet.create({
     paddingHorizontal: 10,
     borderRadius: 16,
     height: 40,
+    borderWidth: 1,
+    borderColor: '#B5BACB',
   },
   input: {
     flex: 1,

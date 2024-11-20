@@ -40,10 +40,12 @@ const styles = StyleSheet.create({
     flexDirection: 'row',
     alignItems: 'center',
     paddingBottom: 5,
+    paddingTop: 7,
+    paddingLeft: 10,
   },
   title: {
     marginLeft: 10,
-    fontSize: 20,
+    fontSize: 18,
     fontWeight: 'bold',
     marginBottom: 5,
   },

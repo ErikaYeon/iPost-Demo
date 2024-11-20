@@ -1,50 +1,50 @@
 import React, { useState } from "react";
-import { SafeAreaView, View, FlatList, StatusBar, Text, TouchableOpacity, Image } from "react-native";
-import HeaderWithIcon from "@/ui/components/HeaderWithIcon";
-import SearchBar from "@/ui/components/SearchBar";
-import BackIcon from "@/assets/images/icons/navigate_before.svg";
-import BackIconLightMode from "@/assets/images/icons/navigate_before_lightMode.svg";
-import CrownGrey from "@/assets/images/icons/gamif_crown_0_1.svg";
-import CrownBronze from "@/assets/images/icons/gamif_crown_1.svg";
-import CrownSilver from "@/assets/images/icons/gamif_crown_2.svg";
-import CrownGold from "@/assets/images/icons/gamif_crown_3.svg";
+import {
+  SafeAreaView,
+  View,
+  FlatList,
+  StatusBar,
+  Text,
+  TouchableOpacity,
+  Image,
+} from "react-native";
+import HeaderWithIcon from "../ui/components/HeaderWithIcon";
+import SearchBar from "../ui/components/SearchBar";
+import BackIcon from "../assets/images/icons/navigate_before.svg";
+import BackIconLightMode from "../assets/images/icons/navigate_before_lightMode.svg";
+import CrownGrey from "../assets/images/icons/gamif_crown_0_1.svg";
+import CrownBronze from "../assets/images/icons/gamif_crown_1.svg";
+import CrownSilver from "../assets/images/icons/gamif_crown_2.svg";
+import CrownGold from "../assets/images/icons/gamif_crown_3.svg";
 import { createSearchProfilesStyles } from "@/ui/styles/SearchProfileStyles";
-import { darkTheme, lightTheme } from "@/ui/styles/Theme"; 
-import { Crown } from "@/types/models"; 
+import { darkTheme } from "../ui/styles/Theme";
 
-const SearchProfiles: React.FC = () => {
-  const theme = darkTheme; // Cambia manualmente entre `darkTheme` y `lightTheme`
+const SearchFollowers: React.FC = () => {
+  const theme = darkTheme;
   const styles = createSearchProfilesStyles(theme);
 
   const [searchQuery, setSearchQuery] = useState("");
-  const [filteredProfiles, setFilteredProfiles] = useState(profilesData);
+  const [filteredProfiles, setFilteredProfiles] = useState(followersData);
 
-  const profilesData = [
+  const followersData = [
     {
       id: "1",
-      name: "Ana Paula Breuer",
-      username: "@anapaubreuer",
+      name: "Carlos López",
+      username: "@carlos_lopez",
       crownType: "gold",
       profileImage: "https://via.placeholder.com/50",
     },
     {
       id: "2",
-      name: "Andrés Breuer",
-      username: "@andy_breuer",
-      crownType: "gold",
-      profileImage: "https://via.placeholder.com/50",
-    },
-    {
-      id: "3",
-      name: "José Breuer",
-      username: "@jbreuer",
+      name: "Andrea García",
+      username: "@andrea_g",
       crownType: "silver",
       profileImage: "https://via.placeholder.com/50",
     },
     {
-      id: "4",
-      name: "Micaela Breuer",
-      username: "@breuer_mica",
+      id: "3",
+      name: "María Fernández",
+      username: "@mariaf",
       crownType: "bronze",
       profileImage: "https://via.placeholder.com/50",
     },
@@ -52,7 +52,7 @@ const SearchProfiles: React.FC = () => {
 
   const handleSearch = (text: string) => {
     setSearchQuery(text);
-    const filtered = profilesData.filter(
+    const filtered = followersData.filter(
       (profile) =>
         profile.name.toLowerCase().includes(text.toLowerCase()) ||
         profile.username.toLowerCase().includes(text.toLowerCase())
@@ -73,7 +73,7 @@ const SearchProfiles: React.FC = () => {
     }
   };
 
-  const renderProfile = ({ item }: { item: typeof profilesData[0] }) => (
+  const renderProfile = ({ item }: { item: typeof followersData[0] }) => (
     <TouchableOpacity style={styles.profileContainer}>
       <Image source={{ uri: item.profileImage }} style={styles.profileImage} />
       <View style={styles.profileInfo}>
@@ -93,7 +93,6 @@ const SearchProfiles: React.FC = () => {
         barStyle={theme.isDark ? "light-content" : "dark-content"}
       />
 
-      {/* Header */}
       <SafeAreaView style={styles.safeArea}>
         <HeaderWithIcon
           iconComponent={() =>
@@ -107,13 +106,12 @@ const SearchProfiles: React.FC = () => {
               />
             )
           }
-          title="Buscar perfiles"
+          title="Seguidores"
           onPress={() => console.log("Volver")}
           theme={theme}
         />
       </SafeAreaView>
 
-      {/* Barra de búsqueda */}
       <View style={styles.searchBarContainer}>
         <SearchBar
           placeholder="Buscar"
@@ -124,7 +122,6 @@ const SearchProfiles: React.FC = () => {
         />
       </View>
 
-      {/* Lista de perfiles */}
       <FlatList
         data={filteredProfiles}
         keyExtractor={(item) => item.id}
@@ -135,4 +132,4 @@ const SearchProfiles: React.FC = () => {
   );
 };
 
-export default SearchProfiles;
+export default SearchFollowers;

@@ -5,9 +5,11 @@ type TabButtonProps = {
   text: string;
   isActive: boolean;
   onPress: () => void;
+  theme: any;
 };
 
-const TabButton: React.FC<TabButtonProps> = ({ text, isActive, onPress }) => {
+const TabButton: React.FC<TabButtonProps> = ({ text, isActive, onPress, theme }) => {
+  const styles = createStyles(theme);
   return (
     <TouchableOpacity
       style={[styles.tabButton, isActive && styles.activeTabButton]}
@@ -18,24 +20,26 @@ const TabButton: React.FC<TabButtonProps> = ({ text, isActive, onPress }) => {
   );
 };
 
-const styles = StyleSheet.create({
-  tabButton: {
-    flex: 1,
-    alignItems: "center",
-    paddingVertical: 10,
-  },
-  tabText: {
-    fontSize: 16,
-    color: "#B5BACB",
-  },
-  activeTabText: {
-    color: "#12C1A4",
-    fontWeight: "bold",
-  },
-  activeTabButton: {
-    borderBottomWidth: 2,
-    borderBottomColor: "#12C1A4",
-  },
-});
+const createStyles = (theme: any) =>
+  StyleSheet.create({
+    tabButton: {
+      flex: 1,
+      alignItems: "center",
+      paddingVertical: theme.spacing.small,
+      color: theme.colors.background,
+    },
+    tabText: {
+      fontSize: theme.fonts.small,
+      color: theme.colors.textPrimary,
+    },
+    activeTabText: {
+      color: theme.colors.primary,
+      fontWeight: "bold",
+    },
+    activeTabButton: {
+      borderBottomWidth: 2,
+      borderBottomColor: theme.colors.primary,
+    },
+  });
 
 export default TabButton;

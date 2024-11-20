@@ -1,16 +1,16 @@
 import React, { useState } from "react";
 import { SafeAreaView, View, FlatList, StatusBar, Text, TouchableOpacity, Image } from "react-native";
-import HeaderWithIcon from "@/ui/components/HeaderWithIcon";
-import SearchBar from "@/ui/components/SearchBar";
-import BackIcon from "@/assets/images/icons/navigate_before.svg";
-import BackIconLightMode from "@/assets/images/icons/navigate_before_lightMode.svg";
-import CrownGrey from "@/assets/images/icons/gamif_crown_0_1.svg";
-import CrownBronze from "@/assets/images/icons/gamif_crown_1.svg";
-import CrownSilver from "@/assets/images/icons/gamif_crown_2.svg";
-import CrownGold from "@/assets/images/icons/gamif_crown_3.svg";
+import HeaderWithIcon from "../ui/components/HeaderWithIcon";
+import SearchBar from "../ui/components/SearchBar";
+import BackIcon from "../assets/images/icons/navigate_before.svg";
+import BackIconLightMode from "../assets/images/icons/navigate_before_lightMode.svg";
+import CrownGrey from "../assets/images/icons/gamif_crown_0_1.svg";
+import CrownBronze from "../assets/images/icons/gamif_crown_1.svg";
+import CrownSilver from "../assets/images/icons/gamif_crown_2.svg";
+import CrownGold from "../assets/images/icons/gamif_crown_3.svg";
 import { createSearchProfilesStyles } from "@/ui/styles/SearchProfileStyles";
-import { darkTheme, lightTheme } from "@/ui/styles/Theme"; 
-import { Crown } from "@/types/models"; 
+import { darkTheme, lightTheme } from "../ui/styles/Theme";
+import { Crown } from "@/types/models"; // Enum para los tipos de corona
 
 const SearchProfiles: React.FC = () => {
   const theme = darkTheme; // Cambia manualmente entre `darkTheme` y `lightTheme`
