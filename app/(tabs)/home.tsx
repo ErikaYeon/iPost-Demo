@@ -142,7 +142,9 @@ const home = () => {
             onEndReached={handleLoadMore}
             onEndReachedThreshold={0.5}
             ListFooterComponent={
-              loading && hasMore ? <Text>Cargando...</Text> : null
+              loading && hasMore ? (
+                <ActivityIndicator size="small" color={theme.colors.textSecondary} />
+              ) : null
             }
             refreshControl={
               <RefreshControl
