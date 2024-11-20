@@ -157,6 +157,12 @@ const styles = StyleSheet.create({
     paddingHorizontal: 15,
     borderRadius: 5,
   },
+  singleImage: {
+    width: "100%",
+    height: 300,
+    resizeMode: "contain",
+    borderRadius: 8,
+  },
   playPauseButton: {
     position: "absolute",
     top: "50%",

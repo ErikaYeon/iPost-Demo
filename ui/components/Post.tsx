@@ -527,12 +527,6 @@ const modalStyles = StyleSheet.create({
     justifyContent: "center",
     alignItems: "center",
   },
-  singleImage: {
-    width: "100%",
-    height: 300,
-    resizeMode: "contain",
-    borderRadius: 8,
-  },
   postImage: {
     width: Dimensions.get("window").width,
     height: 300, 
