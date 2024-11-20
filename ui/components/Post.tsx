@@ -22,7 +22,7 @@ import LikeColoredIcon from "../../assets/images/icons/like_colored.svg";
 import CommentIcon from "../../assets/images/icons/comment.svg";
 import ShareIcon from "../../assets/images/icons/share.svg";
 import SaveIcon from "../../assets/images/icons/save.svg";
-import SaveColoredIcon from "../../assets/images/icons/save_colored.svg";
+import SaveColoredIcon from "../../assets/images/icons/saved.svg";
 import SendCommentIcon from "../../assets/images/icons/send_comment.svg";
 import CrownGrey from "../../assets/images/icons/gamif_crown_0_1.svg";
 import CrownBronze from "../../assets/images/icons/gamif_crown_1.svg";
