@@ -115,15 +115,13 @@ const Post: React.FC<PostProps> = ({
   const [isModalVisible, setModalVisible] = useState(false);
   const [commentsList, setCommentsList] = useState(commentSection);
   const [newComment, setNewComment] = useState("");
-  const [commentsCount, setCommentsCount] = useState(comments); 
+  const [commentsCount, setCommentsCount] = useState(comments);
   const userProfile = useSelector((state: RootState) => state.profile);
   const dispatch = useDispatch<AppDispatch>();
   const ListaReduxComments = useSelector(
     (state: RootState) => state.comments.comments
   );
-  const { isLoading} = useSelector(
-    (state: RootState) => state.comments
-  );
+  const { isLoading } = useSelector((state: RootState) => state.comments);
   const [isImageModalVisible, setImageModalVisible] = useState(false);
   const [selectedImageUri, setSelectedImageUri] = useState<string | null>(null);
 
@@ -137,7 +135,9 @@ const Post: React.FC<PostProps> = ({
     setImageModalVisible(false);
   };
 
-  const [playingVideos, setPlayingVideos] = useState<{ [key: string]: boolean }>({});
+  const [playingVideos, setPlayingVideos] = useState<{
+    [key: string]: boolean;
+  }>({});
   const videoRef = useRef<Video>(null); // Referencia al componente de video
 
   useEffect(() => {
@@ -215,24 +215,28 @@ const Post: React.FC<PostProps> = ({
           nickname: userProfile.username ?? "",
           lastname: userProfile.lastname ?? "",
           id: userProfile.id,
-          profileImage: userProfile.profileImage ?? Placeholders.DEFAULT_PROFILE_PHOTO,
+          profileImage:
+            userProfile.profileImage ?? Placeholders.DEFAULT_PROFILE_PHOTO,
           level: 1,
           active: true,
         },
       };
 
-    setCommentsList((prevCommentsList) => [...prevCommentsList, newCommentData]);
+      setCommentsList((prevCommentsList) => [
+        ...prevCommentsList,
+        newCommentData,
+      ]);
 
-    setCommentsCount((prevComments) => prevComments + 1);
+      setCommentsCount((prevComments) => prevComments + 1);
 
-    setNewComment("");
+      setNewComment("");
 
-    dispatch(addCommentToList(newCommentData));
-    dispatch(
-      postComments({
-        comment: newComment,
-        authorId: userProfile.id,
-        postId: postId,
+      dispatch(addCommentToList(newCommentData));
+      dispatch(
+        postComments({
+          comment: newComment,
+          authorId: userProfile.id,
+          postId: postId,
         })
       );
     }
@@ -250,7 +254,7 @@ const Post: React.FC<PostProps> = ({
     }
   };
 
-// Alternar el estado de un video específico
+  // Alternar el estado de un video específico
   const togglePlayPause = async (videoId: string) => {
     if (videoRef.current) {
       if (playingVideos[videoId]) {
@@ -315,7 +319,13 @@ const Post: React.FC<PostProps> = ({
       </View>
 
       {images.length === 1 ? (
-        <View style={{ alignItems: "center", justifyContent: "center", width: "100%" }}>
+        <View
+          style={{
+            alignItems: "center",
+            justifyContent: "center",
+            width: "100%",
+          }}
+        >
           <Image source={{ uri: images[0].uri }} style={styles.singleImage} />
         </View>
       ) : (
@@ -324,7 +334,13 @@ const Post: React.FC<PostProps> = ({
           horizontal
           keyExtractor={(item, index) => index.toString()}
           renderItem={({ item }) => (
-            <View style={{ flex: 1, alignItems: "center", justifyContent: "center" }}>
+            <View
+              style={{
+                flex: 1,
+                alignItems: "center",
+                justifyContent: "center",
+              }}
+            >
               {item.type === "image" ? (
                 <TouchableOpacity onPress={() => openImageModal(item.uri)}>
                   <Image source={{ uri: item.uri }} style={styles.postImage} />
@@ -355,7 +371,6 @@ const Post: React.FC<PostProps> = ({
               )}
             </View>
           )}
-
           showsHorizontalScrollIndicator={false}
           pagingEnabled
           snapToAlignment="start"
@@ -363,8 +378,6 @@ const Post: React.FC<PostProps> = ({
           contentContainerStyle={{ marginHorizontal: 0, paddingHorizontal: 0 }}
         />
       )}
-
-
 
       {selectedImageUri && (
         <NativeModal
@@ -405,7 +418,9 @@ const Post: React.FC<PostProps> = ({
             </TouchableOpacity>
             <TouchableOpacity onPress={openModal} style={styles.iconButton}>
               <CommentIcon width={20} height={20} />
-              <Text style={[styles.counter, { color: theme.colors.textPrimary }]}>
+              <Text
+                style={[styles.counter, { color: theme.colors.textPrimary }]}
+              >
                 {commentsCount}
               </Text>
             </TouchableOpacity>
@@ -418,24 +433,6 @@ const Post: React.FC<PostProps> = ({
             )}
           </TouchableOpacity>
         </View>
-      )}
-
-      {comments > 0 && !isAd && (
-        <>
-          <TouchableOpacity
-            onPress={openModal}
-            style={styles.viewAllCommentsButton}
-          >
-            <Text
-              style={[
-                styles.viewAllCommentsText,
-                { color: theme.colors.secondary },
-              ]}
-            >
-              Ver todos los comentarios
-            </Text>
-          </TouchableOpacity>
-        </>
       )}
 
       {!isLoading && !isAd && (
@@ -518,8 +515,6 @@ const Post: React.FC<PostProps> = ({
   );
 };
 
-
-
 const modalStyles = StyleSheet.create({
   modalBackground: {
     flex: 1,
@@ -529,9 +524,9 @@ const modalStyles = StyleSheet.create({
   },
   postImage: {
     width: Dimensions.get("window").width,
-    height: 300, 
-    resizeMode: "cover", 
-    margin: 0, 
+    height: 300,
+    resizeMode: "cover",
+    margin: 0,
     padding: 0,
   },
   fullscreenImage: {

@@ -11,6 +11,7 @@ import { darkTheme, lightTheme } from "../ui/styles/Theme";
 import { useDispatch } from "react-redux";
 // import { changePasswordAsync } from "@/redux/slices/authSlice"; // Si implementas esta acción
 import { AppDispatch } from "@/redux/store";
+import { router } from "expo-router";
 
 const ChangePasswordScreen: React.FC = () => {
   // Establecer manualmente el tema aquí (elige entre darkTheme o lightTheme)
@@ -70,13 +71,21 @@ const ChangePasswordScreen: React.FC = () => {
         <HeaderWithIcon
           iconComponent={() =>
             theme === lightTheme ? (
-              <BackIconLightMode width={18} height={18} fill={theme.colors.textPrimary} />
+              <BackIconLightMode
+                width={18}
+                height={18}
+                fill={theme.colors.textPrimary}
+              />
             ) : (
-              <BackIcon width={18} height={18} fill={theme.colors.textPrimary} />
+              <BackIcon
+                width={18}
+                height={18}
+                fill={theme.colors.textPrimary}
+              />
             )
           }
           title="Cambiar contraseña"
-          onPress={() => console.log("Volver")}
+          onPress={() => router.back()}
           theme={theme}
         />
       </SafeAreaView>
@@ -126,19 +135,18 @@ const ChangePasswordScreen: React.FC = () => {
           theme={theme}
           style={styles.link}
         />
-
-        {errorMessage ? (
-          <View style={styles.errorBanner}>
-            <Text style={styles.errorText}>{errorMessage}</Text>
-          </View>
-        ) : null}
-
-        {successMessage ? (
-          <View style={styles.successBanner}>
-            <Text style={styles.successText}>{successMessage}</Text>
-          </View>
-        ) : null}
       </View>
+      {errorMessage ? (
+        <View style={styles.errorBanner}>
+          <Text style={styles.errorText}>{errorMessage}</Text>
+        </View>
+      ) : null}
+
+      {successMessage ? (
+        <View style={styles.successBanner}>
+          <Text style={styles.errorText}>{successMessage}</Text>
+        </View>
+      ) : null}
     </View>
   );
 };
