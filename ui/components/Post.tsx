@@ -1,5 +1,5 @@
 // Post.tsx
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useRef } from "react";
 import {
   View,
   Text,
@@ -137,6 +137,9 @@ const Post: React.FC<PostProps> = ({
     setImageModalVisible(false);
   };
 
+  const [playingVideos, setPlayingVideos] = useState<{ [key: string]: boolean }>({});
+  const videoRef = useRef<Video>(null); // Referencia al componente de video
+
   useEffect(() => {
     const checkIfLiked = async () => {
       try {
@@ -247,6 +250,21 @@ const Post: React.FC<PostProps> = ({
     }
   };
 
+// Alternar el estado de un video específico
+  const togglePlayPause = async (videoId: string) => {
+    if (videoRef.current) {
+      if (playingVideos[videoId]) {
+        await videoRef.current.pauseAsync();
+      } else {
+        await videoRef.current.playAsync();
+      }
+      setPlayingVideos((prev) => ({
+        ...prev,
+        [videoId]: !prev[videoId],
+      }));
+    }
+  };
+
   return (
     <View
       style={[
@@ -306,22 +324,38 @@ const Post: React.FC<PostProps> = ({
           horizontal
           keyExtractor={(item, index) => index.toString()}
           renderItem={({ item }) => (
-            <View style={{ flex: 1 }}>
+            <View style={{ flex: 1, alignItems: "center", justifyContent: "center" }}>
               {item.type === "image" ? (
                 <TouchableOpacity onPress={() => openImageModal(item.uri)}>
                   <Image source={{ uri: item.uri }} style={styles.postImage} />
                 </TouchableOpacity>
               ) : (
-                <Video
-                  source={{ uri: item.uri }}
-                  style={styles.postImage}
-                  useNativeControls
-                  resizeMode="cover"
-                  onError={(error) => console.error("Error al cargar el video:", error)}
-                />
+                <View style={{ position: "relative" }}>
+                  <Video
+                    ref={videoRef}
+                    source={{ uri: item.uri }}
+                    style={styles.postImage}
+                    resizeMode="cover"
+                    isLooping
+                  />
+                  <TouchableOpacity
+                    style={styles.playPauseButton}
+                    onPress={() => togglePlayPause(item.uri)} // Usa `item.uri` o `item.id` como identificador único
+                  >
+                    {playingVideos[item.uri] ? (
+                      <View style={styles.pauseIcon}>
+                        <View style={styles.pauseBar} />
+                        <View style={styles.pauseBar} />
+                      </View>
+                    ) : (
+                      <View style={styles.playIcon} />
+                    )}
+                  </TouchableOpacity>
+                </View>
               )}
             </View>
           )}
+
           showsHorizontalScrollIndicator={false}
           pagingEnabled
           snapToAlignment="start"
@@ -484,7 +518,7 @@ const Post: React.FC<PostProps> = ({
   );
 };
 
-export default Post;
+
 
 const modalStyles = StyleSheet.create({
   modalBackground: {
@@ -506,7 +540,6 @@ const modalStyles = StyleSheet.create({
     margin: 0, 
     padding: 0,
   },
-  
   fullscreenImage: {
     width: "100%",
     height: "100%",
@@ -527,3 +560,5 @@ const modalStyles = StyleSheet.create({
     borderRadius: 8,
   },
 });
+
+export default Post;
