@@ -12,6 +12,7 @@ import {
   Alert,
   Share,
   StyleSheet,
+  Dimensions,
 } from "react-native";
 import Modal from "react-native-modal";
 import { Modal as NativeModal } from "react-native"; // Usa Modal nativo para el modal de imagen completa
@@ -295,31 +296,41 @@ const Post: React.FC<PostProps> = ({
         </Text>
       </View>
 
-      {images.length > 0 && (
+      {images.length === 1 ? (
+        <View style={{ alignItems: "center", justifyContent: "center", width: "100%" }}>
+          <Image source={{ uri: images[0].uri }} style={styles.singleImage} />
+        </View>
+      ) : (
         <FlatList
           data={images}
           horizontal
           keyExtractor={(item, index) => index.toString()}
-          renderItem={({ item }) => {
-            return item.type === "image" ? (
-              <TouchableOpacity onPress={() => openImageModal(item.uri)}>
-                <Image source={{ uri: item.uri }} style={styles.postImage} />
-              </TouchableOpacity>
-            ) : (
-              <Video
-                source={{ uri: item.uri }}
-                style={styles.postImage}
-                useNativeControls
-                resizeMode="cover"
-                onError={(error) =>
-                  console.error("Error al cargar el video:", error)
-                } // Verifica errores
-              />
-            );
-          }}
+          renderItem={({ item }) => (
+            <View style={{ flex: 1 }}>
+              {item.type === "image" ? (
+                <TouchableOpacity onPress={() => openImageModal(item.uri)}>
+                  <Image source={{ uri: item.uri }} style={styles.postImage} />
+                </TouchableOpacity>
+              ) : (
+                <Video
+                  source={{ uri: item.uri }}
+                  style={styles.postImage}
+                  useNativeControls
+                  resizeMode="cover"
+                  onError={(error) => console.error("Error al cargar el video:", error)}
+                />
+              )}
+            </View>
+          )}
           showsHorizontalScrollIndicator={false}
+          pagingEnabled
+          snapToAlignment="start"
+          decelerationRate="fast"
+          contentContainerStyle={{ marginHorizontal: 0, paddingHorizontal: 0 }}
         />
       )}
+
+
 
       {selectedImageUri && (
         <NativeModal
@@ -482,6 +493,20 @@ const modalStyles = StyleSheet.create({
     justifyContent: "center",
     alignItems: "center",
   },
+  singleImage: {
+    width: "100%",
+    height: 300,
+    resizeMode: "contain",
+    borderRadius: 8,
+  },
+  postImage: {
+    width: Dimensions.get("window").width,
+    height: 300, 
+    resizeMode: "cover", 
+    margin: 0, 
+    padding: 0,
+  },
+  
   fullscreenImage: {
     width: "100%",
     height: "100%",
