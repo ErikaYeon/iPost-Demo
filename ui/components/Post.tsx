@@ -412,7 +412,7 @@ const Post: React.FC<PostProps> = ({
           </View>
           <TouchableOpacity onPress={toggleSave} style={styles.iconButton}>
             {isSaved ? (
-              <SaveColoredIcon width={20} height={20} />
+              <SaveColoredIcon width={19} height={19} />
             ) : (
               <SaveIcon width={20} height={20} />
             )}
