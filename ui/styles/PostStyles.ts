@@ -60,9 +60,10 @@ const styles = StyleSheet.create({
     width: Dimensions.get("window").width - 60, 
     height: Dimensions.get("window").width- 60, 
     borderRadius: 8, 
-    marginRight: 15,
-    marginLeft: 4,
+    marginRight: 10,
+    marginLeft: 8,
     padding: 10,
+    alignSelf: "center",
   },
   interactionContainer: {
     flexDirection: "row",
