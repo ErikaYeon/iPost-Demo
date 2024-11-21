@@ -12,10 +12,10 @@ import HeaderText from "../ui/components/HeaderText";
 import LinkText from "../ui/components/LinkText";
 import RegularText from "../ui/components/RegularText";
 import createSharedStyles from "../ui/styles/SharedStyles";
-import { darkTheme } from "../ui/styles/Theme";
-import { styles } from "../ui/styles/LogIn";
+import { darkTheme, lightTheme } from "../ui/styles/Theme";
+import createLogInScreenStyles from "@/ui/styles/LogIn";
 import { useRouter } from "expo-router";
-import { useDispatch, useSelector } from "react-redux";
+import { useDispatch } from "react-redux";
 import RegularTextLine from "@/ui/components/RegularTextLine";
 import { isEmailValid } from "@/utils/RegexExpressions";
 import { AppDispatch } from "@/redux/store";
@@ -25,16 +25,18 @@ import {
   setProfileEmail,
 } from "@/redux/slices/profileSlice";
 
-const theme = darkTheme;
-const sharedStyles = createSharedStyles(theme);
-
 const LogInScreen: React.FC = () => {
+  const theme = darkTheme; // Cambiar manualmente a lightTheme si es necesario
+  const sharedStyles = createSharedStyles(theme);
+  const styles = createLogInScreenStyles(theme);
+
   const dispatch = useDispatch<AppDispatch>();
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [errorMessage, setErrorMessage] = useState("");
 
   const router = useRouter();
+
   const handleLogin = async () => {
     if (!email || !password) {
       setErrorMessage("Por favor, completa todos los campos.");
@@ -66,8 +68,9 @@ const LogInScreen: React.FC = () => {
         source={require("../assets/images/icons/LogoiPost.png")}
         style={styles.logo}
       />
+
       <View style={styles.headerContainer}>
-        <HeaderText text="Ingresar a" theme={theme} />
+        <HeaderText text={"Ingresar a"} theme={theme} />
         <Text style={styles.headerText}> iPost</Text>
       </View>
 
@@ -106,7 +109,12 @@ const LogInScreen: React.FC = () => {
       />
 
       <View
-        style={{ flexDirection: "row", justifyContent: "center", marginTop: 7, marginBottom: 10 }}
+        style={{
+          flexDirection: "row",
+          justifyContent: "center",
+          marginTop: 7,
+          marginBottom: 10,
+        }}
       >
         <RegularText text="¿No tienes una cuenta? " theme={theme} />
         <LinkText
@@ -115,7 +123,7 @@ const LogInScreen: React.FC = () => {
           theme={theme}
         />
       </View>
-      
+
       <RegularTextLine text="o continua con" theme={theme} />
 
       <TouchableOpacity
