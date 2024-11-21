@@ -1,5 +1,5 @@
 // PostStyles.ts
-import { StyleSheet } from "react-native";
+import { StyleSheet, Dimensions } from "react-native";
 
 const styles = StyleSheet.create({
   postContainer: {
@@ -57,10 +57,20 @@ const styles = StyleSheet.create({
     fontSize: 15,
   },
   postImage: {
-    width: 325,
-    height: 325,
-    borderRadius: 8,
-    marginRight: 10,
+    width: Dimensions.get("window").width - 50, 
+    height: Dimensions.get("window").width- 50, 
+    borderRadius: 8, 
+    margin: 15,
+    marginLeft:0,
+    padding: 10,
+  },
+  singlePostImage: {
+    width: Dimensions.get("window").width -50, // Ancho igual a la pantalla
+    height: Dimensions.get("window").width -50, // Altura igual al ancho para que sea cuadrado
+    borderRadius: 8, // Opcional: esquinas redondeadas
+    resizeMode: "cover", // Asegura que la imagen cubra todo
+    margin: 0, // Sin margen
+    padding: 0, // Sin padding
   },
   interactionContainer: {
     flexDirection: "row",
