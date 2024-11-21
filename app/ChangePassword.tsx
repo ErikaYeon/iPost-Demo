@@ -8,10 +8,12 @@ import CustomButton from "../ui/components/CustomButton";
 import LinkText from "../ui/components/LinkText";
 import { createChangePasswordStyles } from "../ui/styles/ChangePasswordStyles";
 import { darkTheme, lightTheme } from "../ui/styles/Theme";
-import { useDispatch } from "react-redux";
-// import { changePasswordAsync } from "@/redux/slices/authSlice"; // Si implementas esta acción
-import { AppDispatch } from "@/redux/store";
+import { useDispatch, useSelector } from "react-redux";
+import { changePasswordAsync } from "@/redux/slices/authSlice"; // Si implementas esta acción
+import { AppDispatch, RootState } from "@/redux/store";
 import { router } from "expo-router";
+import { ChangePasswordRequest } from "@/types/apiContracts";
+import { isPasswordValid } from "@/utils/RegexExpressions";
 
 const ChangePasswordScreen: React.FC = () => {
   // Establecer manualmente el tema aquí (elige entre darkTheme o lightTheme)
@@ -23,6 +25,7 @@ const ChangePasswordScreen: React.FC = () => {
   const [confirmPassword, setConfirmPassword] = useState("");
   const [errorMessage, setErrorMessage] = useState("");
   const [successMessage, setSuccessMessage] = useState("");
+  const userEmail = useSelector((state: RootState) => state.profile.email);
 
   const styles = createChangePasswordStyles(theme); // Genera estilos dinámicamente
 
@@ -35,6 +38,10 @@ const ChangePasswordScreen: React.FC = () => {
     if (newPassword !== confirmPassword) {
       setErrorMessage("La nueva contraseña y su confirmación no coinciden.");
       return;
+    } else if (!isPasswordValid(newPassword)) {
+      setErrorMessage(
+        "La contraseña debe tener al menos 6 caracteres y un carácter especial."
+      );
     }
 
     if (newPassword.length < 8) {
@@ -44,20 +51,24 @@ const ChangePasswordScreen: React.FC = () => {
 
     try {
       setErrorMessage("");
-      const resultAction = await dispatch(
-        changePasswordAsync({ currentPassword, newPassword })
-      );
+      const Request: ChangePasswordRequest = {
+        email: userEmail,
+        password: currentPassword,
+        newPassword: newPassword,
+      };
+      const resultAction = await dispatch(changePasswordAsync(Request));
+
       if (changePasswordAsync.fulfilled.match(resultAction)) {
-        setSuccessMessage("Contraseña cambiada exitosamente.");
-        setCurrentPassword("");
-        setNewPassword("");
-        setConfirmPassword("");
-      } else {
-        setErrorMessage("Error al cambiar la contraseña. Intenta nuevamente.");
+        const { message } = resultAction.payload;
+        setSuccessMessage(message);
+      } else if (changePasswordAsync.rejected.match(resultAction)) {
+        const { message } = resultAction.payload || {
+          message: "Error inesperado",
+        };
+        setErrorMessage(message);
       }
-    } catch (error) {
-      console.error("Error al cambiar contraseña:", error);
-      setErrorMessage("Ocurrió un error, intentalo nuevamente.");
+    } catch {
+      setErrorMessage("Error inesperado");
     }
   };
 
@@ -133,7 +144,7 @@ const ChangePasswordScreen: React.FC = () => {
           text="Olvidé mi contraseña"
           onPress={() => console.log("Olvidé mi contraseña")}
           theme={theme}
-          style={styles.link}
+          // style={styles.link}
         />
       </View>
       {errorMessage ? (

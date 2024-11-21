@@ -13,12 +13,21 @@ import { darkTheme, lightTheme } from "../ui/styles/Theme";
 import ConfirmLogout from "../ui/components/ConfirmLogout";
 import ConfirmDeleteAccount from "../ui/components/ConfirmDeleteAccount";
 import { router } from "expo-router";
+import { useDispatch, useSelector } from "react-redux";
+import AsyncStorage from "@react-native-async-storage/async-storage";
+import { logout, deleteAccountAsync } from "@/redux/slices/authSlice";
+import { AppDispatch, RootState } from "@/redux/store";
+import { clearPosts } from "@/redux/slices/postSlice";
+import { clearProfile } from "@/redux/slices/profileSlice";
+import { resetPosts } from "@/redux/slices/timelineSlice";
 
 const SettingsScreen: React.FC = () => {
   const [themeMode, setThemeMode] = useState<"light" | "dark">("dark");
   const [language, setLanguage] = useState("Español");
   const [isLogoutVisible, setLogoutVisible] = useState(false);
   const [isDeleteAccountVisible, setDeleteAccountVisible] = useState(false);
+  const dispatch = useDispatch<AppDispatch>();
+  const userId = useSelector((state: RootState) => state.profile.id);
 
   const theme = themeMode === "dark" ? darkTheme : lightTheme;
 
@@ -30,6 +39,32 @@ const SettingsScreen: React.FC = () => {
   const languageSelectedBackgroundColor = themeSelectedBackgroundColor;
   const languageSelectedTextColor =
     themeMode === "dark" ? "#383860" : "#201E43";
+
+  const handleLogout = async () => {
+    try {
+      await AsyncStorage.removeItem("access_token");
+      await AsyncStorage.removeItem("refresh_token");
+
+      dispatch(logout());
+      dispatch(clearPosts());
+      dispatch(clearProfile());
+      dispatch(resetPosts());
+
+      router.push("/Welcome");
+    } catch (error) {
+      console.error("Error al cerrar sesión:", error);
+    }
+  };
+  const handleDeleteAccount = async () => {
+    try {
+      const result = await dispatch(deleteAccountAsync(userId)).unwrap(); //Todo: no fucniona
+      console.log("cuenta eliminada con exito" + result);
+      router.push("/Welcome");
+    } catch (error: any) {
+      console.log(error);
+      console.log("error al querer eliminar la cuenta");
+    }
+  };
 
   const renderSelectableOption = ({
     isSelected,
@@ -220,7 +255,7 @@ const SettingsScreen: React.FC = () => {
           onCancel={() => setLogoutVisible(false)}
           onConfirm={() => {
             setLogoutVisible(false);
-            console.log("Sesión cerrada");
+            handleLogout();
           }}
           theme={theme}
         />
@@ -231,7 +266,7 @@ const SettingsScreen: React.FC = () => {
           onCancel={() => setDeleteAccountVisible(false)}
           onConfirm={() => {
             setDeleteAccountVisible(false);
-            console.log("Cuenta eliminada permanentemente");
+            handleDeleteAccount();
           }}
           theme={theme}
         />

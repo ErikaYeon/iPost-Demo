@@ -28,6 +28,14 @@ export const fetchPosts = createAsyncThunk(
   "posts/fetchPosts",
   async (params: { userId: string; isRefreshing: boolean }, { getState }) => {
     const state = getState() as RootState;
+    console.log(
+      "offset" +
+        state.posts.offset +
+        "limit" +
+        state.posts.limit +
+        "time" +
+        state.posts.time
+    );
     state.posts.offset = 0;
     const { offset, limit, time } = state.posts;
     const { userId, isRefreshing } = params;
@@ -50,6 +58,9 @@ const postSlice = createSlice({
       };
       state.posts = [newPost, ...state.posts];
     },
+    clearPosts: (state) => {
+      (state.posts = []), (state.offset = 0);
+    },
   },
   extraReducers: (builder) => {
     builder
@@ -69,7 +80,6 @@ const postSlice = createSlice({
         state.hasMore = action.payload.length > 0;
         state.offset += APIConstants.LIST_LIMIT;
         state.time = new Date().toISOString();
-        console.log("LOS POST QUE TRAJO" + state.posts.length);
       })
       .addCase(fetchPosts.rejected, (state, action) => {
         state.loading = false;
@@ -79,6 +89,6 @@ const postSlice = createSlice({
 });
 
 // Exporta la nueva acción
-export const { addNewPost } = postSlice.actions;
+export const { addNewPost, clearPosts } = postSlice.actions;
 
 export default postSlice.reducer;

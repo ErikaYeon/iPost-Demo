@@ -29,6 +29,12 @@ export interface LoginRequest {
   password: string;
 }
 
+export interface ChangePasswordRequest {
+  email: string;
+  password: string;
+  newPassword: string;
+}
+
 export interface CreatePostRequest {
   userId: string;
   location: string;
@@ -71,7 +77,7 @@ export enum Gender {
   NON_BINARY,
   PREFER_NOT_TO_ANSWER,
 }
-export enum EmailType{
+export enum EmailType {
   CONFIRMATION,
   RECOVERY,
 }
@@ -106,23 +112,22 @@ export interface Ads {
   dateStart: string;
   dateEnd: string;
   siteUrl: string;
-  contents : string[];
+  contents: string[];
 }
-export interface commentType1{
-  id:string,
-  author: UserComment,
-  content:string,
-  createAt:string
+export interface commentType1 {
+  id: string;
+  author: UserComment;
+  content: string;
+  createAt: string;
 }
-export interface UserComment{
-  id:string,
-  name: string | null,
-  lastname:string | null,
-  nickname:string | null,
-  level:number,
-  profileImage: string | null,
-  active: boolean,
-
+export interface UserComment {
+  id: string;
+  name: string | null;
+  lastname: string | null;
+  nickname: string | null;
+  level: number;
+  profileImage: string | null;
+  active: boolean;
 }
 
 export interface PageParams {
