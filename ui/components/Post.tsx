@@ -326,7 +326,7 @@ const Post: React.FC<PostProps> = ({
             width: "100%",
           }}
         >
-          <Image source={{ uri: images[0].uri }} style={styles.postImage} />
+          <Image source={{ uri: images[0].uri }} style={styles.singlePostImage} />
         </View>
       ) : (
         <FlatList
@@ -344,8 +344,8 @@ const Post: React.FC<PostProps> = ({
                   <Video
                     ref={videoRef}
                     source={{ uri: item.uri }}
-                    style={styles.postImage} // Aplica estilo cuadrado
-                    resizeMode={ResizeMode.COVER} // Recorta el video
+                    style={styles.postImage}
+                    resizeMode={ResizeMode.COVER}
                     isLooping
                   />
                   <TouchableOpacity
