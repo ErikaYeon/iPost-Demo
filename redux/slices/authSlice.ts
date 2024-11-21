@@ -127,7 +127,7 @@ export const deleteAccountAsync = createAsyncThunk(
       await deleteAccount(userId);
       console.log("paso por aca");
     } catch (error: any) {
-      return rejectWithValue(error.message ?? "Ocurrió un error");
+      return rejectWithValue(error.message ?? "Ocurrió un error111");
     }
   }
 );

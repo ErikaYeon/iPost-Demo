@@ -57,10 +57,11 @@ const SettingsScreen: React.FC = () => {
   };
   const handleDeleteAccount = async () => {
     try {
-      const result = await dispatch(deleteAccountAsync(userId)); //Todo: no fucniona
-      // console.log("cuenta eliminada con exito" + result);
+      const result = await dispatch(deleteAccountAsync(userId)).unwrap(); //Todo: no fucniona
+      console.log("cuenta eliminada con exito" + result);
       router.push("/Welcome");
-    } catch {
+    } catch (error: any) {
+      console.log(error);
       console.log("error al querer eliminar la cuenta");
     }
   };
