@@ -33,7 +33,7 @@ import styles from "../../ui/styles/PostStyles";
 import { Crown } from "@/types/models";
 // import Clipboard from '@react-native-clipboard/clipboard';
 import * as Clipboard from "expo-clipboard";
-import { Video } from "expo-av";
+import { Video, ResizeMode } from "expo-av";
 import Placeholders from "@/constants/ProfilePlaceholders";
 import { useDispatch, useSelector } from "react-redux";
 import { AppDispatch, RootState } from "@/redux/store";
@@ -326,7 +326,7 @@ const Post: React.FC<PostProps> = ({
             width: "100%",
           }}
         >
-          <Image source={{ uri: images[0].uri }} style={styles.singleImage} />
+          <Image source={{ uri: images[0].uri }} style={styles.singlePostImage} />
         </View>
       ) : (
         <FlatList
@@ -334,13 +334,7 @@ const Post: React.FC<PostProps> = ({
           horizontal
           keyExtractor={(item, index) => index.toString()}
           renderItem={({ item }) => (
-            <View
-              style={{
-                flex: 1,
-                alignItems: "center",
-                justifyContent: "center",
-              }}
-            >
+            <View>
               {item.type === "image" ? (
                 <TouchableOpacity onPress={() => openImageModal(item.uri)}>
                   <Image source={{ uri: item.uri }} style={styles.postImage} />
@@ -351,12 +345,12 @@ const Post: React.FC<PostProps> = ({
                     ref={videoRef}
                     source={{ uri: item.uri }}
                     style={styles.postImage}
-                    resizeMode="cover"
+                    resizeMode={ResizeMode.COVER}
                     isLooping
                   />
                   <TouchableOpacity
                     style={styles.playPauseButton}
-                    onPress={() => togglePlayPause(item.uri)} // Usa `item.uri` o `item.id` como identificador único
+                    onPress={() => togglePlayPause(item.uri)}
                   >
                     {playingVideos[item.uri] ? (
                       <View style={styles.pauseIcon}>
@@ -375,7 +369,6 @@ const Post: React.FC<PostProps> = ({
           pagingEnabled
           snapToAlignment="start"
           decelerationRate="fast"
-          contentContainerStyle={{ marginHorizontal: 0, paddingHorizontal: 0 }}
         />
       )}
 
@@ -521,13 +514,6 @@ const modalStyles = StyleSheet.create({
     backgroundColor: "black",
     justifyContent: "center",
     alignItems: "center",
-  },
-  postImage: {
-    width: Dimensions.get("window").width,
-    height: 300,
-    resizeMode: "cover",
-    margin: 0,
-    padding: 0,
   },
   fullscreenImage: {
     width: "100%",
