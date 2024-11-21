@@ -22,7 +22,6 @@ export const getPosts = async (
     const response = await api.get("/posts", {
       params: { userId, offset, limit },
     });
-    console.log("RESPONSE FETCH DATA" + response.data);
     return response.data;
   } catch (error: any) {
     handleError(error);
