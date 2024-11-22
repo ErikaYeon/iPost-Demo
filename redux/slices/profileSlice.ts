@@ -15,7 +15,7 @@ import {
   UserSettingsResponse,
 } from "@/types/apiContracts";
 import { Crown } from "@/types/models";
-import { levelToCrown } from "@/types/mappers";
+import { levelToCrown, levelToLanguage, levelTotheme } from "@/types/mappers";
 import { RootState } from "../store";
 
 interface ProfileState {
@@ -35,8 +35,8 @@ interface ProfileState {
   gender: Gender | null;
   loading: boolean;
   error: string | null;
-  theme: theme;
-  language: language;
+  theme: string;
+  language: string;
 }
 
 const initialState: ProfileState = {
@@ -56,8 +56,8 @@ const initialState: ProfileState = {
   gender: null,
   loading: false,
   error: null,
-  theme: theme.DARK,
-  language: language.SPANISH,
+  theme: "dark",
+  language: "Español",
 };
 
 export const fetchUserInfo = createAsyncThunk(
@@ -144,13 +144,13 @@ const profileSlice = createSlice({
       state.postsCount = 0;
       state.gender = 0;
       state.active = false;
-      state.language = language.SPANISH;
-      state.theme = theme.DARK;
+      state.theme = "dark";
+      state.language = "Español";
     },
-    updateTheme: (state, action: PayloadAction<theme>) => {
+    updateTheme: (state, action: PayloadAction<string>) => {
       state.theme = action.payload;
     },
-    updateLanguage: (state, action: PayloadAction<language>) => {
+    updateLanguage: (state, action: PayloadAction<string>) => {
       state.language = action.payload;
     },
   },
@@ -196,8 +196,12 @@ const profileSlice = createSlice({
       .addCase(
         getUserSettingsAsync.fulfilled,
         (state, action: PayloadAction<UserSettingsResponse>) => {
-          state.theme = action.payload.theme;
-          state.language = action.payload.language;
+          console.log(action.payload.theme);
+          state.theme = action.payload.theme === "DARK" ? "dark" : "light";
+          state.language =
+            action.payload.language === "ENGLISH" ? "Inglés" : "Español";
+          // state.theme = levelTotheme(action.payload.theme);
+          // state.language = levelToLanguage(action.payload.language);
           console.log("estado settings user" + state.theme + state.language);
         }
       )

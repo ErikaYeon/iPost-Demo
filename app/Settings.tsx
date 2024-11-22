@@ -25,7 +25,12 @@ import {
   setUserSettingsAsync,
 } from "@/redux/slices/profileSlice";
 import { resetPosts } from "@/redux/slices/timelineSlice";
-import { levelToLanguage, levelTotheme } from "../types/mappers";
+import {
+  levelToLanguage,
+  levelTotheme,
+  languageToLevel,
+  themeToLevel,
+} from "../types/mappers";
 import {
   theme as THEME,
   language as LANGUAGE,
@@ -40,8 +45,8 @@ const SettingsScreen: React.FC = () => {
   const dispatch = useDispatch<AppDispatch>();
   const Profile = useSelector((state: RootState) => state.profile);
   const userId = Profile.id;
-  const themeMode = levelTotheme(Profile.theme);
-  const language = levelToLanguage(Profile.language);
+  const themeMode = Profile.theme;
+  const language = Profile.language;
 
   const theme = themeMode === "dark" ? darkTheme : lightTheme;
 
@@ -82,8 +87,8 @@ const SettingsScreen: React.FC = () => {
 
   const handleGoBack = () => {
     const userSettings: UserSettingsResponse = {
-      language: Profile.language,
-      theme: Profile.theme,
+      language: languageToLevel(Profile.language),
+      theme: themeToLevel(Profile.theme),
     };
     dispatch(setUserSettingsAsync({ userSettings, userId }));
     router.back();
@@ -191,7 +196,7 @@ const SettingsScreen: React.FC = () => {
           {renderSelectableOption({
             isSelected: themeMode === "light",
             // onPress: () => setThemeMode("light"),
-            onPress: () => dispatch(updateTheme(THEME.LIGHT)),
+            onPress: () => dispatch(updateTheme("light")),
             text: "Claro",
             icon:
               themeMode === "light" ? (
@@ -205,7 +210,7 @@ const SettingsScreen: React.FC = () => {
           {renderSelectableOption({
             isSelected: themeMode === "dark",
             // onPress: () => setThemeMode("dark"),
-            onPress: () => dispatch(updateTheme(THEME.DARK)),
+            onPress: () => dispatch(updateTheme("dark")),
             text: "Oscuro",
             icon: <DarkModeIcon width={24} height={24} />,
             selectedTextColor: darkModeTextColor,
@@ -231,7 +236,7 @@ const SettingsScreen: React.FC = () => {
           {renderSelectableOption({
             isSelected: language === "Español",
             // onPress: () => setLanguage("Español"),
-            onPress: () => dispatch(updateLanguage(LANGUAGE.SPANISH)),
+            onPress: () => dispatch(updateLanguage("Español")),
             text: "Español",
             selectedTextColor: languageSelectedTextColor,
             unselectedTextColor: theme.colors.textSecondary,
@@ -239,7 +244,7 @@ const SettingsScreen: React.FC = () => {
           {renderSelectableOption({
             isSelected: language === "Inglés",
             // onPress: () => setLanguage("Inglés"),
-            onPress: () => dispatch(updateLanguage(LANGUAGE.ENGLISH)),
+            onPress: () => dispatch(updateLanguage("Inglés")),
             text: "Inglés",
             selectedTextColor: languageSelectedTextColor,
             unselectedTextColor: theme.colors.textSecondary,

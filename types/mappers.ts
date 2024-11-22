@@ -33,9 +33,9 @@ export function levelToCrown(level: number): Crown {
 // }
 // }
 
-// export function levelTotheme(level: number): string {
+// export function levelTotheme(level: THEME): string {
 //   switch (level) {
-//     case 1: {
+//     case THEME.DARK: {
 //       return "dark";
 //     }
 //     default: {
@@ -43,22 +43,43 @@ export function levelToCrown(level: number): Crown {
 //     }
 //   }
 // }
-// export function levelToLanguage(level: number): string {
-//   switch (level) {
-//     case 1: {
-//       return "Español";
-//     }
-//     default: {
-//       return "Inglés";
-//     }
-//   }
-// }
-// export function levelTotheme(level: theme): string {
-//   if (level === theme.LIGHT) {
-//     return "light";
-//   } else {
-//     return "dark";
-//   }
+export function levelToLanguage(level: LANGUAGE): string {
+  switch (level) {
+    case LANGUAGE.SPANISH: {
+      return "Español";
+    }
+    default: {
+      return "Inglés";
+    }
+  }
+}
+export function themeToLevel(level: string): string {
+  switch (level) {
+    case "dark": {
+      return "DARK";
+    }
+    default: {
+      return "LIGHT";
+    }
+  }
+}
+export function languageToLevel(level: string): string {
+  switch (level) {
+    case "Español": {
+      return "SPANISH";
+    }
+    default: {
+      return "ENGLISH";
+    }
+  }
+}
+export function levelTotheme(level: THEME): string {
+  if (level === THEME.DARK) {
+    return "dark";
+  } else {
+    return "light";
+  }
+}
 // switch (level) {
 //   case 1: {
 //     return "light";
@@ -68,10 +89,10 @@ export function levelToCrown(level: number): Crown {
 //   }
 // }
 // }
-export const levelTotheme = (theme: THEME): "light" | "dark" => {
-  return theme === THEME.LIGHT ? "light" : "dark";
-};
+// export const levelTotheme = (theme: THEME): "light" | "dark" => {
+//   return theme === THEME.LIGHT ? "light" : "dark";
+// };
 
-export const levelToLanguage = (language: LANGUAGE): "Español" | "Inglés" => {
-  return language === LANGUAGE.SPANISH ? "Español" : "Inglés";
-};
+// export const levelToLanguage = (language: LANGUAGE): "Español" | "Inglés" => {
+//   return language === LANGUAGE.SPANISH ? "Español" : "Inglés";
+// };

@@ -71,16 +71,16 @@ export interface UserResponse {
   gender: Gender;
 }
 export interface UserSettingsResponse {
-  language: language;
-  theme: theme;
+  language: string;
+  theme: string;
 }
 export enum language {
   SPANISH,
   ENGLISH,
 }
 export enum theme {
-  DARK,
-  LIGHT,
+  DARK = "DARK",
+  LIGHT = "lih",
 }
 export enum Gender {
   WOMAN,
