@@ -33,12 +33,15 @@ import {
 } from "@/types/apiContracts";
 
 const SettingsScreen: React.FC = () => {
-  const [themeMode, setThemeMode] = useState<"light" | "dark">("dark");
-  const [language, setLanguage] = useState("Español");
+  // const [themeMode, setThemeMode] = useState<"light" | "dark">("dark");
+  // const [language, setLanguage] = useState("Español");
   const [isLogoutVisible, setLogoutVisible] = useState(false);
   const [isDeleteAccountVisible, setDeleteAccountVisible] = useState(false);
   const dispatch = useDispatch<AppDispatch>();
-  const userId = useSelector((state: RootState) => state.profile.id);
+  const Profile = useSelector((state: RootState) => state.profile);
+  const userId = Profile.id;
+  const themeMode = levelTotheme(Profile.theme);
+  const language = levelToLanguage(Profile.language);
 
   const theme = themeMode === "dark" ? darkTheme : lightTheme;
 
@@ -75,6 +78,15 @@ const SettingsScreen: React.FC = () => {
       console.log(error);
       console.log("error al querer eliminar la cuenta");
     }
+  };
+
+  const handleGoBack = () => {
+    const userSettings: UserSettingsResponse = {
+      language: Profile.language,
+      theme: Profile.theme,
+    };
+    dispatch(setUserSettingsAsync({ userSettings, userId }));
+    router.back();
   };
 
   const renderSelectableOption = ({
@@ -154,7 +166,7 @@ const SettingsScreen: React.FC = () => {
             )
           }
           title="Ajustes"
-          onPress={() => router.back()}
+          onPress={handleGoBack}
           theme={theme}
         />
       </View>
@@ -178,7 +190,8 @@ const SettingsScreen: React.FC = () => {
         >
           {renderSelectableOption({
             isSelected: themeMode === "light",
-            onPress: () => setThemeMode("light"),
+            // onPress: () => setThemeMode("light"),
+            onPress: () => dispatch(updateTheme(THEME.LIGHT)),
             text: "Claro",
             icon:
               themeMode === "light" ? (
@@ -191,7 +204,8 @@ const SettingsScreen: React.FC = () => {
           })}
           {renderSelectableOption({
             isSelected: themeMode === "dark",
-            onPress: () => setThemeMode("dark"),
+            // onPress: () => setThemeMode("dark"),
+            onPress: () => dispatch(updateTheme(THEME.DARK)),
             text: "Oscuro",
             icon: <DarkModeIcon width={24} height={24} />,
             selectedTextColor: darkModeTextColor,
@@ -216,14 +230,16 @@ const SettingsScreen: React.FC = () => {
         >
           {renderSelectableOption({
             isSelected: language === "Español",
-            onPress: () => setLanguage("Español"),
+            // onPress: () => setLanguage("Español"),
+            onPress: () => dispatch(updateLanguage(LANGUAGE.SPANISH)),
             text: "Español",
             selectedTextColor: languageSelectedTextColor,
             unselectedTextColor: theme.colors.textSecondary,
           })}
           {renderSelectableOption({
             isSelected: language === "Inglés",
-            onPress: () => setLanguage("Inglés"),
+            // onPress: () => setLanguage("Inglés"),
+            onPress: () => dispatch(updateLanguage(LANGUAGE.ENGLISH)),
             text: "Inglés",
             selectedTextColor: languageSelectedTextColor,
             unselectedTextColor: theme.colors.textSecondary,
