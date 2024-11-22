@@ -16,11 +16,17 @@ import HeaderWithIcon from "../ui/components/HeaderWithIcon";
 import PostTextInput from "../ui/components/PostTextInput";
 import OptionButton from "../ui/components/OptionButton";
 import createSharedStyles from "../ui/styles/SharedStyles";
-import { darkTheme } from "../ui/styles/Theme";
-import CloseIcon from "../assets/images/icons/close.svg";
-import PhotoIcon from "../assets/images/icons/photo.svg";
-import LocationIcon from "../assets/images/icons/location_on.svg";
+import { createEditProfilePhotoStyles } from "../ui/styles/EditProfilePhotoStyles";
+import { darkTheme, lightTheme } from "../ui/styles/Theme";
+import CloseIconDark from "../assets/images/icons/close.svg";
+import CloseIconLight from "../assets/images/icons/closeLight.svg";
+import PhotoIconDark from "../assets/images/icons/photo.svg";
+import PhotoIconLight from "../assets/images/icons/photo_lightMode.svg";
+import LocationIconDark from "../assets/images/icons/location_on.svg";
+import LocationIconLight from "../assets/images/icons/location_onLight.svg";
 import { useRouter } from "expo-router";
+import { useDispatch, useSelector } from "react-redux";
+import { AppDispatch, RootState } from "../redux/store";
 import {
   setAllPostData,
   setPostContent,
@@ -30,17 +36,16 @@ import {
   setDate,
   createPostAsync,
 } from "../redux/slices/createPostSlice";
-import { useDispatch, useSelector } from "react-redux";
-import { AppDispatch, RootState } from "../redux/store";
 import { CreatePostRequest } from "@/types/apiContracts";
 import Placeholders from "@/constants/ProfilePlaceholders";
 import { addPost } from "@/redux/slices/timelineSlice";
 import { Video } from "expo-av";
 
-const theme = darkTheme;
-const sharedStyles = createSharedStyles(theme);
-
 const CreatePost: React.FC = () => {
+  const theme = darkTheme; // Cambiar a `lightTheme` si es necesario
+  const sharedStyles = createSharedStyles(theme);
+  const styles = createEditProfilePhotoStyles(theme);
+
   const router = useRouter();
   const dispatch = useDispatch<AppDispatch>();
 
@@ -85,7 +90,7 @@ const CreatePost: React.FC = () => {
             uri: isVideo
               ? `data:video/mp4;base64,${base64}`
               : `data:image/jpeg;base64,${base64}`,
-            type: isVideo ? "video" : "image", // Asegura que el tipo es correcto
+            type: isVideo ? "video" : "image",
           };
         })
       );
@@ -95,7 +100,7 @@ const CreatePost: React.FC = () => {
   };
 
   const renderMediaItem = ({ item }) => (
-    <View style={{ marginRight: 10, position: "relative" }}>
+    <View style={{ marginRight: 10, position: "relative", paddingTop:16 }}>
       {item.type === "image" ? (
         <Image
           source={{ uri: item.uri }}
@@ -119,46 +124,18 @@ const CreatePost: React.FC = () => {
         }
         style={{
           position: "absolute",
-          top: -5,
-          right: -5,
+          top: 9,
+          right: -8,
           backgroundColor: "rgba(0,0,0,0.5)",
           borderRadius: 12,
-          padding: 4,
+          padding: 5,
         }}
       >
-        <CloseIcon width={16} height={16} fill="white" />
+        <CloseIconDark width={16} height={16} />
+
       </TouchableOpacity>
     </View>
   );
-
-  const handleCreatePostRedux = () => {
-    const generateRandomId = (): string =>
-      Math.floor(1000 + Math.random() * 9000).toString();
-    const newPostData = {
-      id: generateRandomId(),
-      author: {
-        id: userProfile.id,
-        email: userProfile.email ?? "iPost@gmail.com",
-        username: userProfile.username ?? "iPost",
-        name: userProfile.name ?? "iPost",
-        lastname: userProfile.lastname ?? "iPost",
-        level: userProfile.crown,
-        profileImage:
-          userProfile.profileImage ?? Placeholders.DEFAULT_PROFILE_PHOTO,
-        active: true,
-      },
-      createdAt: new Date().toISOString(),
-      location: location,
-      title: postContent,
-      likesCount: 0,
-      commentsCount: 0,
-      contents: selectedImages.map((item) => item.uri), // Extrae solo los URIs
-      likes: [],
-      isLikedByUser: false,
-      isAd: false,
-    };
-    dispatch(addPost(newPostData));
-  };
 
   const handlePublish = async () => {
     dispatch(setDate(date));
@@ -168,20 +145,16 @@ const CreatePost: React.FC = () => {
         selectedImages: selectedImages.map((item) => ({
           uri: item.uri,
           type: item.type,
-        })), // Pasa tanto `uri` como `type`
+        })),
         location,
         date,
       })
     );
 
-    handleCreatePostRedux();
-    dispatch(clearPost());
-    router.push("/(tabs)/home");
-
     const request: CreatePostRequest = {
       userId: userProfile.id,
       location: location,
-      contents: selectedImages.map((item) => item.uri), // Envía solo los URIs en base64
+      contents: selectedImages.map((item) => item.uri),
       title: postContent,
     };
 
@@ -189,6 +162,8 @@ const CreatePost: React.FC = () => {
       const result = await dispatch(createPostAsync(request));
       if (createPostAsync.fulfilled.match(result)) {
         console.log("Post creado exitosamente");
+        dispatch(clearPost());
+        router.push("/(tabs)/home");
       }
     } catch (error) {
       console.log("Error al crear el Post");
@@ -201,34 +176,27 @@ const CreatePost: React.FC = () => {
     location.trim() !== "";
 
   return (
-    <View style={{ flex: 1, backgroundColor: theme.colors.background }}>
+    <SafeAreaView style={styles.container}>
       <StatusBar
         backgroundColor={theme.colors.background}
-        barStyle="light-content"
+        barStyle={theme.isDark ? "light-content" : "dark-content"}
       />
 
-      <SafeAreaView
-        style={{
-          backgroundColor: theme.colors.background,
-          paddingTop:
-            Platform.OS === "android" ? StatusBar.currentHeight + 10 : 30,
-        }}
-      >
-        <HeaderWithIcon
-          iconComponent={() => (
-            <View style={{ marginLeft: 10 }}>
-              <CloseIcon
-                width={24}
-                height={24}
-                fill={theme.colors.textPrimary}
-              />
-            </View>
-          )}
-          title="Nuevo post"
-          onPress={() => router.push("/(tabs)/home")}
-          theme={theme}
-        />
-      </SafeAreaView>
+      <HeaderWithIcon
+        iconComponent={() =>
+          theme.isDark ? (
+            <CloseIconDark width={24} height={24} />
+          ) : (
+            <CloseIconLight
+              width={15}
+              height={15}
+            />
+          )
+        }
+        title="Editar foto de perfil"
+        onPress={() => router.push("/(tabs)/home")}
+        theme={theme}
+      />
 
       <SafeAreaView
         style={[
@@ -261,22 +229,26 @@ const CreatePost: React.FC = () => {
         />
 
         <OptionButton
-          iconComponent={() => (
-            <PhotoIcon width={24} height={24} fill={theme.colors.textPrimary} />
-          )}
+          iconComponent={() =>
+            theme === darkTheme ? (
+              <PhotoIconDark width={24} height={24} />
+            ) : (
+              <PhotoIconLight width={20} height={20} />
+            )
+          }
           text="Seleccionar fotos o videos"
           onPress={selectImages}
           theme={theme}
         />
 
         <OptionButton
-          iconComponent={() => (
-            <LocationIcon
-              width={24}
-              height={24}
-              fill={theme.colors.textPrimary}
-            />
-          )}
+          iconComponent={() =>
+            theme === darkTheme ? (
+              <LocationIconDark width={24} height={24} />
+            ) : (
+              <LocationIconLight width={20} height={20} />
+            )
+          }
           text={location ? location : "Agregar ubicación"}
           onPress={() => router.push("/AddLocation")}
           theme={theme}
@@ -288,20 +260,20 @@ const CreatePost: React.FC = () => {
             onPress={handlePublish}
             type="secondary"
             theme={theme}
-            disabled={!isPublishEnabled} // Deshabilita si no cumple la condición
+            disabled={!isPublishEnabled}
             style={{
               marginTop: 30,
               marginBottom: 150,
               backgroundColor: isPublishEnabled
                 ? theme.colors.primary
-                : "#B5BACB", // Cambia el color según la condición
+                : "#B5BACB",
               borderColor: isPublishEnabled ? theme.colors.primary : "#B5BACB",
               width: "95%",
             }}
           />
         </View>
       </SafeAreaView>
-    </View>
+    </SafeAreaView>
   );
 };
 

@@ -2,7 +2,7 @@ import React from 'react';
 import { View, Text, StyleSheet } from 'react-native';
 import ErrorGen from '../assets/images/icons/errorGeneral.svg'; 
 import CustomButton from '../ui/components/CustomButton'; 
-import { darkTheme } from '../ui/styles/Theme'; 
+import { darkTheme, lightTheme } from '../ui/styles/Theme'; 
 import { Router, useRouter } from 'expo-router';
 
 const ErrorGeneral = ({ theme = darkTheme }) => { // Default to darkTheme if theme is not passed

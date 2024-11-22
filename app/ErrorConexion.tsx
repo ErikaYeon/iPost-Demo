@@ -2,11 +2,11 @@ import React from 'react';
 import { View, Text, StyleSheet } from 'react-native';
 import ErrorConex from '../assets/images/icons/errorConexion.svg'; 
 import CustomButton from '../ui/components/CustomButton'; 
-import { darkTheme } from '../ui/styles/Theme'; 
+import { darkTheme, lightTheme } from '../ui/styles/Theme'; 
 import { Router, useRouter } from 'expo-router';
 
 
-const ErrorConexion = ({  theme = darkTheme }) => {
+const ErrorConexion = ({  theme = lightTheme }) => {
   const router = useRouter();
   const onRetry  = () => {
     router.back();

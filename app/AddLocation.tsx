@@ -3,7 +3,7 @@ import { SafeAreaView, View, StatusBar, Platform } from 'react-native';
 import HeaderNoIcon from '../ui/components/HeaderNoIcon';
 import SearchBar from '../ui/components/SearchBar';
 import SuggestionsList from '../ui/components/SuggestionsList'; 
-import { darkTheme } from '../ui/styles/Theme';
+import { darkTheme, lightTheme } from '../ui/styles/Theme';
 import { useRouter } from 'expo-router'; 
 import { useDispatch, useSelector} from 'react-redux';
 import { setLocation } from '../redux/slices/createPostSlice'; 
