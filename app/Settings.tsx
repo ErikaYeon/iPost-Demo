@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import { SafeAreaView, View, Text, StatusBar } from "react-native";
 import HeaderWithIcon from "../ui/components/HeaderWithIcon";
 import BackIcon from "../assets/images/icons/navigate_before.svg";
@@ -18,16 +18,24 @@ import AsyncStorage from "@react-native-async-storage/async-storage";
 import { logout, deleteAccountAsync } from "@/redux/slices/authSlice";
 import { AppDispatch, RootState } from "@/redux/store";
 import { clearPosts } from "@/redux/slices/postSlice";
-import { clearProfile } from "@/redux/slices/profileSlice";
+import {
+  clearProfile,
+  updateTheme,
+  updateLanguage,
+  setUserSettingsAsync,
+} from "@/redux/slices/profileSlice";
 import { resetPosts } from "@/redux/slices/timelineSlice";
+import { languageToLevel, themeToLevel } from "../types/mappers";
+import { UserSettingsResponse } from "@/types/apiContracts";
 
 const SettingsScreen: React.FC = () => {
-  const [themeMode, setThemeMode] = useState<"light" | "dark">("dark");
-  const [language, setLanguage] = useState("Español");
   const [isLogoutVisible, setLogoutVisible] = useState(false);
   const [isDeleteAccountVisible, setDeleteAccountVisible] = useState(false);
   const dispatch = useDispatch<AppDispatch>();
-  const userId = useSelector((state: RootState) => state.profile.id);
+  const Profile = useSelector((state: RootState) => state.profile);
+  const userId = Profile.id;
+  const themeMode = Profile.theme;
+  const language = Profile.language;
 
   const theme = themeMode === "dark" ? darkTheme : lightTheme;
 
@@ -64,6 +72,15 @@ const SettingsScreen: React.FC = () => {
       console.log(error);
       console.log("error al querer eliminar la cuenta");
     }
+  };
+
+  const handleGoBack = () => {
+    const userSettings: UserSettingsResponse = {
+      language: languageToLevel(Profile.language),
+      theme: themeToLevel(Profile.theme),
+    };
+    dispatch(setUserSettingsAsync({ userSettings, userId }));
+    router.back();
   };
 
   const renderSelectableOption = ({
@@ -143,7 +160,7 @@ const SettingsScreen: React.FC = () => {
             )
           }
           title="Ajustes"
-          onPress={() => router.back()}
+          onPress={handleGoBack}
           theme={theme}
         />
       </View>
@@ -167,7 +184,8 @@ const SettingsScreen: React.FC = () => {
         >
           {renderSelectableOption({
             isSelected: themeMode === "light",
-            onPress: () => setThemeMode("light"),
+            // onPress: () => setThemeMode("light"),
+            onPress: () => dispatch(updateTheme("light")),
             text: "Claro",
             icon:
               themeMode === "light" ? (
@@ -180,7 +198,8 @@ const SettingsScreen: React.FC = () => {
           })}
           {renderSelectableOption({
             isSelected: themeMode === "dark",
-            onPress: () => setThemeMode("dark"),
+            // onPress: () => setThemeMode("dark"),
+            onPress: () => dispatch(updateTheme("dark")),
             text: "Oscuro",
             icon: <DarkModeIcon width={24} height={24} />,
             selectedTextColor: darkModeTextColor,
@@ -205,14 +224,16 @@ const SettingsScreen: React.FC = () => {
         >
           {renderSelectableOption({
             isSelected: language === "Español",
-            onPress: () => setLanguage("Español"),
+            // onPress: () => setLanguage("Español"),
+            onPress: () => dispatch(updateLanguage("Español")),
             text: "Español",
             selectedTextColor: languageSelectedTextColor,
             unselectedTextColor: theme.colors.textSecondary,
           })}
           {renderSelectableOption({
             isSelected: language === "Inglés",
-            onPress: () => setLanguage("Inglés"),
+            // onPress: () => setLanguage("Inglés"),
+            onPress: () => dispatch(updateLanguage("Inglés")),
             text: "Inglés",
             selectedTextColor: languageSelectedTextColor,
             unselectedTextColor: theme.colors.textSecondary,

@@ -83,7 +83,7 @@ const SearchProfiles: React.FC = () => {
   };
 
   const renderProfile = ({ item }: { item: (typeof profilesData)[0] }) => (
-    <TouchableOpacity onPress={() => router.push("/otherProfile")}>
+    <TouchableOpacity onPress={() => router.push("/OtherProfile")}>
       <View style={styles.profileContainer}>
         <Image
           source={{ uri: item.profileImage }}

@@ -16,3 +16,24 @@ export function levelToCrown(level: number): Crown {
     }
   }
 }
+
+export function themeToLevel(level: string): string {
+  switch (level) {
+    case "dark": {
+      return "DARK";
+    }
+    default: {
+      return "LIGHT";
+    }
+  }
+}
+export function languageToLevel(level: string): string {
+  switch (level) {
+    case "Español": {
+      return "SPANISH";
+    }
+    default: {
+      return "ENGLISH";
+    }
+  }
+}
