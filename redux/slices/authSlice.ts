@@ -15,6 +15,7 @@ import {
   resendEmail,
   ChangePassword,
   deleteAccount,
+  forgotPassword,
 } from "@/networking/authService";
 
 interface AuthState {
@@ -131,6 +132,17 @@ export const deleteAccountAsync = createAsyncThunk(
     }
   }
 );
+export const forgotPasswordAsync = createAsyncThunk(
+  "auth/forgotPassword",
+  async (email: string, { rejectWithValue }) => {
+    try {
+      await forgotPassword(email);
+      console.log("paso por forgot pass async");
+    } catch (error: any) {
+      return rejectWithValue(error.message ?? "Ocurrió un error111");
+    }
+  }
+);
 
 const authSlice = createSlice({
   name: "auth",
@@ -213,6 +225,22 @@ const authSlice = createSlice({
       .addCase(deleteAccountAsync.rejected, (state, action) => {
         state.loading = false;
         state.error = action.payload as string; // Error
+      })
+      .addCase(forgotPasswordAsync.pending, (state) => {
+        state.loading = true;
+        state.error = null;
+      })
+      .addCase(forgotPasswordAsync.fulfilled, (state) => {
+        state.loading = false;
+        state.error = null;
+        console.log(
+          "Se envió correctamente el email para recuperar contraseña."
+        );
+      })
+      .addCase(forgotPasswordAsync.rejected, (state, action) => {
+        state.loading = false;
+        state.error = null!;
+        console.error("Error al enviar email:", action.payload);
       });
   },
 });

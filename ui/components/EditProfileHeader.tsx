@@ -1,16 +1,20 @@
+import Placeholders from "@/constants/ProfilePlaceholders";
+import { RootState } from "@/redux/store";
 import { router } from "expo-router";
 import React from "react";
 import { View, Image, StyleSheet, TouchableOpacity } from "react-native";
+import { useSelector } from "react-redux";
 
 const EditProfileHeader: React.FC<{ theme: any }> = ({ theme }) => {
   const styles = createStyles(theme);
+  const Profile = useSelector((state: RootState) => state.profile);
   return (
     <>
       <View>
         <TouchableOpacity onPress={() => router.push("/EditProfileCover")}>
           <Image
             source={{
-              uri: "https://img.freepik.com/foto-gratis/fondo-mar-playa-vacio_74190-313.jpg",
+              uri: Placeholders.DEFAULT_PROFILE_PHOTO_COVER,
             }}
             style={styles.coverImage}
           />
@@ -22,7 +26,7 @@ const EditProfileHeader: React.FC<{ theme: any }> = ({ theme }) => {
           <TouchableOpacity onPress={() => router.push("/EditProfilePhoto")}>
             <Image
               source={{
-                uri: "https://img.freepik.com/foto-gratis/selfie-retrato-videollamada_23-2149186122.jpg",
+                uri: Profile.profileImage,
               }}
               style={styles.profilePicture}
             />

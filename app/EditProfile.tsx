@@ -17,20 +17,23 @@ import BackIcon from "../assets/images/icons/navigate_before.svg";
 import BackIconLightMode from "../assets/images/icons/navigate_before_lightMode.svg";
 import { darkTheme, lightTheme } from "../ui/styles/Theme";
 import { router } from "expo-router";
+import { useDispatch, useSelector } from "react-redux";
+import { AppDispatch, RootState } from "@/redux/store";
+import {
+  setProfileLastName,
+  setProfileUsername,
+  setProfileName,
+  setProfileDescription,
+} from "@/redux/slices/profileSlice";
 
 const theme = darkTheme; // Cambia manualmente entre `darkTheme` y `lightTheme`
 
 const GENDER_OPTIONS = ["Mujer", "Hombre", "No binario", "Prefiero no decirlo"];
 
 const EditProfile: React.FC = () => {
-  const [firstName, setFirstName] = useState("María");
-  const [lastName, setLastName] = useState("González");
-  const [nickname, setNickname] = useState("La Mari");
-  const [username, setUsername] = useState("maria_gnz");
+  const dispatch = useDispatch<AppDispatch>();
+  const Profile = useSelector((state: RootState) => state.profile);
   const [gender, setGender] = useState("Mujer");
-  const [description, setDescription] = useState(
-    "Comer, rezar, amar 🙏 Mamá de 🐶🐴"
-  );
   const [genderDropdownVisible, setGenderDropdownVisible] = useState(false);
   const [dropdownPosition, setDropdownPosition] = useState({
     top: 0,
@@ -97,26 +100,28 @@ const EditProfile: React.FC = () => {
       <ScrollView contentContainerStyle={styles.contentContainer}>
         <InputRow
           label="Nombre:"
-          value={firstName}
-          onChangeText={setFirstName}
+          value={Profile.name}
+          onChangeText={(value) => dispatch(setProfileName(value))}
           theme={theme}
         />
         <InputRow
           label="Apellido:"
-          value={lastName}
-          onChangeText={setLastName}
+          value={Profile.lastname}
+          onChangeText={(value) => dispatch(setProfileLastName(value))}
           theme={theme}
         />
-        <InputRow
+        {/* <InputRow
           label="Nickname:"
           value={nickname}
           onChangeText={setNickname}
           theme={theme}
-        />
+        /> */}
         <InputRow
           label="Usuario:"
-          value={username}
-          onChangeText={setUsername}
+          value={Profile.username}
+          onChangeText={(value) =>
+            dispatch(setProfileUsername({ username: value }))
+          }
           theme={theme}
         />
         <InputRow
@@ -132,8 +137,8 @@ const EditProfile: React.FC = () => {
         />
         <InputRow
           label="Descripción:"
-          value={description}
-          onChangeText={setDescription}
+          value={Profile.description}
+          onChangeText={(value) => dispatch(setProfileDescription(value))}
           multiline
           theme={theme}
         />

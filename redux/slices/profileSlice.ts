@@ -18,19 +18,19 @@ import { RootState } from "../store";
 
 interface ProfileState {
   id: string;
-  username: string | null;
+  username: string;
   email: string;
-  name: string | null;
-  lastname: string | null;
+  name: string;
+  lastname: string;
   crown: Crown;
   profileImage: string | undefined;
-  coverImage: string | null;
-  description: string | null;
+  coverImage: string | undefined;
+  description: string;
   followersCount: number;
   followingCount: number;
   postsCount: number;
   active: boolean;
-  gender: Gender | null;
+  gender: Gender;
   loading: boolean;
   error: string | null;
   theme: string;
@@ -39,19 +39,19 @@ interface ProfileState {
 
 const initialState: ProfileState = {
   id: "",
-  username: null,
+  username: "",
   email: "",
-  name: null,
-  lastname: null,
+  name: "",
+  lastname: "",
   crown: Crown.GREY,
   profileImage: Placeholders.DEFAULT_PROFILE_PHOTO,
-  coverImage: null,
-  description: null,
+  coverImage: Placeholders.DEFAULT_PROFILE_PHOTO_COVER,
+  description: "",
   followersCount: 0,
   followingCount: 0,
   postsCount: 0,
   active: false,
-  gender: null,
+  gender: Gender.MEN,
   loading: false,
   error: null,
   theme: "dark",
@@ -151,6 +151,19 @@ const profileSlice = createSlice({
     updateLanguage: (state, action: PayloadAction<string>) => {
       state.language = action.payload;
     },
+    setProfileName: (state, action: PayloadAction<string>) => {
+      state.name = action.payload;
+    },
+    setProfileLastName: (state, action: PayloadAction<string>) => {
+      state.lastname = action.payload;
+    },
+    setProfileDescription: (state, action: PayloadAction<string>) => {
+      state.description = action.payload;
+    },
+    // setProfileGender: (state, action : PayloadAction<string>) =>{
+    //   if(action.payload ==)
+    //   state.gender = action.payload
+    // }
   },
   extraReducers: (builder) => {
     builder
@@ -232,6 +245,9 @@ export const {
   setProfileUsername,
   updateLanguage,
   updateTheme,
+  setProfileName,
+  setProfileLastName,
+  setProfileDescription,
 } = profileSlice.actions;
 
 export const selectProfile = (state: RootState) => state;
