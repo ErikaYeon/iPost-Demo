@@ -4,6 +4,7 @@ import {
   APIError,
   UserResponse,
   UserSettingsResponse,
+  UserShort,
 } from "@/types/apiContracts";
 
 export const getUserData = async (userId: string): Promise<UserResponse> => {
@@ -67,3 +68,22 @@ export const setUserSettings = async (
     throw new APIError("Never executed");
   }
 };
+
+export const searchProfiles = async (
+  searchValue: string,
+  limit: number = 10,
+  offset: number = 0
+): Promise<UserShort[]> => {
+  try {
+    const response = await api.get(`/users`, {
+      params: { searchValue, limit, offset },
+    });
+    console.log("Successful profile search:", response.data);
+    return response.data;
+  } catch (error: any) {
+    console.error("Error searching profiles:", error.response?.data || error.message);
+    throw new APIError("Error searching profiles");
+  }
+};
+
+

@@ -6,6 +6,7 @@ import postReducer from "./slices/postSlice";
 import timelineReducer from './slices/timelineSlice'
 import adsReducer from './slices/adsSlice'
 import commentsReducer from './slices/commentsSlice'
+import searchReducer from "./slices/searchSlice";
 
 const store = configureStore({
   reducer: {
@@ -16,6 +17,7 @@ const store = configureStore({
     timeline: timelineReducer,
     ads: adsReducer,
     comments: commentsReducer,
+    search: searchReducer,
   },
 });
 
