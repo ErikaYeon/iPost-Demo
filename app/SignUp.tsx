@@ -12,7 +12,7 @@ import RegularText from "../ui/components/RegularText";
 import LinkText from "../ui/components/LinkText";
 import InputField from "../ui/components/InputField";
 import createSharedStyles from "../ui/styles/SharedStyles";
-import { darkTheme } from "../ui/styles/Theme";
+import { darkTheme, lightTheme } from "../ui/styles/Theme";
 import { styles } from "../ui/styles/LogIn";
 import { useDispatch, useSelector } from "react-redux";
 import { router } from "expo-router";
@@ -28,10 +28,11 @@ import {
 } from "@/utils/RegexExpressions";
 import { setProfileEmail ,setProfileUsername } from "@/redux/slices/profileSlice";
 
-const theme = darkTheme; // Para alternar entre darkTheme y lightTheme manualmente
-const sharedStyles = createSharedStyles(theme);
-
 const SignUpScreen: React.FC = () => {
+
+  const theme = darkTheme; // Para alternar entre darkTheme y lightTheme manualmente
+  const sharedStyles = createSharedStyles(theme);
+
   const dispatch = useDispatch<AppDispatch>();
   const { loading, error } = useSelector((state: RootState) => state.auth);
 
@@ -86,17 +87,12 @@ const SignUpScreen: React.FC = () => {
 
   return (
     <SafeAreaView style={sharedStyles.screenContainer}>
+
       {/* Texto "Regístrese en iPost" */}
-      <View
-        style={{
-          flexDirection: "row",
-          justifyContent: "center",
-          alignItems: "baseline",
-        }}
-      >
-        <HeaderText text="Regístrese en" theme={theme} />
-        <Text style={styles.headerText}> iPost</Text>
-      </View>
+      <View style={{ flexDirection: 'row', justifyContent: 'center', alignItems: 'baseline' }}>
+        <HeaderText text= {('Regístrese en')} theme={theme} />
+        <Text style={{ fontSize: 32, fontWeight: 'bold', color: theme.colors.textPrimary }}> iPost</Text>
+      </View> 
 
       {/* Input de Correo electrónico */}
       <InputField
@@ -135,7 +131,7 @@ const SignUpScreen: React.FC = () => {
         onPress={handleRegister}
         type="primary"
         theme={theme}
-        style={{ marginTop: theme.spacing.large, width: "85%" }}
+        style={{ marginTop: 30, width: "85%" }}
       />
 
       {/* Link para iniciar sesión */}

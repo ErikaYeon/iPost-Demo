@@ -13,10 +13,11 @@ import { router } from "expo-router";
 import { styles } from "@/ui/styles/LogIn";
 import { isPasswordValid } from "@/utils/RegexExpressions";
 
-const theme = darkTheme; // Para alternar entre light y dark mode
-const sharedStyles = createSharedStyles(theme);
-
 const LogInFaceIdScreen: React.FC = () => {
+
+  const theme = darkTheme; // Para alternar entre light y dark mode
+  const sharedStyles = createSharedStyles(theme);
+
   const [password, setPassword] = useState("");
   const dispatch = useDispatch();
   const [errorMessage, setErrorMessage] = useState("");

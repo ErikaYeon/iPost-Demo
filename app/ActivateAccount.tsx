@@ -50,7 +50,7 @@ const ActivateAccount: React.FC = () => {
       {/* Título "Activá tu iPost" */}
       <View style={{ flexDirection: 'row', justifyContent: 'center', alignItems: 'baseline' }}>
         <HeaderText text="Activá tu" theme={theme} />
-        <Text style={{ fontSize: 34, fontWeight: 'bold', color: theme.colors.textPrimary }}> iPost</Text>
+        <Text style={{ fontSize: 34, fontWeight: 'bold', color: theme.colors.textPrimary, marginBottom:35 }}> iPost</Text>
       </View>
 
       {/* Mensaje Informativo para enlace de acceso */}
@@ -66,7 +66,7 @@ const ActivateAccount: React.FC = () => {
         onPress={handleReenvio} //ToDo: hacer un fetch especial para este
         type="primary"
         theme={theme}
-        style={{ marginBottom: theme.spacing.medium, width: '85%' }}
+        style={{ marginBottom: 35, marginTop: 15, width: '85%' }}
       />
 
       {/* Enlace para "Volver a inicio de sesión" */}

@@ -7,15 +7,16 @@ interface RegularTextProps {
 }
 
 const RegularText: React.FC<RegularTextProps> = ({ text, theme }) => {
-  const textColor = theme?.colors?.textPrimary || '#000'; // Color predeterminado
+  const textColor = theme?.colors?.textPrimary || '#000'; // Color predeterminado para el texto
+  const lineColor = theme?.colors?.textPrimary || '#000'; // Color predeterminado para la línea
 
   return (
     <View style={styles.container}>
-    <View style={styles.line} />
-    <Text style={[styles.text, { color: textColor }]}>{text}</Text>
-    <View style={styles.line} />
-  </View>
-);
+      <View style={[styles.line, { backgroundColor: lineColor }]} />
+      <Text style={[styles.text, { color: textColor }]}>{text}</Text>
+      <View style={[styles.line, { backgroundColor: lineColor }]} />
+    </View>
+  );
 };
 
 const styles = StyleSheet.create({
@@ -26,10 +27,7 @@ const styles = StyleSheet.create({
   line: {
     flex: 1, // Toma el espacio disponible
     height: 1, // Grosor de la línea
-    backgroundColor: '#FFFF', // Color de la línea (puedes cambiarlo)
     marginHorizontal: 25, // Espacio entre la línea y el texto
-   
-    
   },
   text: {
     fontSize: 14,

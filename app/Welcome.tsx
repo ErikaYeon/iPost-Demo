@@ -8,10 +8,12 @@ import { lightTheme, darkTheme } from '../ui/styles/Theme';
 import { Link, useRouter } from 'expo-router';
 import RegularTextLine from '@/ui/components/RegularTextLine';
 
-const theme =   darkTheme;  // Puedes cambiar manualmente entre lightTheme y darkTheme
-const sharedStyles = createSharedStyles(theme);
 
 const FirstScreen: React.FC = () => {
+  
+  const theme =   darkTheme;  // Puedes cambiar manualmente entre lightTheme y darkTheme
+  const sharedStyles = createSharedStyles(theme);
+
   const router = useRouter();
   return (
     <SafeAreaView style={sharedStyles.screenContainer}>
@@ -46,7 +48,7 @@ const FirstScreen: React.FC = () => {
           onPress={() => router.push('/SignUp')}
           type="secondary"
           theme={theme}
-          style={{ marginBottom: theme.spacing.medium, width: '85%' }} 
+          style={{ marginBottom: theme.spacing.medium, width: '85%', borderWidth: 1 }} 
         />
       </View>
 
