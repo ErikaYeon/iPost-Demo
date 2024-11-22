@@ -9,13 +9,11 @@ import {
   APIError,
   Gender,
   LoginResponse,
-  theme,
-  language,
   UserResponse,
   UserSettingsResponse,
 } from "@/types/apiContracts";
 import { Crown } from "@/types/models";
-import { levelToCrown, levelToLanguage, levelTotheme } from "@/types/mappers";
+import { levelToCrown } from "@/types/mappers";
 import { RootState } from "../store";
 
 interface ProfileState {
@@ -200,9 +198,6 @@ const profileSlice = createSlice({
           state.theme = action.payload.theme === "DARK" ? "dark" : "light";
           state.language =
             action.payload.language === "ENGLISH" ? "Inglés" : "Español";
-          // state.theme = levelTotheme(action.payload.theme);
-          // state.language = levelToLanguage(action.payload.language);
-          console.log("estado settings user" + state.theme + state.language);
         }
       )
       .addCase(setUserSettingsAsync.pending, (state) => {

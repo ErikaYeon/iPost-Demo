@@ -74,14 +74,7 @@ export interface UserSettingsResponse {
   language: string;
   theme: string;
 }
-export enum language {
-  SPANISH,
-  ENGLISH,
-}
-export enum theme {
-  DARK = "DARK",
-  LIGHT = "lih",
-}
+
 export enum Gender {
   WOMAN,
   MEN,

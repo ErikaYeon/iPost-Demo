@@ -25,21 +25,10 @@ import {
   setUserSettingsAsync,
 } from "@/redux/slices/profileSlice";
 import { resetPosts } from "@/redux/slices/timelineSlice";
-import {
-  levelToLanguage,
-  levelTotheme,
-  languageToLevel,
-  themeToLevel,
-} from "../types/mappers";
-import {
-  theme as THEME,
-  language as LANGUAGE,
-  UserSettingsResponse,
-} from "@/types/apiContracts";
+import { languageToLevel, themeToLevel } from "../types/mappers";
+import { UserSettingsResponse } from "@/types/apiContracts";
 
 const SettingsScreen: React.FC = () => {
-  // const [themeMode, setThemeMode] = useState<"light" | "dark">("dark");
-  // const [language, setLanguage] = useState("Español");
   const [isLogoutVisible, setLogoutVisible] = useState(false);
   const [isDeleteAccountVisible, setDeleteAccountVisible] = useState(false);
   const dispatch = useDispatch<AppDispatch>();
