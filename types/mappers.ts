@@ -1,3 +1,4 @@
+import { language, theme } from "./apiContracts";
 import { Crown } from "./models";
 
 export function levelToCrown(level: number): Crown {
@@ -16,3 +17,54 @@ export function levelToCrown(level: number): Crown {
     }
   }
 }
+// export function levelToLanguage(level: language): string {
+//   if (level === language.ENGLISH) {
+//     return "Inglés";
+//   } else {
+//     return "Español";
+//   }
+// switch (level) {
+//   case lavel === 'ENGLISH': {
+//     return "Inglés";
+//   }
+//   default: {
+//     return "Español";
+//   }
+// }
+// }
+
+export function levelTotheme(level: number): string {
+  switch (level) {
+    case 1: {
+      return "dark";
+    }
+    default: {
+      return "light";
+    }
+  }
+}
+export function levelToLanguage(level: number): string {
+  switch (level) {
+    case 1: {
+      return "Español";
+    }
+    default: {
+      return "Inglés";
+    }
+  }
+}
+// export function levelTotheme(level: theme): string {
+//   if (level === theme.LIGHT) {
+//     return "light";
+//   } else {
+//     return "dark";
+//   }
+// switch (level) {
+//   case 1: {
+//     return "light";
+//   }
+//   default: {
+//     return "dark";
+//   }
+// }
+// }

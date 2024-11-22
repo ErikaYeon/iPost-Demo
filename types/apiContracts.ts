@@ -70,7 +70,18 @@ export interface UserResponse {
   updatedAt: Date;
   gender: Gender;
 }
-
+export interface UserSettingsResponse {
+  language: language;
+  theme: theme;
+}
+export enum language {
+  SPANISH,
+  ENGLISH,
+}
+export enum theme {
+  DARK,
+  LIGHT,
+}
 export enum Gender {
   WOMAN,
   MEN,

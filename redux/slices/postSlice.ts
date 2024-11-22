@@ -70,7 +70,6 @@ const postSlice = createSlice({
       })
       .addCase(fetchPosts.fulfilled, (state, action) => {
         state.posts = [];
-        console.log(action.payload);
         state.loading = false;
         state.posts = action.payload.map((post) => ({
           ...post,

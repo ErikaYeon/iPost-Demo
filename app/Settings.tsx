@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import { SafeAreaView, View, Text, StatusBar } from "react-native";
 import HeaderWithIcon from "../ui/components/HeaderWithIcon";
 import BackIcon from "../assets/images/icons/navigate_before.svg";
@@ -18,8 +18,19 @@ import AsyncStorage from "@react-native-async-storage/async-storage";
 import { logout, deleteAccountAsync } from "@/redux/slices/authSlice";
 import { AppDispatch, RootState } from "@/redux/store";
 import { clearPosts } from "@/redux/slices/postSlice";
-import { clearProfile } from "@/redux/slices/profileSlice";
+import {
+  clearProfile,
+  updateTheme,
+  updateLanguage,
+  setUserSettingsAsync,
+} from "@/redux/slices/profileSlice";
 import { resetPosts } from "@/redux/slices/timelineSlice";
+import { levelToLanguage, levelTotheme } from "../types/mappers";
+import {
+  theme as THEME,
+  language as LANGUAGE,
+  UserSettingsResponse,
+} from "@/types/apiContracts";
 
 const SettingsScreen: React.FC = () => {
   const [themeMode, setThemeMode] = useState<"light" | "dark">("dark");

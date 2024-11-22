@@ -1,11 +1,18 @@
 import { createSlice, PayloadAction, createAsyncThunk } from "@reduxjs/toolkit";
 import Placeholders from "@/constants/ProfilePlaceholders";
-import { getUserData } from "@/networking/userService";
+import {
+  getUserData,
+  getUserSettings,
+  setUserSettings,
+} from "@/networking/userService";
 import {
   APIError,
   Gender,
   LoginResponse,
+  theme,
+  language,
   UserResponse,
+  UserSettingsResponse,
 } from "@/types/apiContracts";
 import { Crown } from "@/types/models";
 import { levelToCrown } from "@/types/mappers";
@@ -28,6 +35,8 @@ interface ProfileState {
   gender: Gender | null;
   loading: boolean;
   error: string | null;
+  theme: theme;
+  language: language;
 }
 
 const initialState: ProfileState = {
@@ -47,6 +56,8 @@ const initialState: ProfileState = {
   gender: null,
   loading: false,
   error: null,
+  theme: theme.DARK,
+  language: language.SPANISH,
 };
 
 export const fetchUserInfo = createAsyncThunk(
@@ -54,9 +65,42 @@ export const fetchUserInfo = createAsyncThunk(
   async (userId: string, { rejectWithValue }) => {
     try {
       const userData: UserResponse = await getUserData(userId);
+      console.log("relleno usser data");
       return userData;
     } catch (error: APIError | any) {
       return rejectWithValue(error.message ?? "Error fetching user data");
+    }
+  }
+);
+export const getUserSettingsAsync = createAsyncThunk(
+  "profile/getUserSettingsAsync",
+  async (userId: string, { rejectWithValue }) => {
+    try {
+      const userSettings: UserSettingsResponse = await getUserSettings(userId);
+      return userSettings;
+    } catch (error: APIError | any) {
+      return rejectWithValue(error.message ?? "Error fetching user settings");
+    }
+  }
+);
+export const setUserSettingsAsync = createAsyncThunk<
+  number,
+  { userId: string; userSettings: UserSettingsResponse },
+  { rejectValue: string }
+>(
+  "profile/setUserSettingsAsync",
+  async (
+    {
+      userId,
+      userSettings,
+    }: { userId: string; userSettings: UserSettingsResponse },
+    { rejectWithValue }
+  ) => {
+    try {
+      const response = await setUserSettings(userId, userSettings);
+      return response;
+    } catch (error: APIError | any) {
+      return rejectWithValue(error.message ?? "Error fetching user settings");
     }
   }
 );
@@ -100,6 +144,14 @@ const profileSlice = createSlice({
       state.postsCount = 0;
       state.gender = 0;
       state.active = false;
+      state.language = language.SPANISH;
+      state.theme = theme.DARK;
+    },
+    updateTheme: (state, action: PayloadAction<theme>) => {
+      state.theme = action.payload;
+    },
+    updateLanguage: (state, action: PayloadAction<language>) => {
+      state.language = action.payload;
     },
   },
   extraReducers: (builder) => {
@@ -132,6 +184,42 @@ const profileSlice = createSlice({
       .addCase(fetchUserInfo.rejected, (state, action) => {
         state.loading = false;
         state.error = action.payload as string;
+      })
+      .addCase(getUserSettingsAsync.pending, (state) => {
+        state.loading = true;
+        state.error = null;
+      })
+      .addCase(getUserSettingsAsync.rejected, (state, action) => {
+        state.loading = false;
+        state.error = action.payload as string;
+      })
+      .addCase(
+        getUserSettingsAsync.fulfilled,
+        (state, action: PayloadAction<UserSettingsResponse>) => {
+          state.theme = action.payload.theme;
+          state.language = action.payload.language;
+          console.log("estado settings user" + state.theme + state.language);
+        }
+      )
+      .addCase(setUserSettingsAsync.pending, (state) => {
+        state.loading = true;
+        state.error = null;
+      })
+      .addCase(
+        setUserSettingsAsync.fulfilled,
+        (state, action: PayloadAction<number>) => {
+          state.loading = false;
+          state.error = null;
+          console.log(
+            "Configuración actualizada con éxito. Status:",
+            action.payload
+          );
+        }
+      )
+      .addCase(setUserSettingsAsync.rejected, (state, action) => {
+        state.loading = false;
+        state.error = action.payload || "An unexpected error occurred";
+        console.error("Error al actualizar configuración:", state.error);
       });
   },
 });
@@ -143,6 +231,8 @@ export const {
   setProfileExtraData,
   clearProfile,
   setProfileUsername,
+  updateLanguage,
+  updateTheme,
 } = profileSlice.actions;
 
 export const selectProfile = (state: RootState) => state;

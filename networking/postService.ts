@@ -32,7 +32,6 @@ export const getPosts = async (
 export const addPost = async (postData: CreatePostRequest): Promise<Post> => {
   try {
     const response = await api.post("/posts", postData);
-    console.log(response.data);
     console.log("Successful post creation.");
     return response.data;
   } catch (error: any) {

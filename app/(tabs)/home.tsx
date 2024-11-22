@@ -19,6 +19,10 @@ import { levelToCrown } from "@/types/mappers";
 import { fetchPosts } from "@/redux/slices/postSlice";
 import { addPost, addPosts } from "@/redux/slices/timelineSlice";
 import { fetchAds, fillPostsFromAds } from "@/redux/slices/adsSlice";
+import {
+  fetchUserInfo,
+  getUserSettingsAsync,
+} from "../../redux/slices/profileSlice";
 
 const home = () => {
   const theme = darkTheme;
@@ -50,6 +54,8 @@ const home = () => {
       dispatch(fetchAds());
       dispatch(fillPostsFromAds());
       setHasFetched(true);
+      dispatch(fetchUserInfo(userProfile.id));
+      dispatch(getUserSettingsAsync(userProfile.id));
     }
   }, [userProfile.id, dispatch, hasFetched]);
 
@@ -143,7 +149,10 @@ const home = () => {
             onEndReachedThreshold={0.5}
             ListFooterComponent={
               loading && hasMore ? (
-                <ActivityIndicator size="small" color={theme.colors.textSecondary} />
+                <ActivityIndicator
+                  size="small"
+                  color={theme.colors.textSecondary}
+                />
               ) : null
             }
             refreshControl={
