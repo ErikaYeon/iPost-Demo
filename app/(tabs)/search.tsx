@@ -7,8 +7,9 @@ import {
   Text,
   TouchableOpacity,
   Image,
+  Platform
 } from "react-native";
-import HeaderWithIcon from "@/ui/components/HeaderWithIcon";
+import HeaderNoIcon from '@/ui/components/HeaderNoIcon';
 import SearchBar from "@/ui/components/SearchBar";
 import BackIcon from "@/assets/images/icons/navigate_before.svg";
 import BackIconLightMode from "@/assets/images/icons/navigate_before_lightMode.svg";
@@ -108,27 +109,8 @@ const SearchProfiles: React.FC = () => {
       />
 
       {/* Header */}
-      <SafeAreaView style={styles.safeArea}>
-        <HeaderWithIcon
-          iconComponent={() =>
-            theme.isDark ? (
-              <BackIcon
-                width={18}
-                height={18}
-                fill={theme.colors.textPrimary}
-              />
-            ) : (
-              <BackIconLightMode
-                width={18}
-                height={18}
-                fill={theme.colors.textPrimary}
-              />
-            )
-          }
-          title="Buscar perfiles"
-          onPress={() => router.push("/(tabs)/home")}
-          theme={theme}
-        />
+      <SafeAreaView style={{ backgroundColor: theme.colors.background, paddingTop: Platform.OS === 'android' ? StatusBar.currentHeight + 10 : 30 }}>
+        <HeaderNoIcon title="Buscar perfiles" theme={theme} />
       </SafeAreaView>
 
       {/* Barra de búsqueda */}
