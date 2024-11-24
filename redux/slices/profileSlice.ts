@@ -19,6 +19,7 @@ import {
 import { Crown } from "@/types/models";
 import { levelToCrown } from "@/types/mappers";
 import { RootState } from "../store";
+import { AutologinResponse } from "./authSlice";
 
 interface ProfileState {
   id: string;
@@ -152,6 +153,9 @@ const profileSlice = createSlice({
   name: "user",
   initialState,
   reducers: {
+    setProfileUserId: (state, action: PayloadAction<string>) => {
+      state.id = action.payload;
+    },
     setProfileEmail: (state, action: PayloadAction<{ email: string }>) => {
       const { email } = action.payload;
       state.email = email;
@@ -323,6 +327,7 @@ const profileSlice = createSlice({
 export default profileSlice.reducer;
 
 export const {
+  setProfileUserId,
   setProfileEmail,
   setProfileExtraData,
   clearProfile,

@@ -11,6 +11,7 @@ export class APIError extends Error {
     this.code = code;
   }
 }
+
 export interface RejectedPayload {
   message: string;
   status: number;
@@ -70,6 +71,7 @@ export interface UserResponse {
   updatedAt: Date;
   gender: Gender;
 }
+
 export interface UserSettingsResponse {
   language: string;
   theme: string;
@@ -81,6 +83,7 @@ export enum Gender {
   NON_BINARY,
   PREFER_NOT_TO_ANSWER,
 }
+
 export enum EmailType {
   CONFIRMATION,
   RECOVERY,
@@ -118,20 +121,11 @@ export interface Ads {
   siteUrl: string;
   contents: string[];
 }
-export interface commentType1 {
+export interface CommentType1 {
   id: string;
-  author: UserComment;
+  author: UserShort;
   content: string;
   createAt: string;
-}
-export interface UserComment {
-  id: string;
-  name: string | null;
-  lastname: string | null;
-  nickname: string | null;
-  level: number;
-  profileImage: string | null;
-  active: boolean;
 }
 
 export interface PageParams {

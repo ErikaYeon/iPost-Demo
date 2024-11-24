@@ -1,6 +1,5 @@
 import api from "./api";
-import { handleError } from "./api";
-import { Ads, APIError, CreatePostRequest, Post } from "@/types/apiContracts";
+import { Ads, CreatePostRequest, Post } from "@/types/apiContracts";
 
 export const getPosts = async (
   userId: string,
@@ -8,76 +7,37 @@ export const getPosts = async (
   limit: number = 10,
   time?: string
 ): Promise<Post[]> => {
-  try {
-    console.log("last fetch service" + time);
-    const params: Record<string, any> = { userId, offset, limit };
-    if (time) {
-      params.time = time;
-    }
-    if (time) {
-      const response = await api.get("/posts", {
-        params: { userId, offset, limit, time },
-      });
-    }
-    const response = await api.get("/posts", {
-      params: { userId, offset, limit },
-    });
-    return response.data;
-  } catch (error: any) {
-    handleError(error);
-    throw new APIError("Never executed");
+  console.log("last fetch service", time);
+  const params: Record<string, any> = { userId, offset, limit };
+  if (time) {
+    params.time = time;
   }
+  const response = await api.get("/posts", { params });
+  return response.data;
 };
 
 export const addPost = async (postData: CreatePostRequest): Promise<Post> => {
-  try {
-    const response = await api.post("/posts", postData);
-    console.log("Successful post creation.");
-    return response.data;
-  } catch (error: any) {
-    handleError(error);
-    throw new APIError("Never executed");
-  }
+  const response = await api.post("/posts", postData);
+  console.log("Successful post creation.");
+  return response.data;
 };
 
 export const likePost = async (
   postId: string,
   userId: string
 ): Promise<void> => {
-  try {
-    await api.post(`/posts/${postId}/likes`, { userId }); // Evita duplicar 'api/'
-  } catch (error: any) {
-    console.error(
-      "Error al agregar el like:",
-      error.response?.data || error.message
-    );
-    throw new APIError("Error al agregar el like");
-  }
+  await api.post(`/posts/${postId}/likes`, { userId });
 };
 
 export const unlikePost = async (
   postId: string,
   userId: string
 ): Promise<void> => {
-  try {
-    await api.delete(`/posts/${postId}/likes/${userId}`); // Evita duplicar 'api/'
-  } catch (error: any) {
-    console.error(
-      "Error al quitar el like:",
-      error.response?.data || error.message
-    );
-    throw new APIError("Error al quitar el like");
-  }
+  await api.delete(`/posts/${postId}/likes/${userId}`);
 };
+
 export const getAdvertising = async (): Promise<Ads[]> => {
-  try {
-    const response = await api.get("/advertising");
-    // console.log(response.data)
-    console.log("Successful get ads");
-    return response.data;
-  } catch (error: any) {
-    console.log("no anda ads");
-    handleError(error);
-    throw new APIError("Never executed");
-  }
+  const response = await api.get("/advertising");
+  console.log("Successful get ads");
+  return response.data;
 };

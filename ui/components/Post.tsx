@@ -42,8 +42,9 @@ import {
   postComments,
   fetchCommentsByPostId,
 } from "@/redux/slices/commentsSlice";
-import { commentType1 } from "@/types/apiContracts";
-import { levelToCrown } from "@/types/mappers";
+import { CommentType1 } from "@/types/apiContracts";
+import { crownToLevel, levelToCrown } from "@/types/mappers";
+import { isEmpty } from "@/utils/RegexExpressions";
 
 type PostProps = {
   profilePictureUrl: string;
@@ -58,7 +59,7 @@ type PostProps = {
   isVip?: boolean;
   crownType: Crown;
   // commentSection?: CommentType[];
-  commentSection?: commentType1[];
+  commentSection?: CommentType1[];
   onLike: () => void;
   onComment: () => void;
   onSave: () => void;
@@ -206,19 +207,21 @@ const Post: React.FC<PostProps> = ({
 
   const handleAddComment = () => {
     if (newComment.trim()) {
-      const newCommentData: commentType1 = {
+      const newCommentData: CommentType1 = {
         id: generarNumeroRandom().toString(),
         content: newComment,
         createAt: new Date().toISOString(),
         author: {
           name: userProfile.name ?? "@your_username",
-          nickname: userProfile.username ?? "",
           lastname: userProfile.lastname ?? "",
           id: userProfile.id,
-          profileImage:
-            userProfile.profileImage ?? Placeholders.DEFAULT_PROFILE_PHOTO,
-          level: 1,
+          profileImage: isEmpty(userProfile.profileImage)
+            ? Placeholders.DEFAULT_PROFILE_PHOTO
+            : (userProfile.profileImage as string),
+          level: userProfile.crown ? crownToLevel(userProfile.crown) : 1,
           active: true,
+          email: userProfile.email ?? "",
+          username: userProfile.username ?? "",
         },
       };
 
@@ -326,7 +329,10 @@ const Post: React.FC<PostProps> = ({
             width: "100%",
           }}
         >
-          <Image source={{ uri: images[0].uri }} style={styles.singlePostImage} />
+          <Image
+            source={{ uri: images[0].uri }}
+            style={styles.singlePostImage}
+          />
         </View>
       ) : (
         <FlatList

@@ -1,28 +1,31 @@
-import { createSlice, createAsyncThunk, PayloadAction } from "@reduxjs/toolkit";
+import { createAsyncThunk, createSlice, PayloadAction } from "@reduxjs/toolkit";
 import {
   APIError,
+  ChangePasswordRequest,
   EmailType,
   LoginRequest,
   LoginResponse,
-  SignupRequest,
   RejectedPayload,
-  ChangePasswordRequest,
+  SignupRequest,
 } from "@/types/apiContracts";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import {
-  signup,
-  login,
-  resendEmail,
   ChangePassword,
   deleteAccount,
+  login,
+  resendEmail,
+  signup,
   forgotPassword,
 } from "@/networking/authService";
+import { refreshAccessToken } from "@/networking/api";
 
 interface AuthState {
   access_token: string | null;
   refresh_token: string | null;
   loading: boolean;
   error: string | null;
+  userId: string | null;
+  status: "idle" | "loading" | "authenticated" | "notAuthenticated";
 }
 
 const initialState: AuthState = {
@@ -30,7 +33,15 @@ const initialState: AuthState = {
   refresh_token: null,
   loading: false,
   error: null,
+  userId: null,
+  status: "notAuthenticated",
 };
+
+export interface AutologinResponse {
+  access_token: string;
+  refresh_token: string;
+  userId: string;
+}
 
 export const signupAsync = createAsyncThunk<
   { message: string; status: number }, // Payload de éxito
@@ -85,6 +96,7 @@ export const loginAsync = createAsyncThunk(
       const loginResponse: LoginResponse = await login(credentials);
       await AsyncStorage.setItem("access_token", loginResponse.access_token);
       await AsyncStorage.setItem("refresh_token", loginResponse.refresh_token);
+      await AsyncStorage.setItem("user_id", loginResponse.id);
       return loginResponse;
     } catch (error: APIError | any) {
       return rejectWithValue(error.message ?? "Error when login");
@@ -126,7 +138,6 @@ export const deleteAccountAsync = createAsyncThunk(
   async (userId: string, { rejectWithValue }) => {
     try {
       await deleteAccount(userId);
-      console.log("paso por aca");
     } catch (error: any) {
       return rejectWithValue(error.message ?? "Ocurrió un error111");
     }
@@ -140,6 +151,47 @@ export const forgotPasswordAsync = createAsyncThunk(
       console.log("paso por forgot pass async");
     } catch (error: any) {
       return rejectWithValue(error.message ?? "Ocurrió un error111");
+    }
+  }
+);
+
+export const autoLoginAsync = createAsyncThunk(
+  "auth/autoLogin",
+  async (_, { rejectWithValue }) => {
+    try {
+      const accessToken = await AsyncStorage.getItem("access_token");
+      const refreshToken = await AsyncStorage.getItem("refresh_token");
+      const userId = await AsyncStorage.getItem("user_id");
+
+      if (!accessToken && refreshToken) {
+        const newAccessToken = await refreshAccessToken(refreshToken);
+        if (!newAccessToken) {
+          throw new Error("No se pudo renovar el token de acceso.");
+        }
+
+        const response: AutologinResponse = {
+          access_token: newAccessToken,
+          refresh_token: refreshToken,
+          userId: userId || "",
+        };
+
+        return response;
+      }
+
+      if (accessToken && userId) {
+        const response: AutologinResponse = {
+          access_token: accessToken,
+          refresh_token: refreshToken || "",
+          userId: userId || "",
+        };
+
+        return response;
+      }
+      throw new Error("No se encontraron tokens de acceso.");
+    } catch (error: any) {
+      return rejectWithValue(
+        error.message || "Error durante el proceso de auto-login."
+      );
     }
   }
 );
@@ -241,7 +293,27 @@ const authSlice = createSlice({
         state.loading = false;
         state.error = null!;
         console.error("Error al enviar email:", action.payload);
-      });
+      })
+        .addCase(autoLoginAsync.pending, (state) => {
+            state.loading = true;
+        })
+        .addCase(
+            autoLoginAsync.fulfilled,
+            (state, action: PayloadAction<AutologinResponse>) => {
+                state.loading = false;
+                state.access_token = action.payload.access_token;
+                state.refresh_token = action.payload.refresh_token;
+                state.userId = action.payload.userId;
+                state.status = "authenticated"; // Se actualiza el estado
+            }
+        )
+        .addCase(autoLoginAsync.rejected, (state, action) => {
+            state.loading = false;
+            state.error = action.payload as string;
+            state.access_token = null;
+            state.refresh_token = null;
+            state.status = "notAuthenticated"; // Se actualiza el estado a no autenticado
+        });
   },
 });
 
