@@ -72,7 +72,7 @@ const EditProfile: React.FC = () => {
     };
     dispatch(setProfileData(ProfileData));
     dispatch(updateProfileDataAsync({ userId, profileData: ProfileData }));
-    console.log("Cambios guardados");
+    router.back();
   };
 
   const styles = createEditProfileStyles(theme);
@@ -126,12 +126,6 @@ const EditProfile: React.FC = () => {
           onChangeText={setLastName}
           theme={theme}
         />
-        {/* <InputRow
-          label="Nickname:"
-          value={nickname}
-          onChangeText={setNickname}
-          theme={theme}
-        /> */}
         <InputRow
           label="Usuario:"
           value={username}

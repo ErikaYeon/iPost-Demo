@@ -27,7 +27,7 @@ const EditProfileHeader: React.FC<{ theme: any }> = ({ theme }) => {
           <TouchableOpacity onPress={() => router.push("/EditProfilePhoto")}>
             <Image
               source={{
-                uri: Profile.profileImage,
+                uri: Profile.profileImage ?? Placeholders.DEFAULT_PROFILE_PHOTO,
               }}
               style={styles.profilePicture}
             />

@@ -226,17 +226,17 @@ const profileSlice = createSlice({
           state.id = user.id;
           state.username = user.username;
           state.email = user.email;
-          state.name = user.name;
-          state.lastname = user.lastname;
+          state.name = user.name ?? "";
+          state.lastname = user.lastname ?? "";
           state.crown = levelToCrown(user.level);
           state.profileImage = user.profileImage;
           state.coverImage = user.coverImage;
-          state.description = user.description;
+          state.description = user.description ?? "";
           state.followersCount = user.followersCount;
           state.followingCount = user.followingCount;
           state.postsCount = user.postsCount;
           state.active = user.active;
-          state.gender = user.gender;
+          state.gender = user.gender ?? "";
         }
       )
       .addCase(fetchUserInfo.rejected, (state, action) => {
