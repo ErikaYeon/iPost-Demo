@@ -294,26 +294,26 @@ const authSlice = createSlice({
         state.error = null!;
         console.error("Error al enviar email:", action.payload);
       })
-        .addCase(autoLoginAsync.pending, (state) => {
-            state.loading = true;
-        })
-        .addCase(
-            autoLoginAsync.fulfilled,
-            (state, action: PayloadAction<AutologinResponse>) => {
-                state.loading = false;
-                state.access_token = action.payload.access_token;
-                state.refresh_token = action.payload.refresh_token;
-                state.userId = action.payload.userId;
-                state.status = "authenticated"; // Se actualiza el estado
-            }
-        )
-        .addCase(autoLoginAsync.rejected, (state, action) => {
-            state.loading = false;
-            state.error = action.payload as string;
-            state.access_token = null;
-            state.refresh_token = null;
-            state.status = "notAuthenticated"; // Se actualiza el estado a no autenticado
-        });
+      .addCase(autoLoginAsync.pending, (state) => {
+        state.loading = true;
+      })
+      .addCase(
+        autoLoginAsync.fulfilled,
+        (state, action: PayloadAction<AutologinResponse>) => {
+          state.loading = false;
+          state.access_token = action.payload.access_token;
+          state.refresh_token = action.payload.refresh_token;
+          state.userId = action.payload.userId;
+          state.status = "authenticated"; // Se actualiza el estado
+        }
+      )
+      .addCase(autoLoginAsync.rejected, (state, action) => {
+        state.loading = false;
+        state.error = action.payload as string;
+        state.access_token = null;
+        state.refresh_token = null;
+        state.status = "notAuthenticated"; // Se actualiza el estado a no autenticado
+      });
   },
 });
 

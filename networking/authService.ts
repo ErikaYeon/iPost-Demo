@@ -75,6 +75,6 @@ export const deleteAccount = async (userId: string): Promise<void> => {
 };
 
 export const forgotPassword = async (email: string): Promise<void> => {
-    await api.post(`accounts/password/forgot`, email);
-    console.log("paso por forgot pass async");
+  await api.post(`accounts/password/forgot`, email);
+  console.log("paso por forgot pass async");
 };
