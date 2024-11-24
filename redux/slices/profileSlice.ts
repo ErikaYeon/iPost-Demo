@@ -4,6 +4,8 @@ import {
   getUserData,
   getUserSettings,
   setUserSettings,
+  setProfileImage,
+  setUserData,
 } from "@/networking/userService";
 import {
   APIError,
@@ -11,6 +13,8 @@ import {
   LoginResponse,
   UserResponse,
   UserSettingsResponse,
+  ProfileImageRequest,
+  ProfileUpdateRequest,
 } from "@/types/apiContracts";
 import { Crown } from "@/types/models";
 import { levelToCrown } from "@/types/mappers";
@@ -102,6 +106,47 @@ export const setUserSettingsAsync = createAsyncThunk<
     }
   }
 );
+export const updateProfileImageAsync = createAsyncThunk<
+  UserResponse, // Tipo de retorno en caso de éxito
+  { userId: string; profileImageData: ProfileImageRequest }, // Argumentos esperados
+  { rejectValue: string } // Tipo del valor de rechazo
+>(
+  "profile/updateProfileImage",
+  async ({ userId, profileImageData }, { rejectWithValue }) => {
+    try {
+      const updatedUser: UserResponse = await setProfileImage(
+        userId,
+        profileImageData
+      );
+      console.log("Actualización de imagen exitosa");
+      return updatedUser;
+    } catch (error: any) {
+      console.error("Error al actualizar la imagen del perfil", error);
+      return rejectWithValue(
+        error.message ?? "Error desconocido al actualizar la imagen"
+      );
+    }
+  }
+);
+export const updateProfileDataAsync = createAsyncThunk<
+  UserResponse, // Tipo de retorno en caso de éxito
+  { userId: string; profileData: ProfileUpdateRequest }, // Argumentos esperados
+  { rejectValue: string } // Tipo del valor de rechazo
+>(
+  "profile/updateProfileData",
+  async ({ userId, profileData }, { rejectWithValue }) => {
+    try {
+      const updatedUser: UserResponse = await setUserData(userId, profileData);
+      console.log("Actualización de datos de perfil exitosa");
+      return updatedUser;
+    } catch (error: any) {
+      console.error("Error al actualizar los datos del perfil", error);
+      return rejectWithValue(
+        error.message ?? "Error desconocido al actualizar los datos del perfil"
+      );
+    }
+  }
+);
 
 const profileSlice = createSlice({
   name: "user",
@@ -151,20 +196,22 @@ const profileSlice = createSlice({
     updateLanguage: (state, action: PayloadAction<string>) => {
       state.language = action.payload;
     },
-    setProfileName: (state, action: PayloadAction<string>) => {
-      state.name = action.payload;
+    setProfileData: (state, action: PayloadAction<ProfileUpdateRequest>) => {
+      const ProfileData = action.payload;
+      state.name = ProfileData.name;
+      state.username = ProfileData.username;
+      state.lastname = ProfileData.lastname;
+      state.description = ProfileData.description;
+      state.gender = ProfileData.gender;
     },
-    setProfileLastName: (state, action: PayloadAction<string>) => {
-      state.lastname = action.payload;
+    setProfileCover: (state, action: PayloadAction<string>) => {
+      state.coverImage = action.payload;
     },
-    setProfileDescription: (state, action: PayloadAction<string>) => {
-      state.description = action.payload;
+    setProifilePhoto: (state, action: PayloadAction<string>) => {
+      state.profileImage = action.payload;
     },
-    // setProfileGender: (state, action : PayloadAction<string>) =>{
-    //   if(action.payload ==)
-    //   state.gender = action.payload
-    // }
   },
+
   extraReducers: (builder) => {
     builder
       .addCase(fetchUserInfo.pending, (state) => {
@@ -232,6 +279,43 @@ const profileSlice = createSlice({
         state.loading = false;
         state.error = action.payload || "An unexpected error occurred";
         console.error("Error al actualizar configuración:", state.error);
+      })
+      .addCase(updateProfileImageAsync.pending, (state) => {
+        state.loading = true;
+        state.error = null;
+      })
+      .addCase(updateProfileImageAsync.fulfilled, (state, action) => {
+        state.loading = false;
+        const updatedUser = action.payload;
+        state.profileImage = updatedUser.profileImage;
+        state.coverImage = updatedUser.coverImage;
+        console.log("Imagen de perfil actualizada correctamente");
+      })
+      .addCase(updateProfileImageAsync.rejected, (state, action) => {
+        state.loading = false;
+        state.error =
+          action.payload ?? "Error desconocido al actualizar la imagen";
+        console.error("Error al actualizar la imagen del perfil:", state.error);
+      })
+      .addCase(updateProfileDataAsync.pending, (state) => {
+        state.loading = true;
+        state.error = null;
+      })
+      .addCase(updateProfileDataAsync.fulfilled, (state, action) => {
+        state.loading = false;
+        const updatedUser = action.payload;
+        state.username = updatedUser.username;
+        state.name = updatedUser.name;
+        state.lastname = updatedUser.lastname;
+        state.description = updatedUser.description;
+        state.gender = updatedUser.gender;
+      })
+      .addCase(updateProfileDataAsync.rejected, (state, action) => {
+        state.loading = false;
+        state.error =
+          action.payload ??
+          "Error desconocido al actualizar los datos del perfil";
+        console.error("Error al actualizar los datos del perfil:", state.error);
       });
   },
 });
@@ -245,9 +329,9 @@ export const {
   setProfileUsername,
   updateLanguage,
   updateTheme,
-  setProfileName,
-  setProfileLastName,
-  setProfileDescription,
+  setProfileCover,
+  setProifilePhoto,
+  setProfileData,
 } = profileSlice.actions;
 
 export const selectProfile = (state: RootState) => state;

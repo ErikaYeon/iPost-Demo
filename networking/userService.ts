@@ -2,6 +2,8 @@ import api from "./api";
 import { handleError } from "./api";
 import {
   APIError,
+  ProfileImageRequest,
+  ProfileUpdateRequest,
   UserResponse,
   UserSettingsResponse,
   UserShort,
@@ -81,9 +83,44 @@ export const searchProfiles = async (
     console.log("Successful profile search:", response.data);
     return response.data;
   } catch (error: any) {
-    console.error("Error searching profiles:", error.response?.data || error.message);
+    console.error(
+      "Error searching profiles:",
+      error.response?.data || error.message
+    );
     throw new APIError("Error searching profiles");
   }
 };
+export const setProfileImage = async (
+  userId: string,
+  profileImageData: ProfileImageRequest
+): Promise<UserResponse> => {
+  try {
+    const response = await api.put(
+      `users/${userId}/profile-images`,
+      profileImageData
+    );
+    console.log("actualizacion foto exitosa");
+    console.log(response.status);
+    return response.data;
+  } catch (error: any) {
+    console.log("no se pudo actualizar la foto ");
+    handleError(error);
+    throw new APIError("Never executed");
+  }
+};
 
-
+export const setUserData = async (
+  userId: string,
+  profileData: ProfileUpdateRequest
+): Promise<UserResponse> => {
+  try {
+    const response = await api.put(`users/${userId}`, profileData);
+    console.log("actualizacion data perfil exitosa");
+    console.log(response.status);
+    return response.data;
+  } catch (error: any) {
+    console.log("no se pudo actualizar la data profile");
+    handleError(error);
+    throw new APIError("Never executed");
+  }
+};

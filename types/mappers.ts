@@ -1,3 +1,4 @@
+import { Gender } from "./apiContracts";
 import { Crown } from "./models";
 
 export function levelToCrown(level: number): Crown {
@@ -34,6 +35,39 @@ export function languageToLevel(level: string): string {
     }
     default: {
       return "ENGLISH";
+    }
+  }
+}
+export function genderToString(gender: string): string {
+  switch (gender) {
+    case "MEN": {
+      return "Hombre";
+    }
+    case "WOMAN": {
+      return "Mujer";
+    }
+    case "NON_BINARY": {
+      return "No binario";
+    }
+    default: {
+      return "Prefiero no decirlo";
+    }
+  }
+}
+
+export function stringToGender(gender: string): Gender {
+  switch (gender) {
+    case "Mujer": {
+      return Gender.WOMAN;
+    }
+    case "Hombre": {
+      return Gender.MEN;
+    }
+    case "No binario": {
+      return Gender.NON_BINARY;
+    }
+    default: {
+      return Gender.PREFER_NOT_TO_ANSWER;
     }
   }
 }

@@ -138,3 +138,14 @@ export interface PageParams {
   offset: number;
   limit: number;
 }
+export interface ProfileImageRequest {
+  image: string;
+  type: string;
+}
+export interface ProfileUpdateRequest {
+  username: string;
+  name: string;
+  lastname: string;
+  description: string;
+  gender: Gender;
+}

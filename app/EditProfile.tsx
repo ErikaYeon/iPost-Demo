@@ -20,11 +20,11 @@ import { router } from "expo-router";
 import { useDispatch, useSelector } from "react-redux";
 import { AppDispatch, RootState } from "@/redux/store";
 import {
-  setProfileLastName,
-  setProfileUsername,
-  setProfileName,
-  setProfileDescription,
+  setProfileData,
+  updateProfileDataAsync,
 } from "@/redux/slices/profileSlice";
+import { genderToString, stringToGender } from "@/types/mappers";
+import { ProfileUpdateRequest } from "@/types/apiContracts";
 
 const theme = darkTheme; // Cambia manualmente entre `darkTheme` y `lightTheme`
 
@@ -33,13 +33,20 @@ const GENDER_OPTIONS = ["Mujer", "Hombre", "No binario", "Prefiero no decirlo"];
 const EditProfile: React.FC = () => {
   const dispatch = useDispatch<AppDispatch>();
   const Profile = useSelector((state: RootState) => state.profile);
-  const [gender, setGender] = useState("Mujer");
   const [genderDropdownVisible, setGenderDropdownVisible] = useState(false);
   const [dropdownPosition, setDropdownPosition] = useState({
     top: 0,
     left: 0,
     width: 0,
   });
+  const [firstName, setFirstName] = useState(Profile.name);
+  const [lastName, setLastName] = useState(Profile.lastname);
+  const [username, setUsername] = useState(Profile.username);
+  const [description, setDescription] = useState(Profile.description);
+  const [gender, setGender] = useState(
+    genderToString(Profile.gender.toString())
+  );
+  const userId = Profile.id;
 
   const genderInputRef = useRef<View>(null);
 
@@ -56,6 +63,15 @@ const EditProfile: React.FC = () => {
   }, [genderDropdownVisible]);
 
   const handleSaveChanges = () => {
+    const ProfileData: ProfileUpdateRequest = {
+      name: firstName,
+      lastname: lastName,
+      username: username,
+      description: description,
+      gender: stringToGender(gender),
+    };
+    dispatch(setProfileData(ProfileData));
+    dispatch(updateProfileDataAsync({ userId, profileData: ProfileData }));
     console.log("Cambios guardados");
   };
 
@@ -100,14 +116,14 @@ const EditProfile: React.FC = () => {
       <ScrollView contentContainerStyle={styles.contentContainer}>
         <InputRow
           label="Nombre:"
-          value={Profile.name}
-          onChangeText={(value) => dispatch(setProfileName(value))}
+          value={firstName}
+          onChangeText={setFirstName}
           theme={theme}
         />
         <InputRow
           label="Apellido:"
-          value={Profile.lastname}
-          onChangeText={(value) => dispatch(setProfileLastName(value))}
+          value={lastName}
+          onChangeText={setLastName}
           theme={theme}
         />
         {/* <InputRow
@@ -118,10 +134,8 @@ const EditProfile: React.FC = () => {
         /> */}
         <InputRow
           label="Usuario:"
-          value={Profile.username}
-          onChangeText={(value) =>
-            dispatch(setProfileUsername({ username: value }))
-          }
+          value={username}
+          onChangeText={setUsername}
           theme={theme}
         />
         <InputRow
@@ -137,8 +151,8 @@ const EditProfile: React.FC = () => {
         />
         <InputRow
           label="Descripción:"
-          value={Profile.description}
-          onChangeText={(value) => dispatch(setProfileDescription(value))}
+          value={description}
+          onChangeText={setDescription}
           multiline
           theme={theme}
         />
@@ -158,6 +172,8 @@ const EditProfile: React.FC = () => {
           onSelect={(option) => {
             setGender(option);
             setGenderDropdownVisible(false);
+            // console.log(stringToGender(option));
+            // setProfileGender(stringToGender(option));
           }}
           theme={theme}
         />

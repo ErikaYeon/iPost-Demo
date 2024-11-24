@@ -15,14 +15,26 @@ import CameraIconLight from "../assets/images/icons/camera_lightMode.svg";
 import UploadIconLight from "../assets/images/icons/photo_lightMode.svg";
 import { useRouter } from "expo-router";
 import Placeholders from "@/constants/ProfilePlaceholders";
-
+import { useDispatch, useSelector } from "react-redux";
+import { AppDispatch, RootState } from "@/redux/store";
+import {
+  setProifilePhoto,
+  updateProfileImageAsync,
+} from "@/redux/slices/profileSlice";
+import { ProfileImageRequest } from "@/types/apiContracts";
 
 const EditProfilePhoto: React.FC = () => {
-  const [selectedImage, setSelectedImage] = useState<string | null>(null);
+  const Profile = useSelector((state: RootState) => state.profile);
+  const ProfilePhoto = Profile.profileImage;
+  const userId = Profile.id;
+  const [selectedImage, setSelectedImage] = useState<string | undefined>(
+    ProfilePhoto
+  );
   const [base64Image, setBase64Image] = useState<string | null>(null); // Nueva variable para almacenar la imagen en Base64
   const router = useRouter();
   const theme = darkTheme; // Cambiar a `lightTheme` si es necesario
   const styles = createEditProfilePhotoStyles(theme);
+  const dispatch = useDispatch<AppDispatch>();
 
   const convertToBase64 = async (uri: string) => {
     try {
@@ -95,8 +107,14 @@ const EditProfilePhoto: React.FC = () => {
     router.back(); // Regresa al perfil
   };
 
-  const handleSave = () => {
-    console.log("Guardar", selectedImage, base64Image);
+  const handleSave = async () => {
+    dispatch(setProifilePhoto(base64Image!));
+    const profileImageData: ProfileImageRequest = {
+      image: base64Image!,
+      type: "PROFILE",
+    };
+    await dispatch(updateProfileImageAsync({ userId, profileImageData }));
+    // console.log("Guardar", selectedImage, base64Image);
     // Implementa la lógica para guardar la imagen seleccionada y su versión en Base64
     router.back(); // Regresa al perfil
   };
@@ -130,7 +148,7 @@ const EditProfilePhoto: React.FC = () => {
       <View style={styles.imageContainer}>
         <Image
           source={{
-            uri: selectedImage || Placeholders.DEFAULT_PROFILE_PHOTO, // Imagen por defecto
+            uri: selectedImage ?? Placeholders.DEFAULT_PROFILE_PHOTO, // Imagen por defecto
           }}
           style={styles.profileImage}
         />
