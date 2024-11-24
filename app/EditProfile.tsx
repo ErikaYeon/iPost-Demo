@@ -17,26 +17,36 @@ import BackIcon from "../assets/images/icons/navigate_before.svg";
 import BackIconLightMode from "../assets/images/icons/navigate_before_lightMode.svg";
 import { darkTheme, lightTheme } from "../ui/styles/Theme";
 import { router } from "expo-router";
+import { useDispatch, useSelector } from "react-redux";
+import { AppDispatch, RootState } from "@/redux/store";
+import {
+  setProfileData,
+  updateProfileDataAsync,
+} from "@/redux/slices/profileSlice";
+import { genderToString, stringToGender } from "@/types/mappers";
+import { ProfileUpdateRequest } from "@/types/apiContracts";
 
 const theme = darkTheme; // Cambia manualmente entre `darkTheme` y `lightTheme`
 
 const GENDER_OPTIONS = ["Mujer", "Hombre", "No binario", "Prefiero no decirlo"];
 
 const EditProfile: React.FC = () => {
-  const [firstName, setFirstName] = useState("María");
-  const [lastName, setLastName] = useState("González");
-  const [nickname, setNickname] = useState("La Mari");
-  const [username, setUsername] = useState("maria_gnz");
-  const [gender, setGender] = useState("Mujer");
-  const [description, setDescription] = useState(
-    "Comer, rezar, amar 🙏 Mamá de 🐶🐴"
-  );
+  const dispatch = useDispatch<AppDispatch>();
+  const Profile = useSelector((state: RootState) => state.profile);
   const [genderDropdownVisible, setGenderDropdownVisible] = useState(false);
   const [dropdownPosition, setDropdownPosition] = useState({
     top: 0,
     left: 0,
     width: 0,
   });
+  const [firstName, setFirstName] = useState(Profile.name);
+  const [lastName, setLastName] = useState(Profile.lastname);
+  const [username, setUsername] = useState(Profile.username);
+  const [description, setDescription] = useState(Profile.description);
+  const [gender, setGender] = useState(
+    genderToString(Profile.gender.toString())
+  );
+  const userId = Profile.id;
 
   const genderInputRef = useRef<View>(null);
 
@@ -53,7 +63,16 @@ const EditProfile: React.FC = () => {
   }, [genderDropdownVisible]);
 
   const handleSaveChanges = () => {
-    console.log("Cambios guardados");
+    const ProfileData: ProfileUpdateRequest = {
+      name: firstName,
+      lastname: lastName,
+      username: username,
+      description: description,
+      gender: stringToGender(gender),
+    };
+    dispatch(setProfileData(ProfileData));
+    dispatch(updateProfileDataAsync({ userId, profileData: ProfileData }));
+    router.back();
   };
 
   const styles = createEditProfileStyles(theme);
@@ -108,12 +127,6 @@ const EditProfile: React.FC = () => {
           theme={theme}
         />
         <InputRow
-          label="Nickname:"
-          value={nickname}
-          onChangeText={setNickname}
-          theme={theme}
-        />
-        <InputRow
           label="Usuario:"
           value={username}
           onChangeText={setUsername}
@@ -153,6 +166,8 @@ const EditProfile: React.FC = () => {
           onSelect={(option) => {
             setGender(option);
             setGenderDropdownVisible(false);
+            // console.log(stringToGender(option));
+            // setProfileGender(stringToGender(option));
           }}
           theme={theme}
         />

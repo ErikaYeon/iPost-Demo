@@ -142,7 +142,7 @@ const ChangePasswordScreen: React.FC = () => {
 
         <LinkText
           text="Olvidé mi contraseña"
-          onPress={() => console.log("Olvidé mi contraseña")}
+          onPress={() => router.push("/ChangePassword2")}
           theme={theme}
           // style={styles.link}
         />

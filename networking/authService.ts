@@ -31,10 +31,8 @@ export const signup = async (
     if (error.status === 409) {
       return { status: 409, message: "Error.El email ya está registrado" };
     }
-    console.log("ENTRA aca ");
     handleError(error);
-    // return { status: 500, message: "Error en la solicitud, por favor intentalo más tarde" };
-    throw new APIError("Never executed"); // This 'throw' is never executed, but TypeScript was whining about the method contract.
+    throw new APIError("Never executed");
   }
 };
 export const resendEmail = async (data: {
@@ -103,6 +101,15 @@ export const deleteAccount = async (userId: string): Promise<void> => {
     const response = await api.delete(`/users/${userId}`);
     console.log("response de delete account" + response.status);
   } catch (error: any) {
+    throw new APIError("Ocurrió un error");
+  }
+};
+export const forgotPassword = async (email: string): Promise<void> => {
+  try {
+    await api.post(`accounts/password/forgot`, email);
+    console.log("paso por forgot pass async");
+  } catch (error: any) {
+    handleError(error);
     throw new APIError("Ocurrió un error");
   }
 };

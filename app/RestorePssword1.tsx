@@ -7,16 +7,18 @@ import createSharedStyles from "../ui/styles/SharedStyles";
 import { lightTheme, darkTheme } from "../ui/styles/Theme";
 import createLogInScreenStyles from "../ui/styles/LogIn";
 import { router } from "expo-router";
-import { useDispatch } from "react-redux";
-import { setProfile } from "../redux/slices/profileSlice";
+import { useDispatch, useSelector } from "react-redux";
+import { setProfileEmail } from "../redux/slices/profileSlice";
 import { isEmailValid } from "@/utils/RegexExpressions";
+import { AppDispatch } from "@/redux/store";
+import { forgotPasswordAsync } from "@/redux/slices/authSlice";
 
 const RestorePassword1: React.FC = () => {
   const theme = darkTheme; // Para alternar entre light y dark mode
   const sharedStyles = createSharedStyles(theme);
-  const styles = createLogInScreenStyles(theme); // Generar estilos dinámicamente
+  const styles = createLogInScreenStyles(theme);
+  const dispatch = useDispatch<AppDispatch>();
 
-  const dispatch = useDispatch();
   const [email, setEmail] = useState("");
   const [errorMessage, setErrorMessage] = useState("");
 
@@ -27,13 +29,8 @@ const RestorePassword1: React.FC = () => {
       setErrorMessage("Por favor, ingresa un correo electrónico válido.");
     } else {
       setErrorMessage("");
-      dispatch(
-        setProfile({
-          email,
-          password: "",
-          username: "",
-        })
-      );
+      dispatch(setProfileEmail({ email }));
+      dispatch(forgotPasswordAsync(email));
       setEmail("");
       router.push("/RestorePssword2");
     }

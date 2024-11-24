@@ -14,13 +14,26 @@ import UploadIcon from "../assets/images/icons/photo.svg";
 import CameraIconLight from "../assets/images/icons/camera_lightMode.svg";
 import UploadIconLight from "../assets/images/icons/photo_lightMode.svg";
 import { useRouter } from "expo-router";
+import { useDispatch, useSelector } from "react-redux";
+import { AppDispatch, RootState } from "@/redux/store";
+import {
+  setProfileCover,
+  updateProfileImageAsync,
+} from "@/redux/slices/profileSlice";
+import { ProfileImageRequest } from "@/types/apiContracts";
 
 const EditProfileCover: React.FC = () => {
-  const [selectedImage, setSelectedImage] = useState<string | null>(null);
-  const [base64Image, setBase64Image] = useState<string | null>(null); 
+  const Profile = useSelector((state: RootState) => state.profile);
+  const ProfileCover = Profile.coverImage;
+  const userId = Profile.id;
+  const [selectedImage, setSelectedImage] = useState<string | undefined>(
+    ProfileCover
+  );
+  const [base64Image, setBase64Image] = useState<string | null>(null);
   const router = useRouter();
   const theme = darkTheme; // Cambiar a `darkTheme` si es necesario
   const styles = createEditProfilePhotoStyles(theme);
+  const dispatch = useDispatch<AppDispatch>();
 
   const convertToBase64 = async (uri: string) => {
     try {
@@ -93,8 +106,13 @@ const EditProfileCover: React.FC = () => {
     router.back(); // Regresa al perfil
   };
 
-  const handleSave = () => {
-    console.log("Guardar", selectedImage, base64Image);
+  const handleSave = async () => {
+    dispatch(setProfileCover(base64Image!));
+    const profileImageData: ProfileImageRequest = {
+      image: base64Image!,
+      type: "COVER",
+    };
+    await dispatch(updateProfileImageAsync({ userId, profileImageData }));
     // Implementa la lógica para guardar la imagen seleccionada y su versión en Base64
     router.back(); // Regresa al perfil
   };

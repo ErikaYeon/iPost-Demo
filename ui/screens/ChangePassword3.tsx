@@ -10,7 +10,7 @@ import { darkTheme, lightTheme } from "../ui/styles/Theme";
 import { useDispatch } from "react-redux";
 import { AppDispatch } from "@/redux/store";
 import { useRouter } from "expo-router";
-import changePasswordAsync from "@/redux/slices/authSlice";
+// import changePasswordAsync from "@/redux/slices/authSlice";
 
 const ChangePassword3: React.FC = () => {
   const theme = darkTheme; // Cambia a lightTheme si prefieres el modo claro
@@ -28,19 +28,21 @@ const ChangePassword3: React.FC = () => {
     } else if (password.length < 6) {
       setErrorMessage("La contraseña debe tener al menos 6 caracteres.");
     } else {
-      try {
-        setErrorMessage("");
-        const resultAction = await dispatch(changePasswordAsync({ password }));
-        if (changePasswordAsync.fulfilled.match(resultAction)) {
-          setPassword("");
-          router.push("/(tabs)/home"); // Redirigir al home después del cambio de contraseña
-        } else {
-          setErrorMessage("Error al cambiar la contraseña, inténtalo nuevamente.");
-        }
-      } catch (error) {
-        console.error("Error from change password:", error);
-        setErrorMessage("Ocurrió un error, inténtalo nuevamente.");
-      }
+      // try {
+      //   setErrorMessage("");
+      //   const resultAction = await dispatch(changePasswordAsync({ password }));
+      //   if (changePasswordAsync.fulfilled.match(resultAction)) {
+      //     setPassword("");
+      //     router.push("/(tabs)/home"); // Redirigir al home después del cambio de contraseña
+      //   } else {
+      //     setErrorMessage(
+      //       "Error al cambiar la contraseña, inténtalo nuevamente."
+      //     );
+      //   }
+      // } catch (error) {
+      //   console.error("Error from change password:", error);
+      //   setErrorMessage("Ocurrió un error, inténtalo nuevamente.");
+      // }
     }
   };
 
