@@ -2,6 +2,7 @@ import { createSlice, createAsyncThunk, PayloadAction } from "@reduxjs/toolkit";
 import { UserShort } from "@/types/apiContracts";
 import Placeholders from "@/constants/ProfilePlaceholders";
 import { searchProfiles } from "@/networking/userService"; // Suponiendo que existe un servicio para buscar usuarios
+import { isEmpty } from "@/utils/RegexExpressions";
 
 // Thunk asincrónico para realizar la búsqueda de usuarios
 export const fetchSearchResults = createAsyncThunk(
@@ -10,7 +11,9 @@ export const fetchSearchResults = createAsyncThunk(
     const results = await searchProfiles(query);
     return results.map((user: UserShort) => ({
       ...user,
-      profileImage: user.profileImage || Placeholders.DEFAULT_PROFILE_PHOTO, // Usa el placeholder si no hay imagen
+      profileImage: isEmpty(user.profileImage)
+        ? Placeholders.DEFAULT_PROFILE_PHOTO
+        : (user.profileImage as string),
     }));
   }
 );
@@ -38,10 +41,13 @@ const searchSlice = createSlice({
       .addCase(fetchSearchResults.pending, (state) => {
         state.status = "loading";
       })
-      .addCase(fetchSearchResults.fulfilled, (state, action: PayloadAction<UserShort[]>) => {
-        state.status = "succeeded";
-        state.results = action.payload;
-      })
+      .addCase(
+        fetchSearchResults.fulfilled,
+        (state, action: PayloadAction<UserShort[]>) => {
+          state.status = "succeeded";
+          state.results = action.payload;
+        }
+      )
       .addCase(fetchSearchResults.rejected, (state) => {
         state.status = "failed";
       });

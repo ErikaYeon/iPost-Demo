@@ -10,3 +10,11 @@ export function isPasswordValid(pass?: string): boolean {
 export function isStringWithNoSpaces(value?: string): boolean {
   return !!value && /^\S+$/.test(value);
 }
+
+export function isEmpty(value: any): boolean {
+  return (
+    value === null ||
+    value === undefined ||
+    (typeof value === "string" && value.trim() === "")
+  );
+}

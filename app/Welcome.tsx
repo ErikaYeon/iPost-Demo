@@ -1,26 +1,61 @@
-import React from "react";
+import React, { useEffect } from "react";
 import {
+  ActivityIndicator,
+  Image,
   SafeAreaView,
+  Text,
   TouchableOpacity,
   View,
-  Image,
-  Text,
 } from "react-native";
 import CustomButton from "../ui/components/CustomButton";
 import HeaderText from "../ui/components/HeaderText";
 import createSharedStyles from "../ui/styles/SharedStyles";
-import { lightTheme, darkTheme } from "../ui/styles/Theme";
-{
-  /* import i18n from '../i18n'; */
-} // Para las traducciones. No pude probarlo, solo está en esta pantalla por ahora
-import { Link, useRouter } from "expo-router";
+import { darkTheme } from "../ui/styles/Theme";
+import { useRouter } from "expo-router";
 import RegularTextLine from "@/ui/components/RegularTextLine";
+import { useDispatch, useSelector } from "react-redux";
+import { AppDispatch, RootState } from "../redux/store"; // Asegúrate de ajustar los imports
+import { autoLoginAsync, AutologinResponse } from "../redux/slices/authSlice";
+import { setProfileUserId } from "@/redux/slices/profileSlice";
 
 const FirstScreen: React.FC = () => {
-  const theme = darkTheme; // Puedes cambiar manualmente entre lightTheme y darkTheme
+  const theme = darkTheme;
   const sharedStyles = createSharedStyles(theme);
-
   const router = useRouter();
+  const dispatch = useDispatch<AppDispatch>();
+
+  const { status, loading, error } = useSelector(
+    (state: RootState) => state.auth
+  );
+
+  useEffect(() => {
+    const performAutoLogin = async () => {
+      try {
+        const resultAction = await dispatch(autoLoginAsync());
+
+        if (autoLoginAsync.fulfilled.match(resultAction)) {
+          const result: AutologinResponse = resultAction.payload;
+          dispatch(setProfileUserId(result.userId));
+          router.push("/(tabs)/home");
+        } else {
+          router.push("/LogIn");
+        }
+      } catch (err) {
+        console.error("Error durante el autologin:", err);
+      }
+    };
+
+    performAutoLogin();
+  }, [dispatch, router]);
+
+  if (loading || status === "idle") {
+    return (
+      <SafeAreaView style={sharedStyles.screenContainer}>
+        <ActivityIndicator size="large" color={theme.colors.primary} />
+      </SafeAreaView>
+    );
+  }
+
   return (
     <SafeAreaView style={sharedStyles.screenContainer}>
       {/* Logo como imagen PNG */}

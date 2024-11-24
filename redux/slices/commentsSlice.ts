@@ -1,9 +1,9 @@
 import { createSlice, createAsyncThunk, PayloadAction } from "@reduxjs/toolkit";
 import { getComments, setComment } from "../../networking/commentService";
-import { commentType1 } from "@/types/apiContracts";
+import { CommentType1 } from "@/types/apiContracts";
 
 interface CommentsState {
-  comments: commentType1[];
+  comments: CommentType1[];
   isLoading: boolean;
   error: string | null;
 }
@@ -14,7 +14,7 @@ const initialState: CommentsState = {
   error: null,
 };
 
-export const fetchCommentsByPostId = createAsyncThunk<commentType1[], string>(
+export const fetchCommentsByPostId = createAsyncThunk<CommentType1[], string>(
   "posts/getComments",
   async (postId: string, { rejectWithValue }) => {
     try {
