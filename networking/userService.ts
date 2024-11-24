@@ -55,21 +55,21 @@ export const setProfileImage = async (
   userId: string,
   profileImageData: ProfileImageRequest
 ): Promise<UserResponse> => {
-    const response = await api.put(
-        `users/${userId}/profile-images`,
-        profileImageData
-    );
-    console.log("actualizacion foto exitosa");
-    console.log(response.status);
-    return response.data;
+  const response = await api.put(
+    `users/${userId}/profile-images`,
+    profileImageData
+  );
+  console.log("actualizacion foto exitosa");
+  console.log(response.status);
+  return response.data;
 };
 
 export const setUserData = async (
   userId: string,
   profileData: ProfileUpdateRequest
 ): Promise<UserResponse> => {
-    const response = await api.put(`users/${userId}`, profileData);
-    console.log("actualizacion data perfil exitosa");
-    console.log(response.status);
-    return response.data;
+  const response = await api.put(`users/${userId}`, profileData);
+  console.log("actualizacion data perfil exitosa");
+  console.log(response.status);
+  return response.data;
 };
