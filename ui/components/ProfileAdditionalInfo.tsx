@@ -1,13 +1,17 @@
+import { RootState } from "@/redux/store";
 import React from "react";
 import { View, Text, StyleSheet } from "react-native";
+import { useSelector } from "react-redux";
 
 const ProfileAdditionalInfo: React.FC<{ theme: any }> = ({ theme }) => {
   const styles = createStyles(theme);
+  const Profile = useSelector((state: RootState) => state.profile);
   return (
     <View style={styles.container}>
-      <Text style={styles.bio}>- Comer, rezar, amar 🙏{"\n"} - Mamá de 🐶🐴</Text>
+      <Text style={styles.bio}>{Profile.description}</Text>
       <Text style={styles.followInfo}>
-        <Text style={styles.boldText}>234</Text> seguidores · <Text style={styles.boldText}>567</Text> seguidos
+        <Text style={styles.boldText}>{Profile.followersCount}</Text> seguidores
+        · <Text style={styles.boldText}>{Profile.followingCount}</Text> seguidos
       </Text>
     </View>
   );

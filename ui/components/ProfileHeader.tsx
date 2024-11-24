@@ -1,20 +1,35 @@
 import React from "react";
 import { View, Image, Text, TouchableOpacity, StyleSheet } from "react-native";
-import CrownIcon from "../../assets/images/icons/gamif_crown_3.svg";
+import CrownIcon3 from "../../assets/images/icons/gamif_crown_3.svg";
+import CrownIcon0_1 from "../../assets/images/icons/gamif_crown_0_1.svg";
+import CrownIcon0_2 from "../../assets/images/icons/gamif_crown_0_2.svg";
+import CrownIcon1 from "../../assets/images/icons/gamif_crown_1.svg";
+import CrownIcon2 from "../../assets/images/icons/gamif_crown_2.svg";
 import EditIcon from "../../assets/images/icons/edit.svg";
 import SettingsIcon from "../../assets/images/icons/settings.svg";
 import { router } from "expo-router";
+import { useSelector } from "react-redux";
+import { RootState } from "@/redux/store";
+import Placeholders from "@/constants/ProfilePlaceholders";
+import { Crown } from "@/types/models";
 
 const ProfileHeader: React.FC<{ theme: any; isOtherProfile?: boolean }> = ({
   theme,
   isOtherProfile = false,
 }) => {
   const styles = createStyles(theme);
+  //TODO: MANEJAR LA DIFERENCIA DE PERFILES
+  const Profile = useSelector((state: RootState) => state.profile);
+
+  const name = Profile.name;
+  const lastname = Profile.lastname;
+  const username = Profile.username;
+
   return (
     <>
       <Image
         source={{
-          uri: "https://img.freepik.com/foto-gratis/fondo-mar-playa-vacio_74190-313.jpg",
+          uri: Profile.coverImage ?? Placeholders.DEFAULT_PROFILE_PHOTO_COVER,
         }}
         style={styles.coverImage}
       />
@@ -22,7 +37,7 @@ const ProfileHeader: React.FC<{ theme: any; isOtherProfile?: boolean }> = ({
         <View style={styles.profilePictureContainer}>
           <Image
             source={{
-              uri: "https://img.freepik.com/foto-gratis/selfie-retrato-videollamada_23-2149186122.jpg",
+              uri: Profile.profileImage ?? Placeholders.DEFAULT_PROFILE_PHOTO,
             }}
             style={styles.profilePicture}
           />
@@ -30,10 +45,12 @@ const ProfileHeader: React.FC<{ theme: any; isOtherProfile?: boolean }> = ({
         <View style={styles.headerContainer}>
           <View style={styles.userDetailsContainer}>
             <View style={styles.usernameContainer}>
-              <CrownIcon width={20} height={20} style={styles.crownIcon} />
-              <Text style={styles.name}>María González</Text>
+              <CrownIcon0_1 width={20} height={20} style={styles.crownIcon} />
+              <Text style={styles.name}>
+                {name} {lastname}
+              </Text>
             </View>
-            <Text style={styles.username}>@maria_gnz</Text>
+            <Text style={styles.username}>@{username}</Text>
           </View>
           {!isOtherProfile && (
             <View style={styles.iconsContainer}>
