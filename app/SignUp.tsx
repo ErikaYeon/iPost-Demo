@@ -13,7 +13,8 @@ import LinkText from "../ui/components/LinkText";
 import InputField from "../ui/components/InputField";
 import createSharedStyles from "../ui/styles/SharedStyles";
 import { darkTheme, lightTheme } from "../ui/styles/Theme";
-import { styles } from "../ui/styles/LogIn";
+// import { styles } from "../ui/styles/LogIn";
+import { createLogInScreenStyles } from "../ui/styles/LogIn";
 import { useDispatch, useSelector } from "react-redux";
 import { router } from "expo-router";
 import RegularTextLine from "@/ui/components/RegularTextLine";
@@ -26,12 +27,15 @@ import {
   isPasswordValid,
   isStringWithNoSpaces,
 } from "@/utils/RegexExpressions";
-import { setProfileEmail ,setProfileUsername } from "@/redux/slices/profileSlice";
+import {
+  setProfileEmail,
+  setProfileUsername,
+} from "@/redux/slices/profileSlice";
 
 const SignUpScreen: React.FC = () => {
-
   const theme = darkTheme; // Para alternar entre darkTheme y lightTheme manualmente
   const sharedStyles = createSharedStyles(theme);
+  const styles = createLogInScreenStyles(theme);
 
   const dispatch = useDispatch<AppDispatch>();
   const { loading, error } = useSelector((state: RootState) => state.auth);
@@ -78,21 +82,35 @@ const SignUpScreen: React.FC = () => {
         if (error.status === 409 || error.status === 404) {
           setErrorMessage("Error. El email ya está registrado");
         } else {
-        console.error("Error from signup:", error);
-        setErrorMessage("Ocurrió un error, intentalo nuevamente");
+          console.error("Error from signup:", error);
+          setErrorMessage("Ocurrió un error, intentalo nuevamente");
+        }
       }
     }
-    };
-  }
+  };
 
   return (
     <SafeAreaView style={sharedStyles.screenContainer}>
-
       {/* Texto "Regístrese en iPost" */}
-      <View style={{ flexDirection: 'row', justifyContent: 'center', alignItems: 'baseline' }}>
-        <HeaderText text= {('Regístrese en')} theme={theme} />
-        <Text style={{ fontSize: 32, fontWeight: 'bold', color: theme.colors.textPrimary }}> iPost</Text>
-      </View> 
+      <View
+        style={{
+          flexDirection: "row",
+          justifyContent: "center",
+          alignItems: "baseline",
+        }}
+      >
+        <HeaderText text={"Regístrese en"} theme={theme} />
+        <Text
+          style={{
+            fontSize: 32,
+            fontWeight: "bold",
+            color: theme.colors.textPrimary,
+          }}
+        >
+          {" "}
+          iPost
+        </Text>
+      </View>
 
       {/* Input de Correo electrónico */}
       <InputField
@@ -136,7 +154,12 @@ const SignUpScreen: React.FC = () => {
 
       {/* Link para iniciar sesión */}
       <View
-        style={{ flexDirection: "row", justifyContent: "center", marginTop: 7, marginBottom: 10 }}
+        style={{
+          flexDirection: "row",
+          justifyContent: "center",
+          marginTop: 7,
+          marginBottom: 10,
+        }}
       >
         <RegularText text="¿Tienes una cuenta? " theme={theme} />
         <LinkText
@@ -180,5 +203,3 @@ const SignUpScreen: React.FC = () => {
 };
 
 export default SignUpScreen;
-
-

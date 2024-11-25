@@ -10,11 +10,12 @@ export const setComment = async (
   postId: string,
   authorId: string,
   comment: string
-): Promise<void> => {
+): Promise<CommentType1> => {
   const commentData = {
     authorId,
     content: comment,
   };
   const response = await api.post(`/posts/${postId}/comments`, commentData);
   console.log("Successful post comments by id:", response.data);
+  return response.data;
 };

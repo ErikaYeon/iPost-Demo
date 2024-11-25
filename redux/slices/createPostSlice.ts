@@ -6,32 +6,32 @@ import { APIError, CreatePostRequest, Post } from "@/types/apiContracts";
 
 interface CreatePostState {
   postContent: string;
-  selectedImages: { uri: string; type: string }[]; 
+  selectedImages: { uri: string; type: string }[];
   location: string;
   date: string;
   loading: boolean;
   error: string | null;
-  likes: number,
-  comments: number,
-  commentSection: [],
+  likes: number;
+  comments: number;
+  commentSection: [];
 }
 
 interface PartialPostData {
   postContent: string;
-  selectedImages: { uri: string; type: string }[]; 
+  selectedImages: { uri: string; type: string }[];
   location: string;
   date: string;
 }
 
 const initialState: CreatePostState = {
-  postContent: '',
+  postContent: "",
   selectedImages: [],
-  location: '',
-  date: '',
+  location: "",
+  date: "",
   loading: false,
   error: null,
-  likes:0,
-  comments:0,
+  likes: 0,
+  comments: 0,
   commentSection: [],
 };
 
@@ -57,16 +57,19 @@ const createPostSlice = createSlice({
     setLocation(state, action: PayloadAction<string>) {
       state.location = action.payload;
     },
-    setSelectedImages(state, action: PayloadAction<{ uri: string; type: string }[]>) {
+    setSelectedImages(
+      state,
+      action: PayloadAction<{ uri: string; type: string }[]>
+    ) {
       state.selectedImages = action.payload;
-    },    
+    },
     setDate(state, action: PayloadAction<string>) {
       state.date = action.payload;
     },
     setLike: (state, action: PayloadAction<number>) => {
       state.likes = action.payload;
     },
-    setAllPostData(state, action: PayloadAction<PartialPostData>) { // Acción actualizada
+    setAllPostData(state, action: PayloadAction<PartialPostData>) {
       const { postContent, selectedImages, location, date } = action.payload;
       state.postContent = postContent;
       state.selectedImages = selectedImages;
@@ -74,10 +77,10 @@ const createPostSlice = createSlice({
       state.date = date;
     },
     clearPost(state) {
-      state.postContent = '';
-      state.location = '';
+      state.postContent = "";
+      state.location = "";
       state.selectedImages = [];
-      state.date = '';
+      state.date = "";
     },
   },
   extraReducers: (builder) => {
@@ -86,9 +89,10 @@ const createPostSlice = createSlice({
         state.loading = true;
         state.error = null;
       })
-      .addCase(createPostAsync.fulfilled, (state) => {
+      .addCase(createPostAsync.fulfilled, (state, action) => {
         state.loading = false;
         state.error = null;
+        const post = action.payload;
       })
       .addCase(createPostAsync.rejected, (state, action) => {
         state.loading = false;
@@ -97,6 +101,14 @@ const createPostSlice = createSlice({
   },
 });
 
-export const { setPostContent, setLocation, setSelectedImages, setDate, clearPost, setAllPostData, setLike } = createPostSlice.actions;
+export const {
+  setPostContent,
+  setLocation,
+  setSelectedImages,
+  setDate,
+  clearPost,
+  setAllPostData,
+  setLike,
+} = createPostSlice.actions;
 
 export default createPostSlice.reducer;
