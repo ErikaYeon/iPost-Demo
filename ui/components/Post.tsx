@@ -13,6 +13,7 @@ import {
   Share,
   StyleSheet,
   Dimensions,
+  Linking,
 } from "react-native";
 import Modal from "react-native-modal";
 import { Modal as NativeModal } from "react-native"; // Usa Modal nativo para el modal de imagen completa
@@ -295,9 +296,20 @@ const Post: React.FC<PostProps> = ({
           </TouchableOpacity>
         )}
       </View>
+
       <Text style={[styles.description, { color: theme.colors.textPrimary }]}>
-        {description}
+        {isAd ? (
+          <Text
+            style={styles.link}
+            onPress={() => Linking.openURL(description)} // Abre el enlace en el navegador
+          >
+            visitar sitio
+          </Text>
+        ) : (
+          description
+        )}
       </Text>
+
       <View style={styles.locationDateContainer}>
         {location && (
           <Text
