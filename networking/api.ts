@@ -54,20 +54,24 @@ export const handleError = (error: any, onRetry?: () => void): APIError => {
 };
 
 api.interceptors.response.use(
-  (response) => response,
+  (response) => response, // Devuelve la respuesta si no hay errores
   async (error) => {
     const originalRequest = error.config;
+
+    // Si es un error 403 (token expirado) y no pertenece a /accounts
     if (
-      !originalRequest.url?.startsWith("/accounts") &&
-      error.response?.status === 403
+      error.response?.status === 403 &&
+      !originalRequest.url?.startsWith("/accounts")
     ) {
       try {
         const refreshToken = await AsyncStorage.getItem("refresh_token");
+
+        // Si no se ha intentado reintentar previamente, inicializa el contador
         if (!originalRequest._retry_count) {
           originalRequest._retry_count = 0;
         }
 
-        if (refreshToken && originalRequest._retry_count <= MAX_RETRY_COUNT) {
+        if (refreshToken && originalRequest._retry_count < MAX_RETRY_COUNT) {
           originalRequest._retry_count += 1;
           const newAccessToken = await refreshAccessToken(refreshToken);
 
@@ -76,18 +80,14 @@ api.interceptors.response.use(
               "Authorization"
             ] = `Bearer ${newAccessToken}`;
             return api(originalRequest);
-          } else {
-            await logoutAndRedirect();
           }
-        } else {
-          await logoutAndRedirect();
         }
-      } catch (error) {
-        console.log("Error refreshing token");
+        await logoutAndRedirect();
+      } catch {
+        await logoutAndRedirect();
       }
-    } else {
-      return Promise.reject(handleError(error));
     }
+    return Promise.reject(error);
   }
 );
 
@@ -102,7 +102,6 @@ export const refreshAccessToken = async (
     await AsyncStorage.setItem("access_token", access_token);
     return access_token;
   } catch (error) {
-    console.error("Error renewing access token:", error);
     throw new APIError("Ocurrió un error renovando el access token");
   }
 };
@@ -110,6 +109,7 @@ export const refreshAccessToken = async (
 const logoutAndRedirect = async () => {
   await AsyncStorage.removeItem("access_token");
   await AsyncStorage.removeItem("refresh_token");
+  await AsyncStorage.removeItem("user_id");
   router.push("/LogIn");
 };
 
