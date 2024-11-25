@@ -12,6 +12,7 @@ import { useSelector } from "react-redux";
 import { RootState } from "@/redux/store";
 import Placeholders from "@/constants/ProfilePlaceholders";
 import { Crown } from "@/types/models";
+import { isEmpty } from "@/utils/RegexExpressions";
 
 const ProfileHeader: React.FC<{ theme: any; isOtherProfile?: boolean }> = ({
   theme,
@@ -24,12 +25,15 @@ const ProfileHeader: React.FC<{ theme: any; isOtherProfile?: boolean }> = ({
   const name = Profile.name;
   const lastname = Profile.lastname;
   const username = Profile.username;
+  console.log(Profile.crown);
 
   return (
     <>
       <Image
         source={{
-          uri: Profile.coverImage ?? Placeholders.DEFAULT_PROFILE_PHOTO_COVER,
+          uri: isEmpty(Profile.coverImage)
+            ? Placeholders.DEFAULT_PROFILE_PHOTO_COVER
+            : Profile.coverImage,
         }}
         style={styles.coverImage}
       />
@@ -37,7 +41,9 @@ const ProfileHeader: React.FC<{ theme: any; isOtherProfile?: boolean }> = ({
         <View style={styles.profilePictureContainer}>
           <Image
             source={{
-              uri: Profile.profileImage ?? Placeholders.DEFAULT_PROFILE_PHOTO,
+              uri: isEmpty(Profile.profileImage)
+                ? Placeholders.DEFAULT_PROFILE_PHOTO
+                : Profile.profileImage,
             }}
             style={styles.profilePicture}
           />
@@ -45,7 +51,15 @@ const ProfileHeader: React.FC<{ theme: any; isOtherProfile?: boolean }> = ({
         <View style={styles.headerContainer}>
           <View style={styles.userDetailsContainer}>
             <View style={styles.usernameContainer}>
-              <CrownIcon0_1 width={20} height={20} style={styles.crownIcon} />
+              {Profile.crown === 0 ? (
+                <CrownIcon3 width={20} height={20} style={styles.crownIcon} />
+              ) : Profile.crown === 1 ? (
+                <CrownIcon2 width={20} height={20} style={styles.crownIcon} />
+              ) : Profile.crown === 2 ? (
+                <CrownIcon1 width={20} height={20} style={styles.crownIcon} />
+              ) : (
+                <CrownIcon0_1 width={20} height={20} style={styles.crownIcon} />
+              )}
               <Text style={styles.name}>
                 {name} {lastname}
               </Text>
