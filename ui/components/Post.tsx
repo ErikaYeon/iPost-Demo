@@ -222,16 +222,9 @@ const Post: React.FC<PostProps> = ({
         },
       };
 
-      setCommentsList((prevCommentsList) => [
-        ...prevCommentsList,
-        newCommentData,
-      ]);
-
       setCommentsCount((prevComments) => prevComments + 1);
 
       setNewComment("");
-
-      dispatch(addCommentToList(newCommentData));
       dispatch(
         postComments({
           comment: newComment,
@@ -326,7 +319,10 @@ const Post: React.FC<PostProps> = ({
             width: "100%",
           }}
         >
-          <Image source={{ uri: images[0].uri }} style={styles.singlePostImage} />
+          <Image
+            source={{ uri: images[0].uri }}
+            style={styles.singlePostImage}
+          />
         </View>
       ) : (
         <FlatList
