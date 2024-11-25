@@ -28,7 +28,6 @@ import { useRouter } from "expo-router";
 import { useDispatch, useSelector } from "react-redux";
 import { AppDispatch, RootState } from "../redux/store";
 import {
-  setAllPostData,
   setPostContent,
   setSelectedImages,
   setLocation,
@@ -100,7 +99,7 @@ const CreatePost: React.FC = () => {
   };
 
   const renderMediaItem = ({ item }) => (
-    <View style={{ marginRight: 10, position: "relative", paddingTop:16 }}>
+    <View style={{ marginRight: 10, position: "relative", paddingTop: 16 }}>
       {item.type === "image" ? (
         <Image
           source={{ uri: item.uri }}
@@ -132,25 +131,12 @@ const CreatePost: React.FC = () => {
         }}
       >
         <CloseIconDark width={16} height={16} />
-
       </TouchableOpacity>
     </View>
   );
 
   const handlePublish = async () => {
     dispatch(setDate(date));
-    dispatch(
-      setAllPostData({
-        postContent,
-        selectedImages: selectedImages.map((item) => ({
-          uri: item.uri,
-          type: item.type,
-        })),
-        location,
-        date,
-      })
-    );
-
     const request: CreatePostRequest = {
       userId: userProfile.id,
       location: location,
@@ -158,16 +144,20 @@ const CreatePost: React.FC = () => {
       title: postContent,
     };
 
-    try {
-      const result = await dispatch(createPostAsync(request));
-      if (createPostAsync.fulfilled.match(result)) {
-        console.log("Post creado exitosamente");
-        dispatch(clearPost());
-        router.push("/(tabs)/home");
-      }
-    } catch (error) {
+    const result = await dispatch(createPostAsync(request));
+    if (createPostAsync.fulfilled.match(result)) {
+      const post = result.payload;
+      dispatch(addPost(post)); // Despacha la acción para actualizar el timeline
+      console.log("Post creado y añadido al timeline");
+      dispatch(clearPost());
+      router.push("/(tabs)/home");
+    } else {
       console.log("Error al crear el Post");
     }
+  };
+  const handleCloseButton = () => {
+    dispatch(clearPost());
+    router.push("/(tabs)/home");
   };
 
   const isPublishEnabled =
@@ -187,14 +177,11 @@ const CreatePost: React.FC = () => {
           theme.isDark ? (
             <CloseIconDark width={24} height={24} />
           ) : (
-            <CloseIconLight
-              width={15}
-              height={15}
-            />
+            <CloseIconLight width={15} height={15} />
           )
         }
-        title="Editar foto de perfil"
-        onPress={() => router.push("/(tabs)/home")}
+        title="Crear Post"
+        onPress={handleCloseButton}
         theme={theme}
       />
 

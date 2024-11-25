@@ -37,7 +37,8 @@ export const postComments = createAsyncThunk(
     { rejectWithValue }
   ) => {
     try {
-      await setComment(postId, authorId, comment);
+      const commentResponse = await setComment(postId, authorId, comment);
+      return commentResponse;
     } catch (error: any) {
       return rejectWithValue(error.message || "Error set comment");
     }
@@ -78,6 +79,8 @@ const commentsSlice = createSlice({
       })
       .addCase(postComments.fulfilled, (state, action) => {
         state.isLoading = false;
+        const comment = action.payload;
+        state.comments.unshift(comment);
       })
       .addCase(postComments.rejected, (state, action) => {
         state.isLoading = false;
