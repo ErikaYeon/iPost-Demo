@@ -155,6 +155,10 @@ const CreatePost: React.FC = () => {
       console.log("Error al crear el Post");
     }
   };
+  const handleCloseButton = () => {
+    dispatch(clearPost());
+    router.push("/(tabs)/home");
+  };
 
   const isPublishEnabled =
     postContent.trim() !== "" &&
@@ -177,7 +181,7 @@ const CreatePost: React.FC = () => {
           )
         }
         title="Crear Post"
-        onPress={() => router.push("/(tabs)/home")}
+        onPress={handleCloseButton}
         theme={theme}
       />
 
