@@ -17,5 +17,5 @@ export const setComment = async (
   };
   const response = await api.post(`/posts/${postId}/comments`, commentData);
   console.log("Successful post comments by id:", response.data);
-    return response.data;
+  return response.data;
 };
