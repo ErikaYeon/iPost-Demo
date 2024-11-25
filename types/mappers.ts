@@ -18,6 +18,23 @@ export function levelToCrown(level: number): Crown {
   }
 }
 
+export function crownToLevel(crown: Crown): number {
+  switch (crown) {
+    case Crown.GREY: {
+      return 1;
+    }
+    case Crown.BRONCE: {
+      return 2;
+    }
+    case Crown.SILVER: {
+      return 3;
+    }
+    default: {
+      return 4;
+    }
+  }
+}
+
 export function themeToLevel(level: string): string {
   switch (level) {
     case "dark": {

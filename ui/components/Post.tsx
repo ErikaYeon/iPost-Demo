@@ -12,7 +12,6 @@ import {
   Alert,
   Share,
   StyleSheet,
-  Dimensions,
   Linking,
 } from "react-native";
 import Modal from "react-native-modal";
@@ -32,18 +31,14 @@ import CrownGold from "../../assets/images/icons/gamif_crown_3.svg";
 import { likePost, unlikePost } from "@/networking/postService";
 import styles from "../../ui/styles/PostStyles";
 import { Crown } from "@/types/models";
-// import Clipboard from '@react-native-clipboard/clipboard';
-import * as Clipboard from "expo-clipboard";
 import { Video, ResizeMode } from "expo-av";
-import Placeholders from "@/constants/ProfilePlaceholders";
 import { useDispatch, useSelector } from "react-redux";
 import { AppDispatch, RootState } from "@/redux/store";
 import {
-  addCommentToList,
   postComments,
   fetchCommentsByPostId,
 } from "@/redux/slices/commentsSlice";
-import { commentType1 } from "@/types/apiContracts";
+import { CommentType1 } from "@/types/apiContracts";
 import { levelToCrown } from "@/types/mappers";
 
 type PostProps = {
@@ -58,8 +53,7 @@ type PostProps = {
   comments: number;
   isVip?: boolean;
   crownType: Crown;
-  // commentSection?: CommentType[];
-  commentSection?: commentType1[];
+  commentSection?: CommentType1[];
   onLike: () => void;
   onComment: () => void;
   onSave: () => void;
@@ -96,11 +90,7 @@ const Post: React.FC<PostProps> = ({
   location,
   date,
   images = [],
-  commentSection = [],
-  isVip = false,
   crownType,
-  onLike,
-  onComment,
   onSave,
   initialLikes,
   comments,
@@ -114,7 +104,6 @@ const Post: React.FC<PostProps> = ({
   const [likeCount, setLikeCount] = useState(initialLikes);
   const [isSaved, setIsSaved] = useState(false);
   const [isModalVisible, setModalVisible] = useState(false);
-  const [commentsList, setCommentsList] = useState(commentSection);
   const [newComment, setNewComment] = useState("");
   const [commentsCount, setCommentsCount] = useState(comments);
   const userProfile = useSelector((state: RootState) => state.profile);
@@ -201,28 +190,8 @@ const Post: React.FC<PostProps> = ({
 
   const closeModal = () => setModalVisible(false);
 
-  function generarNumeroRandom() {
-    return Math.floor(Math.random() * 900) + 100;
-  }
-
   const handleAddComment = () => {
     if (newComment.trim()) {
-      const newCommentData: commentType1 = {
-        id: generarNumeroRandom().toString(),
-        content: newComment,
-        createAt: new Date().toISOString(),
-        author: {
-          name: userProfile.name ?? "@your_username",
-          nickname: userProfile.username ?? "",
-          lastname: userProfile.lastname ?? "",
-          id: userProfile.id,
-          profileImage:
-            userProfile.profileImage ?? Placeholders.DEFAULT_PROFILE_PHOTO,
-          level: 1,
-          active: true,
-        },
-      };
-
       setCommentsCount((prevComments) => prevComments + 1);
 
       setNewComment("");

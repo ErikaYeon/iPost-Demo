@@ -1,8 +1,8 @@
 import api from "./api";
 import { handleError } from "./api";
-import { APIError, commentType1 } from "@/types/apiContracts";
+import { APIError, CommentType1 } from "@/types/apiContracts";
 
-export const getComments = async (postId: string): Promise<commentType1[]> => {
+export const getComments = async (postId: string): Promise<CommentType1[]> => {
   try {
     const response = await api.get(`/posts/${postId}/comments`);
     return response.data;
@@ -17,7 +17,7 @@ export const setComment = async (
   postId: string,
   authorId: string,
   comment: string
-): Promise<commentType1> => {
+): Promise<CommentType1> => {
   try {
     const commentData = {
       authorId: authorId,
