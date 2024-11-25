@@ -169,29 +169,24 @@ export const autoLoginAsync = createAsyncThunk(
           throw new Error("No se pudo renovar el token de acceso.");
         }
 
-        const response: AutologinResponse = {
+        return {
           access_token: newAccessToken,
           refresh_token: refreshToken,
           userId: userId || "",
         };
-
-        return response;
       }
 
       if (accessToken && userId) {
-        const response: AutologinResponse = {
+        return {
           access_token: accessToken,
           refresh_token: refreshToken || "",
           userId: userId || "",
         };
-
-        return response;
       }
+
       throw new Error("No se encontraron tokens de acceso.");
-    } catch (error: any) {
-      return rejectWithValue(
-        error.message || "Error durante el proceso de auto-login."
-      );
+    } catch {
+      return rejectWithValue(null);
     }
   }
 );

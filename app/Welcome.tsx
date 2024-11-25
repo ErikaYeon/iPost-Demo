@@ -15,7 +15,7 @@ import { useRouter } from "expo-router";
 import RegularTextLine from "@/ui/components/RegularTextLine";
 import { useDispatch, useSelector } from "react-redux";
 import { AppDispatch, RootState } from "../redux/store"; // Asegúrate de ajustar los imports
-import { autoLoginAsync, AutologinResponse } from "../redux/slices/authSlice";
+import { autoLoginAsync } from "../redux/slices/authSlice";
 import { setProfileUserId } from "@/redux/slices/profileSlice";
 
 const FirstScreen: React.FC = () => {
@@ -24,24 +24,16 @@ const FirstScreen: React.FC = () => {
   const router = useRouter();
   const dispatch = useDispatch<AppDispatch>();
 
-  const { status, loading, error } = useSelector(
-    (state: RootState) => state.auth
-  );
+  const { status, loading } = useSelector((state: RootState) => state.auth);
 
   useEffect(() => {
     const performAutoLogin = async () => {
-      try {
-        const resultAction = await dispatch(autoLoginAsync());
+      const resultAction = await dispatch(autoLoginAsync());
 
-        if (autoLoginAsync.fulfilled.match(resultAction)) {
-          const result: AutologinResponse = resultAction.payload;
-          dispatch(setProfileUserId(result.userId));
-          router.push("/(tabs)/home");
-        } else {
-          router.push("/LogIn");
-        }
-      } catch (err) {
-        console.error("Error durante el autologin:", err);
+      if (autoLoginAsync.fulfilled.match(resultAction)) {
+        const { userId } = resultAction.payload;
+        dispatch(setProfileUserId(userId));
+        router.push("/(tabs)/home");
       }
     };
 
