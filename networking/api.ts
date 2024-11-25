@@ -20,80 +20,15 @@ api.interceptors.request.use(
     }
     return config;
   },
-  (error) => {
-    return Promise.reject(error);
-  }
+  (error) => Promise.reject(error)
 );
 
-export const handleError = (error: any, onRetry?: () => void): APIError => {
-  if (axios.isAxiosError(error)) {
-    if (error.response) {
-      const errorMessage = `API Error: ${
-        error.response.data?.message || "Error desconocido"
-      }`;
-      const errorStatus = ` - Status: ${error.response.status}`;
-      console.log(errorMessage + errorStatus);
-      if (onRetry) {
-        onRetry();
-      }
-      router.push("/ErrorGeneral");
-      throw new APIError(errorMessage);
-    } else if (error.request) {
-      router.push("/ErrorConexion");
-      throw new APIError("Network Error: No response from server.");
-    } else {
-      router.push("/ErrorGeneral");
-      throw new APIError(`Axios Configuration Error: ${error.message}`);
-    }
-  } else {
-    // router.push('/ErrorGeneral');
-    throw new APIError(
-      `Unexpected Error: ${error.message || "Unknown error occurred."}`
-    );
-  }
+const logoutAndRedirect = async () => {
+  await AsyncStorage.multiRemove(["access_token", "refresh_token", "user_id"]);
+  router.push("/LogIn");
 };
 
-api.interceptors.response.use(
-  (response) => response, // Devuelve la respuesta si no hay errores
-  async (error) => {
-    const originalRequest = error.config;
-
-    // Si es un error 403 (token expirado) y no pertenece a /accounts
-    if (
-      error.response?.status === 403 &&
-      !originalRequest.url?.startsWith("/accounts")
-    ) {
-      try {
-        const refreshToken = await AsyncStorage.getItem("refresh_token");
-
-        // Si no se ha intentado reintentar previamente, inicializa el contador
-        if (!originalRequest._retry_count) {
-          originalRequest._retry_count = 0;
-        }
-
-        if (refreshToken && originalRequest._retry_count < MAX_RETRY_COUNT) {
-          originalRequest._retry_count += 1;
-          const newAccessToken = await refreshAccessToken(refreshToken);
-
-          if (newAccessToken) {
-            originalRequest.headers[
-              "Authorization"
-            ] = `Bearer ${newAccessToken}`;
-            return api(originalRequest);
-          }
-        }
-        await logoutAndRedirect();
-      } catch {
-        await logoutAndRedirect();
-      }
-    }
-    return Promise.reject(error);
-  }
-);
-
-export const refreshAccessToken = async (
-  refreshToken: string
-): Promise<string> => {
+const refreshAccessToken = async (refreshToken: string): Promise<string> => {
   try {
     const response = await api.post("/accounts/refresh-token", {
       refresh_token: refreshToken,
@@ -102,15 +37,69 @@ export const refreshAccessToken = async (
     await AsyncStorage.setItem("access_token", access_token);
     return access_token;
   } catch (error) {
-    throw new APIError("Ocurrió un error renovando el access token");
+    console.error("Error refreshing token:", error);
+    throw new APIError("Failed to refresh access token");
   }
 };
 
-const logoutAndRedirect = async () => {
-  await AsyncStorage.removeItem("access_token");
-  await AsyncStorage.removeItem("refresh_token");
-  await AsyncStorage.removeItem("user_id");
-  router.push("/LogIn");
+const handleError = async (error: any, originalRequest: any): Promise<void> => {
+  if (axios.isAxiosError(error)) {
+    if (error.response) {
+      const status = error.response.status;
+
+      if (status === 403 && !originalRequest.url?.startsWith("/accounts")) {
+        const refreshToken = await AsyncStorage.getItem("refresh_token");
+
+        if (originalRequest._retry_count < MAX_RETRY_COUNT && refreshToken) {
+          originalRequest._retry_count += 1;
+
+          try {
+            const newAccessToken = await refreshAccessToken(refreshToken);
+            originalRequest.headers[
+              "Authorization"
+            ] = `Bearer ${newAccessToken}`;
+            return api(originalRequest);
+          } catch {
+            console.warn("Token refresh failed. Redirecting to login.");
+            await logoutAndRedirect();
+            return;
+          }
+        } else {
+          console.warn("Max retries reached or no refresh token available.");
+          await logoutAndRedirect();
+          return;
+        }
+      }
+
+      console.error(
+        `Unhandled API error: ${error.response.data?.message || "Unknown"}`
+      );
+      router.push("/ErrorGeneral");
+    } else if (error.request) {
+      console.error("No response from server.");
+      router.push("/ErrorConexion");
+    } else {
+      console.error("Unexpected error:", error.message);
+      router.push("/ErrorGeneral");
+    }
+  } else {
+    console.error("Non-Axios error occurred:", error);
+    router.push("/ErrorGeneral");
+  }
+  throw error;
 };
+
+api.interceptors.response.use(
+  (response) => response,
+  async (error) => {
+    const originalRequest = error.config;
+
+    if (!originalRequest._retry_count) {
+      originalRequest._retry_count = 0;
+    }
+
+    return handleError(error, originalRequest);
+  }
+);
 
 export default api;
