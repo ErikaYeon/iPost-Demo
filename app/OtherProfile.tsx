@@ -32,7 +32,7 @@ type PostImage = {
   isVideo: boolean;
 };
 
-const otherProfile = () => {
+const OtherProfile: React.FC = () => {
   const [postImages, setPostImages] = useState<PostImage[]>([]);
   const [isFollowing, setIsFollowing] = useState(false); // Estado para el botón "Seguir"
   const theme = darkTheme;
@@ -41,31 +41,34 @@ const otherProfile = () => {
   const otherProfileData = useSelector(
     (state: RootState) => state.otherProfile
   );
+  const { id, username, posts, loading } = otherProfileData;
 
   const screenWidth = Dimensions.get("window").width;
   const buttonWidth = screenWidth * 0.85;
 
+  // Carga inicial de los posts
   useEffect(() => {
-    if (otherProfileData.id) {
+    if (id) {
       dispatch(
         fetchOtherProfilePosts({
-          userId: otherProfileData.id,
+          userId: id,
           offset: 0,
           limit: 20,
         })
       );
     }
-  }, [dispatch, otherProfileData.id]);
+  }, [dispatch, id]);
 
+  // Generar thumbnails y construir datos para la grilla
   useEffect(() => {
     const generateThumbnails = async () => {
-      if (!otherProfileData.posts || otherProfileData.posts.length === 0) {
+      if (!posts || posts.length === 0) {
         setPostImages([]);
         return;
       }
 
       const updatedPostImages = await Promise.all(
-        otherProfileData.posts.map(async (post) => {
+        posts.map(async (post) => {
           const isVideo = post.contents[0]?.endsWith(".mp4");
           const thumbnailUri = isVideo
             ? await generateVideoThumbnail(post.contents[0])
@@ -73,7 +76,7 @@ const otherProfile = () => {
           return {
             id: post.id,
             uri: thumbnailUri || post.contents[0],
-            user: otherProfileData.username,
+            user: username,
             description: post.title,
             isVideo,
           };
@@ -83,7 +86,7 @@ const otherProfile = () => {
     };
 
     generateThumbnails();
-  }, [otherProfileData.posts]);
+  }, [posts, username]);
 
   return (
     <SafeAreaView
@@ -92,6 +95,7 @@ const otherProfile = () => {
         { paddingTop: Platform.OS === "android" ? StatusBar.currentHeight : 0 },
       ]}
     >
+      {/* Header con el nombre del usuario */}
       <HeaderWithIcon
         iconComponent={() =>
           theme === darkTheme ? (
@@ -100,14 +104,14 @@ const otherProfile = () => {
             <BackIconLight width={18} height={18} />
           )
         }
-        title={`@${otherProfileData.username}`}
+        title={`@${username}`}
         onPress={() => router.back()}
         theme={theme}
-        lineMarginBottom={1} // Personaliza el marginBottom solo para esta pantalla
+        lineMarginBottom={1}
       />
 
+      {/* Información de perfil */}
       <ProfileHeader theme={theme} isOtherProfile={true} />
-
       <ProfileAdditionalInfo theme={theme} isOtherProfile={true} />
 
       {/* Botón de Seguir/Dejar de Seguir */}
@@ -146,14 +150,22 @@ const otherProfile = () => {
         </View>
       </View>
 
-      {/* Grilla de Imágenes */}
+      {/* Grilla de imágenes y videos */}
       <View style={styles.gridContainer}>
-        {otherProfileData.loading ? (
+        {loading ? (
           <ActivityIndicator size="large" color={theme.colors.primary} />
-        ) : otherProfileData.posts.length === 0 ? (
+        ) : posts.length === 0 ? (
           <NoPosts theme={theme} />
         ) : (
-          <PostImageGrid posts={postImages} />
+          <PostImageGrid
+            posts={postImages}
+            onPressImage={(postId) =>
+              router.push({
+                pathname: "/Timeline",
+                params: { profileId: id },
+              })
+            }
+          />
         )}
       </View>
     </SafeAreaView>
@@ -172,4 +184,4 @@ const generateVideoThumbnail = async (uri: string): Promise<string | null> => {
   }
 };
 
-export default otherProfile;
+export default OtherProfile;

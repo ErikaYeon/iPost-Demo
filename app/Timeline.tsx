@@ -6,12 +6,17 @@ import {
   ActivityIndicator,
   StatusBar,
   StyleSheet,
+  Platform,
 } from "react-native";
 import { useSelector, useDispatch } from "react-redux";
 import { RootState, AppDispatch } from "@/redux/store";
 import { fetchUserPosts } from "@/redux/slices/profileSlice";
 import Post from "@/ui/components/Post";
-import { darkTheme } from "@/ui/styles/Theme";
+import HeaderWithIcon from "../ui/components/HeaderWithIcon";
+import BackIcon from "../assets/images/icons/navigate_before.svg";
+import BackIconLightMode from "../assets/images/icons/navigate_before_lightMode.svg";
+import { darkTheme, lightTheme } from "../ui/styles/Theme";
+import { router } from "expo-router";
 import Placeholders from "@/constants/ProfilePlaceholders";
 import { isEmpty } from "@/utils/RegexExpressions";
 import { levelToCrown } from "@/types/mappers";
@@ -23,6 +28,7 @@ const Timeline: React.FC = () => {
   const userId = Array.isArray(profileId) ? profileId[0] : profileId; // Convertimos a string si es un array
   const dispatch = useDispatch<AppDispatch>();
   const theme = darkTheme;
+  const styles = createTimelineStyles(theme);
 
   const userProfilePosts = useSelector(
     (state: RootState) => state.profile.posts
@@ -46,6 +52,33 @@ const Timeline: React.FC = () => {
 
   return (
     <SafeAreaView style={styles.container}>
+    <StatusBar
+        backgroundColor={theme.colors.background}
+        barStyle={theme.isDark ? "light-content" : "dark-content"}
+      />
+      <SafeAreaView>
+        <HeaderWithIcon
+          iconComponent={() =>
+            theme.isDark ? (
+              <BackIcon
+                width={15}
+                height={15}
+                fill={theme.colors.textPrimary}
+              />
+            ) : (
+              <BackIconLightMode
+                width={15}
+                height={15}
+                fill={theme.colors.textPrimary}
+              />
+            )
+          }
+          title="Posts"
+          onPress={() => router.back()}
+          theme={theme}
+          lineMarginBottom={0}
+        />
+      </SafeAreaView>
       {loading ? (
         <ActivityIndicator size="large" color={theme.colors.primary} />
       ) : error ? (
@@ -92,17 +125,22 @@ const Timeline: React.FC = () => {
   );
 };
 
-const styles = StyleSheet.create({
-  container: {
-    flex: 1,
-    backgroundColor: darkTheme.colors.background,
-    paddingTop: StatusBar.currentHeight || 0,
-  },
-  errorText: {
-    color: "red",
-    textAlign: "center",
-    marginVertical: 10,
-  },
-});
+const createTimelineStyles = (theme: any) =>
+    StyleSheet.create({
+    container: {
+        flex: 1,
+        backgroundColor: darkTheme.colors.background,
+        paddingTop: StatusBar.currentHeight || 0,
+    },
+    errorText: {
+        color: "red",
+        textAlign: "center",
+        marginVertical: 10,
+    },
+    safeArea: {
+        backgroundColor: theme.colors.background,
+        paddingTop: Platform.OS === "android" ? StatusBar.currentHeight + 10 : 30,
+    },
+    });
 
 export default Timeline;
