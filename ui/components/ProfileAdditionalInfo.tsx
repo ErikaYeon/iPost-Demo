@@ -1,10 +1,11 @@
+import React from "react";
 import {
   fetchFollowingsUser,
   fetchFollowersUser,
 } from "@/redux/slices/searchSlice";
 import { AppDispatch, RootState } from "@/redux/store";
 import { router } from "expo-router";
-import React from "react";
+
 import {
   View,
   Text,
@@ -16,31 +17,33 @@ import { useDispatch, useSelector } from "react-redux";
 
 const ProfileAdditionalInfo: React.FC<{
   theme: any;
-  isOtherProfile: boolean;
-}> = ({ theme, isOtherProfile }) => {
+  isOtherProfile?: boolean;
+}> = ({ theme, isOtherProfile = false }) => {
   const styles = createStyles(theme);
   const dispatch = useDispatch<AppDispatch>();
-  //MANEJAR ESTO DEL PROFILE PARA QUE SEA SEGUN EL BOOLEANO
-  const Profile = useSelector((state: RootState) => state.profile);
+
+  const profileData = useSelector((state: RootState) =>
+    isOtherProfile ? state.otherProfile : state.profile
+  );
 
   const handleOnPressFollowings = () => {
-    dispatch(fetchFollowingsUser(Profile.id));
+    dispatch(fetchFollowingsUser(profileData.id));
     router.push("/SearchFollowing");
   };
   const handleOnPressFollowers = () => {
-    dispatch(fetchFollowersUser(Profile.id));
+    dispatch(fetchFollowersUser(profileData.id));
     router.push("/SearchFollowers");
   };
 
   return (
     <View style={styles.container}>
-      <Text style={styles.bio}>{Profile.description}</Text>
+      <Text style={styles.bio}>{profileData.description}</Text>
       <Text style={styles.followInfo}>
         {isOtherProfile ? (
           <>
-            <Text style={styles.boldText}>{Profile.followersCount}</Text>{" "}
+            <Text style={styles.boldText}>{profileData.followersCount}</Text>{" "}
             seguidores ·{" "}
-            <Text style={styles.boldText}>{Profile.followingCount}</Text>{" "}
+            <Text style={styles.boldText}>{profileData.followingCount}</Text>{" "}
             seguidos
           </>
         ) : (
@@ -48,14 +51,14 @@ const ProfileAdditionalInfo: React.FC<{
             <Text style={styles.followInfo}>
               <TouchableOpacity onPress={handleOnPressFollowers}>
                 <Text style={styles.boldText}>
-                  {Profile.followersCount}{" "}
+                  {profileData.followersCount}{" "}
                   <Text style={styles.boldText}>seguidores</Text>
                 </Text>
               </TouchableOpacity>
               {" · "}
               <TouchableOpacity onPress={handleOnPressFollowings}>
                 <Text style={styles.boldText}>
-                  {Profile.followingCount}{" "}
+                  {profileData.followingCount}{" "}
                   <Text style={styles.boldText}>seguidos</Text>
                 </Text>
               </TouchableOpacity>

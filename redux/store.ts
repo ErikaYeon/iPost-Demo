@@ -7,6 +7,7 @@ import timelineReducer from './slices/timelineSlice'
 import adsReducer from './slices/adsSlice'
 import commentsReducer from './slices/commentsSlice'
 import searchReducer from "./slices/searchSlice";
+import otherProfileReducer from "./slices/otherProfileSlice";
 
 const store = configureStore({
   reducer: {
@@ -18,6 +19,7 @@ const store = configureStore({
     ads: adsReducer,
     comments: commentsReducer,
     search: searchReducer,
+    otherProfile: otherProfileReducer,
   },
 });
 

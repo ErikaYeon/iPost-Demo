@@ -49,6 +49,15 @@ export const createSearchProfilesStyles = (theme: Theme) =>
       fontSize: 15,
       color: '#B5BACB',
     },
+    crownIcon: {
+      marginRight: 5,
+    },
+    errorText: {
+      color: theme.colors.error || 'red',
+      fontSize: 16,
+      textAlign: 'center',
+      marginVertical: 10,
+  },
   });
 
 export default createSearchProfilesStyles;

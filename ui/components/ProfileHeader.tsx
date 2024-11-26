@@ -1,71 +1,82 @@
 import React from "react";
 import { View, Image, Text, TouchableOpacity, StyleSheet } from "react-native";
-import CrownIcon3 from "../../assets/images/icons/gamif_crown_3.svg";
-import CrownIcon0_1 from "../../assets/images/icons/gamif_crown_0_1.svg";
-import CrownIcon0_2 from "../../assets/images/icons/gamif_crown_0_2.svg";
-import CrownIcon1 from "../../assets/images/icons/gamif_crown_1.svg";
-import CrownIcon2 from "../../assets/images/icons/gamif_crown_2.svg";
-import EditIcon from "../../assets/images/icons/edit.svg";
-import SettingsIcon from "../../assets/images/icons/settings.svg";
-import { router } from "expo-router";
 import { useSelector } from "react-redux";
 import { RootState } from "@/redux/store";
+import CrownGrey from "@/assets/images/icons/gamif_crown_0_1.svg";
+import CrownBronze from "@/assets/images/icons/gamif_crown_1.svg";
+import CrownSilver from "@/assets/images/icons/gamif_crown_2.svg";
+import CrownGold from "@/assets/images/icons/gamif_crown_3.svg";
+import EditIcon from "../../assets/images/icons/edit.svg";
+import SettingsIcon from "../../assets/images/icons/settings.svg";
 import Placeholders from "@/constants/ProfilePlaceholders";
 import { Crown } from "@/types/models";
 import { isEmpty } from "@/utils/RegexExpressions";
+import { router } from "expo-router";
 
 const ProfileHeader: React.FC<{ theme: any; isOtherProfile?: boolean }> = ({
   theme,
   isOtherProfile = false,
 }) => {
-  const styles = createStyles(theme);
-  //TODO: MANEJAR LA DIFERENCIA DE PERFILES
-  const Profile = useSelector((state: RootState) => state.profile);
+  const profileData = useSelector((state: RootState) =>
+    isOtherProfile ? state.otherProfile : state.profile
+  );
 
-  const name = Profile.name;
-  const lastname = Profile.lastname;
-  const username = Profile.username;
-  console.log(Profile.crown);
+  const styles = createStyles(theme);
+
+  // Renderiza la corona correspondiente usando el enum Crown
+  const renderCrownIcon = (type: Crown) => {
+    switch (type) {
+      case Crown.GREY:
+        return <CrownGrey width={20} height={20} style={styles.crownIcon} />;
+      case Crown.BRONCE:
+        return <CrownBronze width={20} height={20} style={styles.crownIcon} />;
+      case Crown.SILVER:
+        return <CrownSilver width={20} height={20} style={styles.crownIcon} />;
+      case Crown.GOLD:
+        return <CrownGold width={20} height={20} style={styles.crownIcon} />;
+      default:
+        return <CrownGrey width={20} height={20} style={styles.crownIcon} />;
+    }
+  };
 
   return (
     <>
+      {/* Imagen de portada */}
       <Image
         source={{
-          uri: isEmpty(Profile.coverImage)
+          uri: isEmpty(profileData.coverImage)
             ? Placeholders.DEFAULT_PROFILE_PHOTO_COVER
-            : Profile.coverImage,
+            : profileData.coverImage,
         }}
         style={styles.coverImage}
       />
+
       <View style={styles.profileInfoContainer}>
+        {/* Imagen de perfil */}
         <View style={styles.profilePictureContainer}>
           <Image
             source={{
-              uri: isEmpty(Profile.profileImage)
+              uri: isEmpty(profileData.profileImage)
                 ? Placeholders.DEFAULT_PROFILE_PHOTO
-                : Profile.profileImage,
+                : profileData.profileImage,
             }}
             style={styles.profilePicture}
           />
         </View>
+
         <View style={styles.headerContainer}>
+          {/* Nombre, apellido y corona */}
           <View style={styles.userDetailsContainer}>
             <View style={styles.usernameContainer}>
-              {Profile.crown === 0 ? (
-                <CrownIcon3 width={20} height={20} style={styles.crownIcon} />
-              ) : Profile.crown === 1 ? (
-                <CrownIcon2 width={20} height={20} style={styles.crownIcon} />
-              ) : Profile.crown === 2 ? (
-                <CrownIcon1 width={20} height={20} style={styles.crownIcon} />
-              ) : (
-                <CrownIcon0_1 width={20} height={20} style={styles.crownIcon} />
-              )}
+              {renderCrownIcon(profileData.crown as Crown)}
               <Text style={styles.name}>
-                {name} {lastname}
+                {profileData.name} {profileData.lastname}
               </Text>
             </View>
-            <Text style={styles.username}>@{username}</Text>
+            <Text style={styles.username}>@{profileData.username}</Text>
           </View>
+
+          {/* Botones de editar/configuración (solo para perfil propio) */}
           {!isOtherProfile && (
             <View style={styles.iconsContainer}>
               <TouchableOpacity
@@ -90,7 +101,10 @@ const ProfileHeader: React.FC<{ theme: any; isOtherProfile?: boolean }> = ({
 
 const createStyles = (theme: any) =>
   StyleSheet.create({
-    coverImage: { width: "100%", height: 150 },
+    coverImage: {
+      width: "100%",
+      height: 150,
+    },
     profileInfoContainer: {
       flexDirection: "row",
       alignItems: "center",
@@ -107,7 +121,10 @@ const createStyles = (theme: any) =>
       overflow: "hidden",
       marginRight: 16,
     },
-    profilePicture: { width: "100%", height: "100%" },
+    profilePicture: {
+      width: "100%",
+      height: "100%",
+    },
     headerContainer: {
       flex: 1,
       flexDirection: "row",
@@ -119,21 +136,31 @@ const createStyles = (theme: any) =>
       alignItems: "flex-start",
       marginTop: 38,
     },
-    usernameContainer: { flexDirection: "row", alignItems: "center" },
+    usernameContainer: {
+      flexDirection: "row",
+      alignItems: "center",
+    },
     name: {
       fontSize: 18,
       fontWeight: "bold",
       marginLeft: 5,
       color: theme.colors.textPrimary,
     },
-    crownIcon: { marginRight: 5 },
+    crownIcon: {
+      marginRight: 5,
+    },
     username: {
       fontSize: 14,
       marginTop: -2,
       color: theme.colors.textSecondary,
     },
-    iconsContainer: { flexDirection: "row", marginTop: 20 },
-    icon: { marginLeft: 8 },
+    iconsContainer: {
+      flexDirection: "row",
+      marginTop: 20,
+    },
+    icon: {
+      marginLeft: 8,
+    },
   });
 
 export default ProfileHeader;
