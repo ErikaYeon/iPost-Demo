@@ -9,8 +9,9 @@ import PostImageGrid from "@/ui/components/PostImageGrid";
 import { fetchUserPosts } from "@/redux/slices/profileSlice";
 import { RootState, AppDispatch } from "@/redux/store";
 import { createProfileScreenStyles } from "@/ui/styles/ProfileStyles";
-import { darkTheme } from "@/ui/styles/Theme";
+import { darkTheme, lightTheme } from "@/ui/styles/Theme";
 import * as VideoThumbnails from "expo-video-thumbnails";
+import { router } from "expo-router";
 
 type PostImage = {
   id: string;
@@ -33,19 +34,21 @@ const ProfileScreen: React.FC = () => {
   // Genera thumbnails y construye los datos para la grilla
   useEffect(() => {
     const generateThumbnails = async () => {
+      const postImages = posts?.map((post) => ({
+        id: post.id,
+        uri: post.contents[0] || "", // Asegúrate de que siempre haya un URI válido
+        user: userProfile.username,
+        description: post.title,
+        isVideo: post.contents[0]?.endsWith(".mp4") || false,
+      })) || [];
+      
       const updatedPostImages = await Promise.all(
-        posts.map(async (post) => {
-          const isVideo = post.contents[0]?.endsWith(".mp4");
-          const thumbnailUri = isVideo
-            ? await generateVideoThumbnail(post.contents[0])
-            : post.contents[0];
-          return {
-            id: post.id,
-            uri: thumbnailUri || post.contents[0], // Fallback en caso de error
-            user: userProfile.username,
-            description: post.title,
-            isVideo
-          };
+        postImages.map(async (post) => {
+          if (post.isVideo) {
+            const thumbnailUri = await generateVideoThumbnail(post.uri);
+            return { ...post, uri: thumbnailUri || post.uri };
+          }
+          return post; // Si no es video, regresa el post tal cual
         })
       );
       setPostImages(updatedPostImages);
@@ -93,7 +96,19 @@ const ProfileScreen: React.FC = () => {
           loading ? (
             <ActivityIndicator size="large" color={theme.colors.primary} />
           ) : (
-            <PostImageGrid posts={postImages} />
+            <PostImageGrid
+              posts={postImages}
+              onPressImage={(postId) => {
+                if (id) {
+                  router.push({
+                    pathname: "/Timeline",
+                    params: { profileId: id },
+                  });
+                } else {
+                  console.error("ID de perfil no definido");
+                }
+              }}
+            />
           )
         )}
       </View>

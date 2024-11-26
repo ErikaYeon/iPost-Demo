@@ -331,10 +331,33 @@ const Post: React.FC<PostProps> = ({
             width: "100%",
           }}
         >
-          <Image
-            source={{ uri: images[0].uri }}
-            style={styles.singlePostImage}
-          />
+          {images[0].type === "image" ? (
+            <Image source={{ uri: images[0].uri }} style={styles.singlePostImage} />
+          ) : (
+            <View style={{ position: "relative" }}>
+              <Video
+                ref={videoRef}
+                source={{ uri: images[0].uri }}
+                style={styles.singlePostImage}
+                resizeMode={ResizeMode.COVER}
+                isLooping
+                shouldPlay={false} // El video estará pausado al cargar
+              />
+              <TouchableOpacity
+                style={styles.playPauseButton}
+                onPress={() => togglePlayPause(images[0].uri)}
+              >
+                {playingVideos[images[0].uri] ? (
+                  <View style={styles.pauseIcon}>
+                    <View style={styles.pauseBar} />
+                    <View style={styles.pauseBar} />
+                  </View>
+                ) : (
+                  <View style={styles.playIcon} />
+                )}
+              </TouchableOpacity>
+            </View>
+          )}
         </View>
       ) : (
         <FlatList
