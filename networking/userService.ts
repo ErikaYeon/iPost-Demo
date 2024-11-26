@@ -7,7 +7,7 @@ import {
   UserResponse,
   UserSettingsResponse,
   UserShort,
-  Post
+  Post,
 } from "@/types/apiContracts";
 
 export const getUserData = async (userId: string): Promise<UserResponse> => {
@@ -140,5 +140,16 @@ export const getUserPosts = async (
   } catch (error: any) {
     console.error("Error al obtener los posts del usuario:", error);
     throw new APIError("Error al obtener los posts del usuario");
+  }
+};
+export const getUserFavorites = async (userId: string): Promise<Post[]> => {
+  try {
+    const response = await api.get(`users/${userId}/favorites`);
+    console.log("get favorites exitoso");
+    return response.data.postDTO;
+  } catch (error: any) {
+    console.log("error al traer los favoritos");
+    handleError(error);
+    throw new Error("No se pudieron obtener los favoritos");
   }
 };

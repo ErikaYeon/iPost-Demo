@@ -81,3 +81,36 @@ export const getAdvertising = async (): Promise<Ads[]> => {
     throw new APIError("Never executed");
   }
 };
+export const favoritePost = async (
+  postId: string,
+  userId: string
+): Promise<void> => {
+  try {
+    await api.post(`users/${userId}/favorites`, { postId });
+    console.log("favorito guardado exitosamente");
+  } catch (error: any) {
+    console.error(
+      "Error al agregar el favorito:",
+      error.response?.data || error.message
+    );
+    handleError(error);
+    // throw new APIError("Error al agregar el favorito");
+  }
+};
+
+export const unfavoritePost = async (
+  postId: string,
+  userId: string
+): Promise<void> => {
+  try {
+    await api.delete(`users/${userId}/favorites/${postId}`);
+    console.log("favorito sacado exitosamente");
+  } catch (error: any) {
+    console.error(
+      "Error al sacar el favorito:",
+      error.response?.data || error.message
+    );
+    handleError(error);
+    throw new APIError("Error al sacar el favorito");
+  }
+};

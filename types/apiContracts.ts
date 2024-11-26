@@ -110,6 +110,10 @@ export interface Post {
   isLikedByUser: boolean;
   isAd: boolean;
 }
+// export interface Favorite {
+//   user: UserShort;
+//   postDTO: Post;
+// }
 
 export interface Ads {
   companyName: string;
