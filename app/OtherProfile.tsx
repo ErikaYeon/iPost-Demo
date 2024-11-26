@@ -1,5 +1,14 @@
 import React, { useEffect, useState } from "react";
-import { SafeAreaView, View, ActivityIndicator, TouchableOpacity, Text, Dimensions, Platform, StatusBar } from "react-native";
+import {
+  SafeAreaView,
+  View,
+  ActivityIndicator,
+  TouchableOpacity,
+  Text,
+  Dimensions,
+  Platform,
+  StatusBar,
+} from "react-native";
 import { useSelector, useDispatch } from "react-redux";
 import { RootState, AppDispatch } from "@/redux/store";
 import { fetchOtherProfilePosts } from "@/redux/slices/otherProfileSlice";
@@ -13,6 +22,7 @@ import BackIconDark from "../assets/images/icons/navigate_before.svg";
 import BackIconLight from "../assets/images/icons/navigate_before_lightMode.svg";
 import * as VideoThumbnails from "expo-video-thumbnails";
 import { router } from "expo-router";
+import NoPosts from "@/ui/components/NoPost";
 
 type PostImage = {
   id: string;
@@ -23,19 +33,27 @@ type PostImage = {
 };
 
 const otherProfile = () => {
-const [postImages, setPostImages] = useState<PostImage[]>([]);
+  const [postImages, setPostImages] = useState<PostImage[]>([]);
   const [isFollowing, setIsFollowing] = useState(false); // Estado para el botón "Seguir"
   const theme = darkTheme;
   const styles = createProfileScreenStyles(theme);
   const dispatch = useDispatch<AppDispatch>();
-  const otherProfileData = useSelector((state: RootState) => state.otherProfile);
+  const otherProfileData = useSelector(
+    (state: RootState) => state.otherProfile
+  );
 
   const screenWidth = Dimensions.get("window").width;
   const buttonWidth = screenWidth * 0.85;
 
   useEffect(() => {
     if (otherProfileData.id) {
-      dispatch(fetchOtherProfilePosts({ userId: otherProfileData.id, offset: 0, limit: 20 }));
+      dispatch(
+        fetchOtherProfilePosts({
+          userId: otherProfileData.id,
+          offset: 0,
+          limit: 20,
+        })
+      );
     }
   }, [dispatch, otherProfileData.id]);
 
@@ -45,7 +63,7 @@ const [postImages, setPostImages] = useState<PostImage[]>([]);
         setPostImages([]);
         return;
       }
-  
+
       const updatedPostImages = await Promise.all(
         otherProfileData.posts.map(async (post) => {
           const isVideo = post.contents[0]?.endsWith(".mp4");
@@ -63,12 +81,17 @@ const [postImages, setPostImages] = useState<PostImage[]>([]);
       );
       setPostImages(updatedPostImages);
     };
-  
+
     generateThumbnails();
-  }, [otherProfileData.posts]);  
+  }, [otherProfileData.posts]);
 
   return (
-    <SafeAreaView style={[styles.container, { paddingTop: Platform.OS === "android" ? StatusBar.currentHeight : 0 }]}>
+    <SafeAreaView
+      style={[
+        styles.container,
+        { paddingTop: Platform.OS === "android" ? StatusBar.currentHeight : 0 },
+      ]}
+    >
       <HeaderWithIcon
         iconComponent={() =>
           theme === darkTheme ? (
@@ -116,7 +139,6 @@ const [postImages, setPostImages] = useState<PostImage[]>([]);
         </TouchableOpacity>
       </View>
 
-      
       {/* Tabs */}
       <View style={styles.tabsContainer2}>
         <View style={styles.tabButtonDisabled}>
@@ -128,6 +150,8 @@ const [postImages, setPostImages] = useState<PostImage[]>([]);
       <View style={styles.gridContainer}>
         {otherProfileData.loading ? (
           <ActivityIndicator size="large" color={theme.colors.primary} />
+        ) : otherProfileData.posts.length === 0 ? (
+          <NoPosts theme={theme} />
         ) : (
           <PostImageGrid posts={postImages} />
         )}

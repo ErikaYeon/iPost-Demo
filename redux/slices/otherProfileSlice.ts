@@ -2,6 +2,8 @@
 import { createSlice, createAsyncThunk, PayloadAction } from "@reduxjs/toolkit";
 import { getUserData, getUserPosts } from "@/networking/userService";
 import { APIError, UserResponse, Post } from "@/types/apiContracts";
+import { Crown } from "@/types/models";
+import { levelToCrown } from "@/types/mappers";
 
 interface OtherProfileState {
   id: string;
@@ -9,7 +11,7 @@ interface OtherProfileState {
   email: string;
   name: string;
   lastname: string;
-  crown: string;
+  crown: Crown;
   profileImage: string | undefined;
   coverImage: string | undefined;
   description: string;
@@ -27,7 +29,7 @@ const initialState: OtherProfileState = {
   email: "",
   name: "",
   lastname: "",
-  crown: "grey",
+  crown: Crown.GREY,
   profileImage: undefined,
   coverImage: undefined,
   description: "",
@@ -55,7 +57,11 @@ export const fetchOtherProfile = createAsyncThunk(
 export const fetchOtherProfilePosts = createAsyncThunk(
   "otherProfile/fetchOtherProfilePosts",
   async (
-    { userId, offset, limit }: { userId: string; offset: number; limit: number },
+    {
+      userId,
+      offset,
+      limit,
+    }: { userId: string; offset: number; limit: number },
     { rejectWithValue }
   ) => {
     try {
@@ -81,22 +87,25 @@ const otherProfileSlice = createSlice({
         state.loading = true;
         state.error = null;
       })
-      .addCase(fetchOtherProfile.fulfilled, (state, action: PayloadAction<UserResponse>) => {
-        state.loading = false;
-        const user = action.payload;
-        state.id = user.id;
-        state.username = user.username;
-        state.email = user.email;
-        state.name = user.name ?? "";
-        state.lastname = user.lastname ?? "";
-        state.crown = user.crown;
-        state.profileImage = user.profileImage;
-        state.coverImage = user.coverImage;
-        state.description = user.description ?? "";
-        state.followersCount = user.followersCount;
-        state.followingCount = user.followingCount;
-        state.postsCount = user.postsCount;
-      })
+      .addCase(
+        fetchOtherProfile.fulfilled,
+        (state, action: PayloadAction<UserResponse>) => {
+          state.loading = false;
+          const user = action.payload;
+          state.id = user.id;
+          state.username = user.username;
+          state.email = user.email;
+          state.name = user.name ?? "";
+          state.lastname = user.lastname ?? "";
+          state.crown = levelToCrown(user.level);
+          state.profileImage = user.profileImage;
+          state.coverImage = user.coverImage;
+          state.description = user.description ?? "";
+          state.followersCount = user.followersCount;
+          state.followingCount = user.followingCount;
+          state.postsCount = user.postsCount;
+        }
+      )
       .addCase(fetchOtherProfile.rejected, (state, action) => {
         state.loading = false;
         state.error = action.payload as string;
@@ -104,10 +113,14 @@ const otherProfileSlice = createSlice({
       .addCase(fetchOtherProfilePosts.pending, (state) => {
         state.loading = true;
       })
-      .addCase(fetchOtherProfilePosts.fulfilled, (state, action: PayloadAction<Post[]>) => {
-        state.loading = false;
-        state.posts = action.payload;
-      })
+      .addCase(
+        fetchOtherProfilePosts.fulfilled,
+        (state, action: PayloadAction<Post[]>) => {
+          state.posts = [];
+          state.loading = false;
+          state.posts = action.payload;
+        }
+      )
       .addCase(fetchOtherProfilePosts.rejected, (state, action) => {
         state.loading = false;
         state.error = action.payload as string;
