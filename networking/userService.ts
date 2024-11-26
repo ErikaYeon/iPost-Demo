@@ -7,6 +7,7 @@ import {
   UserResponse,
   UserSettingsResponse,
   UserShort,
+  Post
 } from "@/types/apiContracts";
 
 export const getUserData = async (userId: string): Promise<UserResponse> => {
@@ -122,5 +123,22 @@ export const setUserData = async (
     console.log("no se pudo actualizar la data profile");
     handleError(error);
     throw new APIError("Never executed");
+  }
+};
+
+export const getUserPosts = async (
+  userId: string,
+  offset: number = 0,
+  limit: number = 10
+): Promise<Post[]> => {
+  try {
+    const response = await api.get(`/users/${userId}/posts`, {
+      params: { offset, limit },
+    });
+    console.log("Posts del usuario obtenidos exitosamente.");
+    return response.data;
+  } catch (error: any) {
+    console.error("Error al obtener los posts del usuario:", error);
+    throw new APIError("Error al obtener los posts del usuario");
   }
 };

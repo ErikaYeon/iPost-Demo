@@ -6,6 +6,7 @@ import {
   setUserSettings,
   setProfileImage,
   setUserData,
+  getUserPosts
 } from "@/networking/userService";
 import {
   APIError,
@@ -15,6 +16,7 @@ import {
   UserSettingsResponse,
   ProfileImageRequest,
   ProfileUpdateRequest,
+  Post
 } from "@/types/apiContracts";
 import { Crown } from "@/types/models";
 import { levelToCrown } from "@/types/mappers";
@@ -39,6 +41,7 @@ interface ProfileState {
   error: string | null;
   theme: string;
   language: string;
+  posts: Post[];
 }
 
 const initialState: ProfileState = {
@@ -60,6 +63,7 @@ const initialState: ProfileState = {
   error: null,
   theme: "dark",
   language: "Español",
+  posts: [],
 };
 
 export const fetchUserInfo = createAsyncThunk(
@@ -74,6 +78,15 @@ export const fetchUserInfo = createAsyncThunk(
     }
   }
 );
+
+export const fetchUserPosts = createAsyncThunk(
+  "profile/fetchUserPosts",
+  async (params: { userId: string; offset: number; limit: number }) => {
+    const { userId, offset, limit } = params;
+    return await getUserPosts(userId, offset, limit);
+  }
+);
+
 export const getUserSettingsAsync = createAsyncThunk(
   "profile/getUserSettingsAsync",
   async (userId: string, { rejectWithValue }) => {
@@ -316,6 +329,17 @@ const profileSlice = createSlice({
           action.payload ??
           "Error desconocido al actualizar los datos del perfil";
         console.error("Error al actualizar los datos del perfil:", state.error);
+      })
+      .addCase(fetchUserPosts.pending, (state) => {
+        state.loading = true;
+      })
+      .addCase(fetchUserPosts.fulfilled, (state, action) => {
+        state.posts = action.payload;
+        state.loading = false;
+      })
+      .addCase(fetchUserPosts.rejected, (state, action) => {
+        state.error = action.error.message ?? "Error al obtener los posts";
+        state.loading = false;
       });
   },
 });

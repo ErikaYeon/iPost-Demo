@@ -1,51 +1,91 @@
-import React, { useState } from "react";
-import { View, TouchableOpacity, Text, Dimensions } from "react-native";
-import { SafeAreaView } from "react-native-safe-area-context";
-import { useSelector } from "react-redux";
-import { RootState } from "@/redux/store";
+import React, { useEffect, useState } from "react";
+import { SafeAreaView, View, ActivityIndicator, TouchableOpacity, Text, Dimensions, Platform, StatusBar } from "react-native";
+import { useSelector, useDispatch } from "react-redux";
+import { RootState, AppDispatch } from "@/redux/store";
+import { fetchOtherProfilePosts } from "@/redux/slices/otherProfileSlice";
 import HeaderWithIcon from "@/ui/components/HeaderWithIcon";
 import ProfileHeader from "@/ui/components/ProfileHeader";
 import ProfileAdditionalInfo from "@/ui/components/ProfileAdditionalInfo";
 import PostImageGrid from "@/ui/components/PostImageGrid";
-import { postsData } from "@/assets/mockdata";
 import { createProfileScreenStyles } from "@/ui/styles/ProfileStyles";
-import { darkTheme, lightTheme } from "@/ui/styles/Theme";
+import { darkTheme } from "@/ui/styles/Theme";
 import BackIconDark from "../assets/images/icons/navigate_before.svg";
 import BackIconLight from "../assets/images/icons/navigate_before_lightMode.svg";
+import * as VideoThumbnails from "expo-video-thumbnails";
 import { router } from "expo-router";
 
+type PostImage = {
+  id: string;
+  uri: string;
+  user: string;
+  description: string;
+  isVideo: boolean;
+};
+
 const otherProfile = () => {
-  const [isFollowing, setIsFollowing] = useState(false);
+const [postImages, setPostImages] = useState<PostImage[]>([]);
+  const [isFollowing, setIsFollowing] = useState(false); // Estado para el botón "Seguir"
   const theme = darkTheme;
   const styles = createProfileScreenStyles(theme);
-
-  const otherProfileData = useSelector(
-    (state: RootState) => state.otherProfile
-  );
+  const dispatch = useDispatch<AppDispatch>();
+  const otherProfileData = useSelector((state: RootState) => state.otherProfile);
 
   const screenWidth = Dimensions.get("window").width;
   const buttonWidth = screenWidth * 0.85;
 
+  useEffect(() => {
+    if (otherProfileData.id) {
+      dispatch(fetchOtherProfilePosts({ userId: otherProfileData.id, offset: 0, limit: 20 }));
+    }
+  }, [dispatch, otherProfileData.id]);
+
+  useEffect(() => {
+    const generateThumbnails = async () => {
+      if (!otherProfileData.posts || otherProfileData.posts.length === 0) {
+        setPostImages([]);
+        return;
+      }
+  
+      const updatedPostImages = await Promise.all(
+        otherProfileData.posts.map(async (post) => {
+          const isVideo = post.contents[0]?.endsWith(".mp4");
+          const thumbnailUri = isVideo
+            ? await generateVideoThumbnail(post.contents[0])
+            : post.contents[0];
+          return {
+            id: post.id,
+            uri: thumbnailUri || post.contents[0],
+            user: otherProfileData.username,
+            description: post.title,
+            isVideo,
+          };
+        })
+      );
+      setPostImages(updatedPostImages);
+    };
+  
+    generateThumbnails();
+  }, [otherProfileData.posts]);  
+
   return (
-    <SafeAreaView style={styles.container}>
+    <SafeAreaView style={[styles.container, { paddingTop: Platform.OS === "android" ? StatusBar.currentHeight : 0 }]}>
       <HeaderWithIcon
         iconComponent={() =>
           theme === darkTheme ? (
-            <BackIconDark width={24} height={24} />
+            <BackIconDark width={15} height={15} />
           ) : (
-            <BackIconLight width={24} height={24} />
+            <BackIconLight width={18} height={18} />
           )
         }
-        title={`@${otherProfileData.username}`} // Título dinámico basado en el username
-        onPress={() => router.back()} // Reemplaza con la acción que prefieras
+        title={`@${otherProfileData.username}`}
+        onPress={() => router.back()}
         theme={theme}
+        lineMarginBottom={1} // Personaliza el marginBottom solo para esta pantalla
       />
 
-      {/* Header de Perfil sin íconos de edición */}
       <ProfileHeader theme={theme} isOtherProfile={true} />
 
-      {/* Información Adicional */}
-      <ProfileAdditionalInfo theme={darkTheme} isOtherProfile={true} />
+      <ProfileAdditionalInfo theme={theme} isOtherProfile={true} />
 
       {/* Botón de Seguir/Dejar de Seguir */}
       <View style={styles.followButtonContainer}>
@@ -76,6 +116,7 @@ const otherProfile = () => {
         </TouchableOpacity>
       </View>
 
+      
       {/* Tabs */}
       <View style={styles.tabsContainer2}>
         <View style={styles.tabButtonDisabled}>
@@ -85,11 +126,26 @@ const otherProfile = () => {
 
       {/* Grilla de Imágenes */}
       <View style={styles.gridContainer}>
-        {/* <PostImageGrid posts={postsData} theme={theme} /> */}
-        <PostImageGrid posts={postsData} />
+        {otherProfileData.loading ? (
+          <ActivityIndicator size="large" color={theme.colors.primary} />
+        ) : (
+          <PostImageGrid posts={postImages} />
+        )}
       </View>
     </SafeAreaView>
   );
+};
+
+const generateVideoThumbnail = async (uri: string): Promise<string | null> => {
+  try {
+    const { uri: thumbnailUri } = await VideoThumbnails.getThumbnailAsync(uri, {
+      time: 1500,
+    });
+    return thumbnailUri;
+  } catch (error) {
+    console.error("Error al generar el thumbnail:", error);
+    return null;
+  }
 };
 
 export default otherProfile;

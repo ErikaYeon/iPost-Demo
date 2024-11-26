@@ -1,7 +1,7 @@
 // slices/otherProfileSlice.ts
 import { createSlice, createAsyncThunk, PayloadAction } from "@reduxjs/toolkit";
-import { getUserData } from "@/networking/userService";
-import { APIError, UserResponse } from "@/types/apiContracts";
+import { getUserData, getUserPosts } from "@/networking/userService";
+import { APIError, UserResponse, Post } from "@/types/apiContracts";
 
 interface OtherProfileState {
   id: string;
@@ -18,6 +18,7 @@ interface OtherProfileState {
   postsCount: number;
   loading: boolean;
   error: string | null;
+  posts: Post[]; // Posts del usuario
 }
 
 const initialState: OtherProfileState = {
@@ -35,6 +36,7 @@ const initialState: OtherProfileState = {
   postsCount: 0,
   loading: false,
   error: null,
+  posts: [],
 };
 
 // Thunk para obtener datos del perfil de otro usuario
@@ -46,6 +48,21 @@ export const fetchOtherProfile = createAsyncThunk(
       return userData;
     } catch (error: APIError | any) {
       return rejectWithValue(error.message ?? "Error fetching user data");
+    }
+  }
+);
+
+export const fetchOtherProfilePosts = createAsyncThunk(
+  "otherProfile/fetchOtherProfilePosts",
+  async (
+    { userId, offset, limit }: { userId: string; offset: number; limit: number },
+    { rejectWithValue }
+  ) => {
+    try {
+      const posts: Post[] = await getUserPosts(userId, offset, limit);
+      return posts;
+    } catch (error: APIError | any) {
+      return rejectWithValue(error.message ?? "Error fetching user posts");
     }
   }
 );
@@ -81,6 +98,17 @@ const otherProfileSlice = createSlice({
         state.postsCount = user.postsCount;
       })
       .addCase(fetchOtherProfile.rejected, (state, action) => {
+        state.loading = false;
+        state.error = action.payload as string;
+      })
+      .addCase(fetchOtherProfilePosts.pending, (state) => {
+        state.loading = true;
+      })
+      .addCase(fetchOtherProfilePosts.fulfilled, (state, action: PayloadAction<Post[]>) => {
+        state.loading = false;
+        state.posts = action.payload;
+      })
+      .addCase(fetchOtherProfilePosts.rejected, (state, action) => {
         state.loading = false;
         state.error = action.payload as string;
       });

@@ -1,64 +1,77 @@
 import React from "react";
-import { View, FlatList, Image, StyleSheet, Dimensions, TouchableOpacity } from "react-native";
-import { useNavigation } from "@react-navigation/native";
-
-const screenWidth = Dimensions.get("window").width;
-const imageSize = screenWidth / 3 - 1; // Ajustar para reducir el margen entre imágenes
-
-type Post = {
-  id: string;
-  uri: string;
-  user: string;
-  description: string;
-};
+import { View, Image, StyleSheet, TouchableOpacity, Dimensions, FlatList } from "react-native";
 
 type PostImageGridProps = {
-  posts: Post[];
+  posts: {
+    id: string;
+    uri: string;
+    user: string;
+    description: string;
+    isVideo: boolean;
+  }[];
 };
 
 const PostImageGrid: React.FC<PostImageGridProps> = ({ posts }) => {
-  const navigation = useNavigation();
+  const screenWidth = Dimensions.get("window").width; // Obtener el ancho de la pantalla
+  const imageWidth = screenWidth / 3; // Dividir la pantalla en 3 columnas
 
-  const handlePress = (post: Post) => {
-    navigation.navigate("PostDetail", {
-      uri: post.uri,
-      user: post.user,
-      description: post.description,
-    });
-  };
-
-  const renderItem = ({ item }: { item: Post }) => (
-    <TouchableOpacity onPress={() => handlePress(item)} style={styles.imageContainer}>
-      <Image source={{ uri: item.uri }} style={styles.postImage} />
+  const renderPostItem = ({ item }: { item: PostImageGridProps["posts"][0] }) => (
+    <TouchableOpacity
+      key={item.id}
+      style={{ width: imageWidth, height: imageWidth }}
+    >
+      <Image source={{ uri: item.uri }} style={styles.image} />
+      {item.isVideo && (
+        <View style={styles.videoIconContainer}>
+          <View style={styles.videoCircle}>
+            <View style={styles.videoTriangle} />
+          </View>
+        </View>
+      )}
     </TouchableOpacity>
   );
 
   return (
     <FlatList
       data={posts}
+      renderItem={renderPostItem}
       keyExtractor={(item) => item.id}
-      renderItem={renderItem}
-      numColumns={3}
-      showsVerticalScrollIndicator={false}
-      contentContainerStyle={styles.grid}
+      numColumns={3} // Tres columnas
+      showsVerticalScrollIndicator={false} // Esconde el indicador de scroll
     />
   );
 };
 
 const styles = StyleSheet.create({
-  grid: {
-    flexGrow: 1,
-    paddingHorizontal: 0, // Eliminar el padding horizontal
-  },
-  imageContainer: {
-    width: imageSize,
-    height: imageSize,
-    margin: 0.5, // Reducir el margen entre imágenes
-  },
-  postImage: {
+  image: {
     width: "100%",
     height: "100%",
-    borderRadius: 2,
+  },
+  videoIconContainer: {
+    position: "absolute",
+    top: "50%",
+    left: "50%",
+    transform: [{ translateX: -20 }, { translateY: -20 }],
+    justifyContent: "center",
+    alignItems: "center",
+  },
+  videoCircle: {
+    width: 40,
+    height: 40,
+    backgroundColor: "rgba(0, 0, 0, 0.6)",
+    borderRadius: 20,
+    justifyContent: "center",
+    alignItems: "center",
+  },
+  videoTriangle: {
+    width: 0,
+    height: 0,
+    borderLeftWidth: 12,
+    borderLeftColor: "white",
+    borderTopWidth: 8,
+    borderTopColor: "transparent",
+    borderBottomWidth: 8,
+    borderBottomColor: "transparent",
   },
 });
 

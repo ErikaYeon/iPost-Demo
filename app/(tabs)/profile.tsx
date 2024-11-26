@@ -1,20 +1,67 @@
-import React, { useState } from "react";
-import { View } from "react-native";
+import React, { useState, useEffect } from "react";
+import { useSelector, useDispatch } from "react-redux";
+import { View, ActivityIndicator } from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
 import ProfileHeader from "@/ui/components/ProfileHeader";
 import ProfileAdditionalInfo from "@/ui/components/ProfileAdditionalInfo";
 import TabButton from "@/ui/components/TabButton";
 import PostImageGrid from "@/ui/components/PostImageGrid";
-import { postsData, savedData } from "@/assets/mockdata";
+import { fetchUserPosts } from "@/redux/slices/profileSlice";
+import { RootState, AppDispatch } from "@/redux/store";
 import { createProfileScreenStyles } from "@/ui/styles/ProfileStyles";
-import { darkTheme, lightTheme } from "@/ui/styles/Theme"; // Importamos únicamente el tema oscuro
+import { darkTheme } from "@/ui/styles/Theme";
+import * as VideoThumbnails from "expo-video-thumbnails";
+
+type PostImage = {
+  id: string;
+  uri: string;
+  user: string;
+  description: string;
+  isVideo: boolean;
+};
 
 const ProfileScreen: React.FC = () => {
-  const [activeTab, setActiveTab] = useState("post"); // Estado para el tab activo
-  const theme = darkTheme; // Usamos el tema oscuro por defecto
-  const styles = createProfileScreenStyles(theme); // Genera estilos dinámicos con el tema oscuro
+  const [activeTab, setActiveTab] = useState("post");
+  const [postImages, setPostImages] = useState<PostImage[]>([]);
+  const dispatch = useDispatch<AppDispatch>();
+  const userProfile = useSelector((state: RootState) => state.profile);
+  const { id, posts, loading } = userProfile;
 
-  const photosToDisplay = activeTab === "post" ? postsData : savedData;
+  const theme = darkTheme;
+  const styles = createProfileScreenStyles(theme);
+
+  // Genera thumbnails y construye los datos para la grilla
+  useEffect(() => {
+    const generateThumbnails = async () => {
+      const updatedPostImages = await Promise.all(
+        posts.map(async (post) => {
+          const isVideo = post.contents[0]?.endsWith(".mp4");
+          const thumbnailUri = isVideo
+            ? await generateVideoThumbnail(post.contents[0])
+            : post.contents[0];
+          return {
+            id: post.id,
+            uri: thumbnailUri || post.contents[0], // Fallback en caso de error
+            user: userProfile.username,
+            description: post.title,
+            isVideo
+          };
+        })
+      );
+      setPostImages(updatedPostImages);
+    };
+
+    if (activeTab === "post" && posts.length > 0) {
+      generateThumbnails();
+    }
+  }, [posts, activeTab]);
+
+  // Fetch de los posts cuando cambia el tab
+  useEffect(() => {
+    if (id && activeTab === "post") {
+      dispatch(fetchUserPosts({ userId: id, offset: 0, limit: 10 }));
+    }
+  }, [dispatch, id, activeTab]);
 
   return (
     <SafeAreaView style={styles.container}>
@@ -42,11 +89,28 @@ const ProfileScreen: React.FC = () => {
 
       {/* Grilla de Imágenes */}
       <View style={styles.gridContainer}>
-        {/* <PostImageGrid posts={photosToDisplay} theme={theme} /> */}
-        <PostImageGrid posts={photosToDisplay} />
+        {activeTab === "post" && (
+          loading ? (
+            <ActivityIndicator size="large" color={theme.colors.primary} />
+          ) : (
+            <PostImageGrid posts={postImages} />
+          )
+        )}
       </View>
     </SafeAreaView>
   );
+};
+
+const generateVideoThumbnail = async (uri: string): Promise<string | null> => {
+  try {
+    const { uri: thumbnailUri } = await VideoThumbnails.getThumbnailAsync(uri, {
+      time: 1500, // Tiempo en milisegundos (1.5s)
+    });
+    return thumbnailUri;
+  } catch (error) {
+    console.error("Error al generar el thumbnail:", error);
+    return null;
+  }
 };
 
 export default ProfileScreen;
