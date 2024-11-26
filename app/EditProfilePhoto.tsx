@@ -22,6 +22,7 @@ import {
   updateProfileImageAsync,
 } from "@/redux/slices/profileSlice";
 import { ProfileImageRequest } from "@/types/apiContracts";
+import { isEmpty } from "@/utils/RegexExpressions";
 
 const EditProfilePhoto: React.FC = () => {
   const Profile = useSelector((state: RootState) => state.profile);
@@ -148,7 +149,9 @@ const EditProfilePhoto: React.FC = () => {
       <View style={styles.imageContainer}>
         <Image
           source={{
-            uri: selectedImage ?? Placeholders.DEFAULT_PROFILE_PHOTO, // Imagen por defecto
+            uri: isEmpty(selectedImage)
+              ? Placeholders.DEFAULT_PROFILE_PHOTO
+              : selectedImage,
           }}
           style={styles.profileImage}
         />

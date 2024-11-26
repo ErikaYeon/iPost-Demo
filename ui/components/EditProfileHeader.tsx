@@ -4,6 +4,7 @@ import { router } from "expo-router";
 import React from "react";
 import { View, Image, StyleSheet, TouchableOpacity } from "react-native";
 import { useSelector } from "react-redux";
+import { isEmpty } from "@/utils/RegexExpressions";
 
 const EditProfileHeader: React.FC<{ theme: any }> = ({ theme }) => {
   const styles = createStyles(theme);
@@ -14,8 +15,9 @@ const EditProfileHeader: React.FC<{ theme: any }> = ({ theme }) => {
         <TouchableOpacity onPress={() => router.push("/EditProfileCover")}>
           <Image
             source={{
-              uri:
-                Profile.coverImage ?? Placeholders.DEFAULT_PROFILE_PHOTO_COVER,
+              uri: isEmpty(Profile.coverImage)
+                ? Placeholders.DEFAULT_PROFILE_PHOTO_COVER
+                : Profile.coverImage,
             }}
             style={styles.coverImage}
           />
@@ -27,7 +29,9 @@ const EditProfileHeader: React.FC<{ theme: any }> = ({ theme }) => {
           <TouchableOpacity onPress={() => router.push("/EditProfilePhoto")}>
             <Image
               source={{
-                uri: Profile.profileImage ?? Placeholders.DEFAULT_PROFILE_PHOTO,
+                uri: isEmpty(Profile.profileImage)
+                  ? Placeholders.DEFAULT_PROFILE_PHOTO
+                  : (Profile.profileImage as string),
               }}
               style={styles.profilePicture}
             />
