@@ -102,7 +102,7 @@ const ProfileScreen: React.FC = () => {
                 if (id) {
                   router.push({
                     pathname: "/Timeline",
-                    params: { profileId: id },
+                    params: { profileId: id, postId },
                   });
                 } else {
                   console.error("ID de perfil no definido");

@@ -162,7 +162,7 @@ const OtherProfile: React.FC = () => {
             onPressImage={(postId) =>
               router.push({
                 pathname: "/Timeline",
-                params: { profileId: id },
+                params: { profileId: id, postId },
               })
             }
           />
