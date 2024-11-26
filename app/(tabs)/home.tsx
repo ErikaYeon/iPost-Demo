@@ -23,6 +23,7 @@ import {
   fetchUserInfo,
   getUserSettingsAsync,
 } from "../../redux/slices/profileSlice";
+import { isEmpty } from "@/utils/RegexExpressions";
 
 const home = () => {
   const theme = darkTheme;
@@ -117,7 +118,9 @@ const home = () => {
             renderItem={({ item }) => (
               <Post
                 profilePictureUrl={
-                  item.author.profileImage ?? Placeholders.DEFAULT_PROFILE_PHOTO
+                  isEmpty(item.author.profileImage)
+                    ? Placeholders.DEFAULT_PROFILE_PHOTO
+                    : (item.author.profileImage as string)
                 }
                 name={item.author.name}
                 username={item.author.username}
