@@ -22,6 +22,7 @@ import { useDispatch, useSelector } from "react-redux";
 import { AppDispatch, RootState } from "@/redux/store";
 import { fetchSearchResults, clearSearchResults } from "@/redux/slices/searchSlice";
 import { levelToCrown } from "@/types/mappers";
+import { Crown } from "@/types/models";
 import { router } from "expo-router";
 
 const SearchProfiles: React.FC = () => {
@@ -41,16 +42,18 @@ const SearchProfiles: React.FC = () => {
     }
   };
 
-  const renderCrownIcon = (level: number) => {
-    switch (levelToCrown(level)) {
-      case "gold":
-        return <CrownGold width={20} height={20} />;
-      case "silver":
-        return <CrownSilver width={20} height={20} />;
-      case "bronze":
-        return <CrownBronze width={20} height={20} />;
+  const renderCrownIcon = (type: Crown) => {
+    switch (type) {
+      case Crown.GREY:
+        return <CrownGrey width={20} height={20} style={styles.crownIcon} />;
+      case Crown.BRONCE:
+        return <CrownBronze width={20} height={20} style={styles.crownIcon} />;
+      case Crown.SILVER:
+        return <CrownSilver width={20} height={20} style={styles.crownIcon} />;
+      case Crown.GOLD:
+        return <CrownGold width={20} height={20} style={styles.crownIcon} />;
       default:
-        return <CrownGrey width={20} height={20} />;
+        return null;
     }
   };
 
