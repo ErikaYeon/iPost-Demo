@@ -20,7 +20,10 @@ import CrownSilver from "@/assets/images/icons/gamif_crown_2.svg";
 import CrownGold from "@/assets/images/icons/gamif_crown_3.svg";
 import { useDispatch, useSelector } from "react-redux";
 import { AppDispatch, RootState } from "@/redux/store";
-import { fetchSearchResults, clearSearchResults } from "@/redux/slices/searchSlice";
+import {
+  fetchSearchResults,
+  clearSearchResults,
+} from "@/redux/slices/searchSlice";
 import { fetchOtherProfile } from "@/redux/slices/otherProfileSlice";
 import { Crown } from "@/types/models";
 import { router } from "expo-router";
@@ -31,7 +34,9 @@ const SearchProfiles: React.FC = () => {
 
   const [searchQuery, setSearchQuery] = useState("");
   const dispatch = useDispatch<AppDispatch>();
-  const { results: profiles, status } = useSelector((state: RootState) => state.search);
+  const { results: profiles, status } = useSelector(
+    (state: RootState) => state.search
+  );
 
   const handleSearch = (text: string) => {
     setSearchQuery(text);
@@ -47,37 +52,40 @@ const SearchProfiles: React.FC = () => {
     router.push("/OtherProfile"); // Navegar al perfil
   };
 
-  const renderCrownIcon = (type: Crown) => {
-    switch (type) {
-      case Crown.GREY:
-        return <CrownGrey width={20} height={20} style={styles.crownIcon} />;
-      case Crown.BRONCE:
-        return <CrownBronze width={20} height={20} style={styles.crownIcon} />;
-      case Crown.SILVER:
-        return <CrownSilver width={20} height={20} style={styles.crownIcon} />;
-      case Crown.GOLD:
-        return <CrownGold width={20} height={20} style={styles.crownIcon} />;
+  const renderCrownIcon = (level: number) => {
+    switch (level) {
+      case 1:
+        return <CrownGrey width={20} height={20} />;
+      case 2:
+        return <CrownBronze width={20} height={20} />;
+      case 3:
+        return <CrownSilver width={20} height={20} />;
+      case 4:
+        return <CrownGold width={20} height={20} />;
       default:
         return null;
     }
   };
 
-const renderProfile = ({ item }: { item: (typeof profiles)[0] }) => (
-  <TouchableOpacity onPress={() => handleProfilePress(item.id)}>
-    <View style={styles.profileContainer}>
-      <Image source={{ uri: item.profileImage }} style={styles.profileImage} />
-      <View style={styles.profileInfo}>
-        <View style={styles.nameContainer}>
-          {renderCrownIcon(item.level)}
-          <Text style={styles.profileName}>
-            {`${item.name} ${item.lastname}`}
-          </Text>
+  const renderProfile = ({ item }: { item: (typeof profiles)[0] }) => (
+    <TouchableOpacity onPress={() => handleProfilePress(item.id)}>
+      <View style={styles.profileContainer}>
+        <Image
+          source={{ uri: item.profileImage }}
+          style={styles.profileImage}
+        />
+        <View style={styles.profileInfo}>
+          <View style={styles.nameContainer}>
+            {renderCrownIcon(item.level)}
+            <Text style={styles.profileName}>
+              {`${item.name} ${item.lastname}`}
+            </Text>
+          </View>
+          <Text style={styles.profileUsername}>@{item.username}</Text>
         </View>
-        <Text style={styles.profileUsername}>@{item.username}</Text>
       </View>
-    </View>
-  </TouchableOpacity>
-);
+    </TouchableOpacity>
+  );
 
   return (
     <SafeAreaView style={styles.container}>
@@ -90,7 +98,8 @@ const renderProfile = ({ item }: { item: (typeof profiles)[0] }) => (
       <SafeAreaView
         style={{
           backgroundColor: theme.colors.background,
-          paddingTop: Platform.OS === "android" ? StatusBar.currentHeight + 10 : 30,
+          paddingTop:
+            Platform.OS === "android" ? StatusBar.currentHeight + 10 : 30,
         }}
       >
         <HeaderNoIcon title="Buscar perfiles" theme={theme} />

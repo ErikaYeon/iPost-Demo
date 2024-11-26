@@ -6,9 +6,10 @@ interface HeaderWithIconProps {
   title: string;
   onPress: () => void;
   theme: any;
+  lineMarginBottom?: number; // Nuevo prop para personalizar estilos del contenedor
 }
 
-const HeaderWithIcon: React.FC<HeaderWithIconProps> = ({ iconComponent, title, onPress, theme }) => {
+const HeaderWithIcon: React.FC<HeaderWithIconProps> = ({ iconComponent, title, onPress, theme, lineMarginBottom }) => {
   // Renderiza el icono solo si es una función válida
   const renderIcon = () => {
     const Icon = iconComponent();
@@ -28,7 +29,9 @@ const HeaderWithIcon: React.FC<HeaderWithIconProps> = ({ iconComponent, title, o
       <View
         style={[
           styles.line,
-          { borderBottomColor: theme.colors.textSecondary, marginBottom: theme.spacing.medium },
+          { borderBottomColor: theme.colors.textSecondary, 
+            marginBottom: lineMarginBottom ?? theme.spacing.medium 
+          },
         ]}
       />
     </View>
