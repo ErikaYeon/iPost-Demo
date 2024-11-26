@@ -22,7 +22,7 @@ const otherProfile = () => {
       <ProfileHeader theme={theme} isOtherProfile={true} />
 
       {/* Información Adicional */}
-      <ProfileAdditionalInfo theme={theme} />
+      <ProfileAdditionalInfo theme={theme} isOtherProfile={true} />
 
       {/* Botón de Seguir/Dejar de Seguir */}
       <View style={styles.followButtonContainer}>

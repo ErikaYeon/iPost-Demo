@@ -1,17 +1,67 @@
-import { RootState } from "@/redux/store";
+import {
+  fetchFollowingsUser,
+  fetchFollowersUser,
+} from "@/redux/slices/searchSlice";
+import { AppDispatch, RootState } from "@/redux/store";
+import { router } from "expo-router";
 import React from "react";
-import { View, Text, StyleSheet } from "react-native";
-import { useSelector } from "react-redux";
+import {
+  View,
+  Text,
+  StyleSheet,
+  Pressable,
+  TouchableOpacity,
+} from "react-native";
+import { useDispatch, useSelector } from "react-redux";
 
-const ProfileAdditionalInfo: React.FC<{ theme: any }> = ({ theme }) => {
+const ProfileAdditionalInfo: React.FC<{
+  theme: any;
+  isOtherProfile: boolean;
+}> = ({ theme, isOtherProfile }) => {
   const styles = createStyles(theme);
+  const dispatch = useDispatch<AppDispatch>();
+  //MANEJAR ESTO DEL PROFILE PARA QUE SEA SEGUN EL BOOLEANO
   const Profile = useSelector((state: RootState) => state.profile);
+
+  const handleOnPressFollowings = () => {
+    dispatch(fetchFollowingsUser(Profile.id));
+    router.push("/SearchFollowing");
+  };
+  const handleOnPressFollowers = () => {
+    dispatch(fetchFollowersUser(Profile.id));
+    router.push("/SearchFollowers");
+  };
+
   return (
     <View style={styles.container}>
       <Text style={styles.bio}>{Profile.description}</Text>
       <Text style={styles.followInfo}>
-        <Text style={styles.boldText}>{Profile.followersCount}</Text> seguidores
-        · <Text style={styles.boldText}>{Profile.followingCount}</Text> seguidos
+        {isOtherProfile ? (
+          <>
+            <Text style={styles.boldText}>{Profile.followersCount}</Text>{" "}
+            seguidores ·{" "}
+            <Text style={styles.boldText}>{Profile.followingCount}</Text>{" "}
+            seguidos
+          </>
+        ) : (
+          <>
+            <Text style={styles.followInfo}>
+              <TouchableOpacity onPress={handleOnPressFollowers}>
+                <Text style={styles.boldText}>
+                  {Profile.followersCount}{" "}
+                  <Text style={styles.boldText}>seguidores</Text>
+                </Text>
+              </TouchableOpacity>
+              {" · "}
+              <TouchableOpacity onPress={handleOnPressFollowings}>
+                <Text style={styles.boldText}>
+                  {Profile.followingCount}{" "}
+                  <Text style={styles.boldText}>seguidos</Text>
+                </Text>
+              </TouchableOpacity>
+            </Text>
+          </>
+        )}
       </Text>
     </View>
   );
@@ -35,6 +85,7 @@ const createStyles = (theme: any) =>
     },
     boldText: {
       fontWeight: "bold",
+      color: theme.colors.textPrimary,
     },
   });
 

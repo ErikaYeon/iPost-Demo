@@ -22,7 +22,7 @@ const ProfileScreen: React.FC = () => {
       <ProfileHeader theme={theme} />
 
       {/* Información Adicional */}
-      <ProfileAdditionalInfo theme={theme} />
+      <ProfileAdditionalInfo theme={theme} isOtherProfile={false} />
 
       {/* Tabs */}
       <View style={styles.tabsContainer}>
