@@ -18,72 +18,45 @@ import CrownSilver from "../assets/images/icons/gamif_crown_2.svg";
 import CrownGold from "../assets/images/icons/gamif_crown_3.svg";
 import { createSearchProfilesStyles } from "@/ui/styles/SearchProfileStyles";
 import { darkTheme } from "../ui/styles/Theme";
+import { router } from "expo-router";
+import { useSelector } from "react-redux";
+import { RootState } from "@/redux/store";
+import NoFollowings from "@/ui/components/NoFollowings";
 
 const SearchFollowing: React.FC = () => {
   const theme = darkTheme;
   const styles = createSearchProfilesStyles(theme);
 
-  const [searchQuery, setSearchQuery] = useState("");
-  const [filteredProfiles, setFilteredProfiles] = useState(followingData);
+  const followingList = useSelector(
+    (state: RootState) => state.search.followingsList
+  );
 
-  const followingData = [
-    {
-      id: "1",
-      name: "Sofía Ramírez",
-      username: "@sofiar",
-      crownType: "gold",
-      profileImage: "https://via.placeholder.com/50",
-    },
-    {
-      id: "2",
-      name: "Pedro González",
-      username: "@pedro_gonz",
-      crownType: "bronze",
-      profileImage: "https://via.placeholder.com/50",
-    },
-    {
-      id: "3",
-      name: "Lucía Torres",
-      username: "@luciat",
-      crownType: "silver",
-      profileImage: "https://via.placeholder.com/50",
-    },
-  ];
-
-  const handleSearch = (text: string) => {
-    setSearchQuery(text);
-    const filtered = followingData.filter(
-      (profile) =>
-        profile.name.toLowerCase().includes(text.toLowerCase()) ||
-        profile.username.toLowerCase().includes(text.toLowerCase())
-    );
-    setFilteredProfiles(filtered);
-  };
-
-  const renderCrownIcon = (crownType: string) => {
-    switch (crownType) {
-      case "gold":
-        return <CrownGold width={20} height={20} />;
-      case "silver":
-        return <CrownSilver width={20} height={20} />;
-      case "bronze":
-        return <CrownBronze width={20} height={20} />;
-      default:
+  const renderCrownIcon = (level: number) => {
+    switch (level) {
+      case 1:
         return <CrownGrey width={20} height={20} />;
+      case 2:
+        return <CrownBronze width={20} height={20} />;
+      case 3:
+        return <CrownSilver width={20} height={20} />;
+      case 4:
+        return <CrownGold width={20} height={20} />;
+      default:
+        return null;
     }
   };
 
-  const renderProfile = ({ item }: { item: typeof followingData[0] }) => (
-    <TouchableOpacity style={styles.profileContainer}>
+  const renderProfile = ({ item }: { item: (typeof followingList)[0] }) => (
+    <View style={styles.profileContainer}>
       <Image source={{ uri: item.profileImage }} style={styles.profileImage} />
       <View style={styles.profileInfo}>
         <View style={styles.nameContainer}>
-          {renderCrownIcon(item.crownType)}
+          {renderCrownIcon(item.level)}
           <Text style={styles.profileName}>{item.name}</Text>
         </View>
         <Text style={styles.profileUsername}>{item.username}</Text>
       </View>
-    </TouchableOpacity>
+    </View>
   );
 
   return (
@@ -97,7 +70,11 @@ const SearchFollowing: React.FC = () => {
         <HeaderWithIcon
           iconComponent={() =>
             theme.isDark ? (
-              <BackIcon width={18} height={18} fill={theme.colors.textPrimary} />
+              <BackIcon
+                width={18}
+                height={18}
+                fill={theme.colors.textPrimary}
+              />
             ) : (
               <BackIconLightMode
                 width={18}
@@ -107,27 +84,21 @@ const SearchFollowing: React.FC = () => {
             )
           }
           title="Seguidos"
-          onPress={() => console.log("Volver")}
+          onPress={() => router.back()}
           theme={theme}
         />
       </SafeAreaView>
 
-      <View style={styles.searchBarContainer}>
-        <SearchBar
-          placeholder="Buscar"
-          onChangeText={handleSearch}
-          value={searchQuery}
-          theme={theme}
-          onSearchPress={() => console.log("Buscar presionado")}
+      {followingList.length === 0 ? (
+        <NoFollowings theme={theme} />
+      ) : (
+        <FlatList
+          data={followingList}
+          keyExtractor={(item) => item.id}
+          renderItem={renderProfile}
+          contentContainerStyle={styles.listContainer}
         />
-      </View>
-
-      <FlatList
-        data={filteredProfiles}
-        keyExtractor={(item) => item.id}
-        renderItem={renderProfile}
-        contentContainerStyle={styles.listContainer}
-      />
+      )}
     </SafeAreaView>
   );
 };

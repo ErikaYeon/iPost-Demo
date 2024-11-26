@@ -3,7 +3,7 @@ import { View, TouchableOpacity, Text, Dimensions } from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
 import { useSelector } from "react-redux";
 import { RootState } from "@/redux/store";
-import HeaderWithIcon from "@/ui/components/HeaderWithIcon"; 
+import HeaderWithIcon from "@/ui/components/HeaderWithIcon";
 import ProfileHeader from "@/ui/components/ProfileHeader";
 import ProfileAdditionalInfo from "@/ui/components/ProfileAdditionalInfo";
 import PostImageGrid from "@/ui/components/PostImageGrid";
@@ -14,20 +14,20 @@ import BackIconDark from "../assets/images/icons/navigate_before.svg";
 import BackIconLight from "../assets/images/icons/navigate_before_lightMode.svg";
 import { router } from "expo-router";
 
-
 const otherProfile = () => {
   const [isFollowing, setIsFollowing] = useState(false);
   const theme = darkTheme;
   const styles = createProfileScreenStyles(theme);
 
-  const otherProfileData = useSelector((state: RootState) => state.otherProfile);
+  const otherProfileData = useSelector(
+    (state: RootState) => state.otherProfile
+  );
 
   const screenWidth = Dimensions.get("window").width;
   const buttonWidth = screenWidth * 0.85;
-  
+
   return (
     <SafeAreaView style={styles.container}>
-
       <HeaderWithIcon
         iconComponent={() =>
           theme === darkTheme ? (
