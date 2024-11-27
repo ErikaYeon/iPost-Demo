@@ -22,37 +22,30 @@ import { isEmpty } from "@/utils/RegexExpressions";
 import { levelToCrown } from "@/types/mappers";
 import postStyles from "@/ui/styles/PostStyles"; // Importar estilos de Post
 import { useLocalSearchParams } from "expo-router";
+import { Post as POST } from "@/types/apiContracts";
 
 const Timeline: React.FC = () => {
-  const { profileId } = useLocalSearchParams(); // Obtén el ID del perfil desde los parámetros
-  const userId = Array.isArray(profileId) ? profileId[0] : profileId; // Convertimos a string si es un array
-  const dispatch = useDispatch<AppDispatch>();
+  const { profileId, listPost, postId } = useLocalSearchParams();
+  const userId = Array.isArray(profileId) ? profileId[0] : profileId;
   const theme = darkTheme;
   const styles = createTimelineStyles(theme);
+  const posts: POST[] = listPost ? JSON.parse(listPost as string) : [];
 
-  const userProfilePosts = useSelector(
-    (state: RootState) => state.profile.posts
-  );
   const { loading, error } = useSelector((state: RootState) => state.profile);
-  const [refreshing, setRefreshing] = useState(false);
+  const flatListRef = React.useRef<FlatList>(null);
 
   useEffect(() => {
-    if (userId) {
-      dispatch(fetchUserPosts({ userId, offset: 0, limit: 10 }));
+    const index = posts.findIndex((post) => post.id === postId);
+    if (index !== -1) {
+      setTimeout(() => {
+        flatListRef.current?.scrollToIndex({ index, animated: true });
+      }, 300);
     }
-  }, [dispatch, userId]);
-
-  const handleRefresh = () => {
-    setRefreshing(true);
-    if (userId) {
-      dispatch(fetchUserPosts({ userId, offset: 0, limit: 10 }));
-    }
-    setRefreshing(false);
-  };
+  }, [postId, posts]);
 
   return (
     <SafeAreaView style={styles.container}>
-    <StatusBar
+      <StatusBar
         backgroundColor={theme.colors.background}
         barStyle={theme.isDark ? "light-content" : "dark-content"}
       />
@@ -79,68 +72,67 @@ const Timeline: React.FC = () => {
           lineMarginBottom={0}
         />
       </SafeAreaView>
-      {loading ? (
-        <ActivityIndicator size="large" color={theme.colors.primary} />
-      ) : error ? (
-        <Text style={styles.errorText}>{error}</Text>
-      ) : (
-        <FlatList
-          data={userProfilePosts}
-          renderItem={({ item }) => (
-            <Post
-              profilePictureUrl={
-                isEmpty(item.author.profileImage)
-                  ? Placeholders.DEFAULT_PROFILE_PHOTO
-                  : (item.author.profileImage as string)
-              }
-              name={item.author.name}
-              username={item.author.username}
-              description={item.title}
-              location={item.location}
-              date={item.createdAt}
-              images={item.contents.map((content) => ({
-                uri: content,
-                type: content.endsWith(".mp4") ? "video" : "image",
-              }))}
-              initialLikes={item.likesCount}
-              comments={item.commentsCount}
-              isLikedByUser={item.isLikedByUser}
-              postId={item.id}
-              userId={userId as string}
-              crownType={levelToCrown(item.author.level)}
-              theme={theme}
-              onLike={() => console.log("Liked post " + item.id)}
-              onComment={() => console.log("Commented on post " + item.id)}
-              onSave={() => console.log("Saved post " + item.id)}
-              isAd={item.isAd}
-            />
-          )}
-          keyExtractor={(item) => item.id}
-          onRefresh={handleRefresh}
-          refreshing={refreshing}
-          contentContainerStyle={postStyles.postContainer} // Aplicar estilos del contenedor de Post
-        />
-      )}
+      <FlatList
+        ref={flatListRef}
+        data={posts}
+        renderItem={({ item }) => (
+          <Post
+            profilePictureUrl={
+              isEmpty(item.author.profileImage)
+                ? Placeholders.DEFAULT_PROFILE_PHOTO
+                : (item.author.profileImage as string)
+            }
+            name={item.author.name}
+            username={item.author.username}
+            description={item.title}
+            location={item.location}
+            date={item.createdAt}
+            images={item.contents.map((content) => ({
+              uri: content,
+              type: content.endsWith(".mp4") ? "video" : "image",
+            }))}
+            initialLikes={item.likesCount}
+            comments={item.commentsCount}
+            isLikedByUser={item.isLikedByUser}
+            postId={item.id}
+            userId={userId as string}
+            crownType={levelToCrown(item.author.level)}
+            theme={theme}
+            onLike={() => console.log("Liked post " + item.id)}
+            onComment={() => console.log("Commented on post " + item.id)}
+            onSave={() => console.log("Saved post " + item.id)}
+            isAd={item.isAd}
+          />
+        )}
+        keyExtractor={(item) => item.id}
+        contentContainerStyle={postStyles.postContainer}
+        onScrollToIndexFailed={(info) => {
+          flatListRef.current?.scrollToOffset({
+            offset: info.averageItemLength * info.index,
+            animated: true,
+          });
+        }}
+      />
     </SafeAreaView>
   );
 };
 
 const createTimelineStyles = (theme: any) =>
-    StyleSheet.create({
+  StyleSheet.create({
     container: {
-        flex: 1,
-        backgroundColor: darkTheme.colors.background,
-        paddingTop: StatusBar.currentHeight || 0,
+      flex: 1,
+      backgroundColor: darkTheme.colors.background,
+      paddingTop: StatusBar.currentHeight || 0,
     },
     errorText: {
-        color: "red",
-        textAlign: "center",
-        marginVertical: 10,
+      color: "red",
+      textAlign: "center",
+      marginVertical: 10,
     },
     safeArea: {
-        backgroundColor: theme.colors.background,
-        paddingTop: Platform.OS === "android" ? StatusBar.currentHeight + 10 : 30,
+      backgroundColor: theme.colors.background,
+      paddingTop: Platform.OS === "android" ? StatusBar.currentHeight + 10 : 30,
     },
-    });
+  });
 
 export default Timeline;

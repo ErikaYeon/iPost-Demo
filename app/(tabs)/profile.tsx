@@ -34,14 +34,15 @@ const ProfileScreen: React.FC = () => {
   // Genera thumbnails y construye los datos para la grilla
   useEffect(() => {
     const generateThumbnails = async () => {
-      const postImages = posts?.map((post) => ({
-        id: post.id,
-        uri: post.contents[0] || "", // Asegúrate de que siempre haya un URI válido
-        user: userProfile.username,
-        description: post.title,
-        isVideo: post.contents[0]?.endsWith(".mp4") || false,
-      })) || [];
-      
+      const postImages =
+        posts?.map((post) => ({
+          id: post.id,
+          uri: post.contents[0] || "", // Asegúrate de que siempre haya un URI válido
+          user: userProfile.username,
+          description: post.title,
+          isVideo: post.contents[0]?.endsWith(".mp4") || false,
+        })) || [];
+
       const updatedPostImages = await Promise.all(
         postImages.map(async (post) => {
           if (post.isVideo) {
@@ -62,7 +63,7 @@ const ProfileScreen: React.FC = () => {
   // Fetch de los posts cuando cambia el tab
   useEffect(() => {
     if (id && activeTab === "post") {
-      dispatch(fetchUserPosts({ userId: id, offset: 0, limit: 10 }));
+      dispatch(fetchUserPosts(id));
     }
   }, [dispatch, id, activeTab]);
 
@@ -92,8 +93,8 @@ const ProfileScreen: React.FC = () => {
 
       {/* Grilla de Imágenes */}
       <View style={styles.gridContainer}>
-        {activeTab === "post" && (
-          loading ? (
+        {activeTab === "post" &&
+          (loading ? (
             <ActivityIndicator size="large" color={theme.colors.primary} />
           ) : (
             <PostImageGrid
@@ -102,15 +103,18 @@ const ProfileScreen: React.FC = () => {
                 if (id) {
                   router.push({
                     pathname: "/Timeline",
-                    params: { profileId: id },
+                    params: {
+                      profileId: id,
+                      listPost: JSON.stringify(posts),
+                      postId,
+                    },
                   });
                 } else {
                   console.error("ID de perfil no definido");
                 }
               }}
             />
-          )
-        )}
+          ))}
       </View>
     </SafeAreaView>
   );

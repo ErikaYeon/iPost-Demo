@@ -49,13 +49,7 @@ const OtherProfile: React.FC = () => {
   // Carga inicial de los posts
   useEffect(() => {
     if (id) {
-      dispatch(
-        fetchOtherProfilePosts({
-          userId: id,
-          offset: 0,
-          limit: 20,
-        })
-      );
+      dispatch(fetchOtherProfilePosts({ userId: id }));
     }
   }, [dispatch, id]);
 
@@ -162,7 +156,11 @@ const OtherProfile: React.FC = () => {
             onPressImage={(postId) =>
               router.push({
                 pathname: "/Timeline",
-                params: { profileId: id },
+                params: {
+                  profileId: id,
+                  listPost: JSON.stringify(posts),
+                  postId,
+                },
               })
             }
           />
