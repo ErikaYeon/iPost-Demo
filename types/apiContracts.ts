@@ -69,6 +69,7 @@ export interface UserResponse {
   createdAt: Date;
   updatedAt: Date;
   gender: Gender;
+  following: boolean;
 }
 export interface UserSettingsResponse {
   language: string;
@@ -107,13 +108,10 @@ export interface Post {
   commentsCount: number;
   contents: string[];
   likes: string[];
-  isLikedByUser: boolean;
   isAd: boolean;
+  liked: boolean;
+  favorite: boolean;
 }
-// export interface Favorite {
-//   user: UserShort;
-//   postDTO: Post;
-// }
 
 export interface Ads {
   companyName: string;

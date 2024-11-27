@@ -35,7 +35,6 @@ type PostImage = {
 
 const OtherProfile: React.FC = () => {
   const [postImages, setPostImages] = useState<PostImage[]>([]);
-  const [isFollowing, setIsFollowing] = useState(false);
   const [Loading, setLoading] = useState(false);
   const theme = darkTheme;
   const styles = createProfileScreenStyles(theme);
@@ -45,6 +44,9 @@ const OtherProfile: React.FC = () => {
     (state: RootState) => state.otherProfile
   );
   const { id, username, posts, loading } = otherProfileData;
+  const [isFollowing, setIsFollowing] = useState(otherProfileData.following);
+  console.log("other profile following" + otherProfileData.following);
+  console.log(isFollowing);
 
   const screenWidth = Dimensions.get("window").width;
   const buttonWidth = screenWidth * 0.85;
@@ -63,6 +65,7 @@ const OtherProfile: React.FC = () => {
         ).unwrap();
         console.log("Siguió con éxito");
       }
+      // dispatch
       setIsFollowing(!isFollowing);
     } catch (error) {
       console.error("Error al cambiar el estado de seguimiento:", error);

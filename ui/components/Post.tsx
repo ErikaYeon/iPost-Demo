@@ -71,6 +71,7 @@ type PostProps = {
   userId: string;
   theme: any;
   isLikedByUser: boolean;
+  isSavedByUser: boolean;
   isAd: boolean;
 };
 
@@ -109,6 +110,7 @@ const Post: React.FC<PostProps> = ({
   initialLikes,
   comments,
   isLikedByUser,
+  isSavedByUser,
   postId,
   userId,
   theme,
@@ -116,7 +118,7 @@ const Post: React.FC<PostProps> = ({
 }) => {
   const [isLiked, setIsLiked] = useState(isLikedByUser);
   const [likeCount, setLikeCount] = useState(initialLikes);
-  const [isSaved, setIsSaved] = useState(false);
+  const [isSaved, setIsSaved] = useState(isSavedByUser);
   const [isModalVisible, setModalVisible] = useState(false);
   const [commentsList, setCommentsList] = useState(commentSection);
   const [newComment, setNewComment] = useState("");
@@ -352,7 +354,10 @@ const Post: React.FC<PostProps> = ({
           }}
         >
           {images[0].type === "image" ? (
-            <Image source={{ uri: images[0].uri }} style={styles.singlePostImage} />
+            <Image
+              source={{ uri: images[0].uri }}
+              style={styles.singlePostImage}
+            />
           ) : (
             <View style={{ position: "relative" }}>
               <Video

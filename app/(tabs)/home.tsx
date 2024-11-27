@@ -134,7 +134,7 @@ const home = () => {
                 }))}
                 initialLikes={item.likesCount}
                 comments={item.commentsCount}
-                isLikedByUser={item.isLikedByUser}
+                isLikedByUser={item.liked}
                 isVip={item.author.level > 1}
                 crownType={levelToCrown(item.author.level)}
                 commentSection={[]} //ToDo: check how to handle this
@@ -145,6 +145,7 @@ const home = () => {
                 postId={item.id} // Asegúrate de pasar el postId
                 userId={userProfile.id} // Asegúrate de pasar el userId
                 isAd={item.isAd}
+                isSavedByUser={item.favorite}
               />
             )}
             keyExtractor={(item, index) => `${item.id}-${index}`}

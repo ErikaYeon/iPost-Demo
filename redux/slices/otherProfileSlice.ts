@@ -21,6 +21,7 @@ interface OtherProfileState {
   loading: boolean;
   error: string | null;
   posts: Post[]; // Posts del usuario
+  following: boolean;
 }
 
 const initialState: OtherProfileState = {
@@ -39,6 +40,7 @@ const initialState: OtherProfileState = {
   loading: false,
   error: null,
   posts: [],
+  following: false,
 };
 
 // Thunk para obtener datos del perfil de otro usuario
@@ -97,6 +99,7 @@ const otherProfileSlice = createSlice({
           state.followersCount = user.followersCount;
           state.followingCount = user.followingCount;
           state.postsCount = user.postsCount;
+          state.following = user.following;
         }
       )
       .addCase(fetchOtherProfile.rejected, (state, action) => {
