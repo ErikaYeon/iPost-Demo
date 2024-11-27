@@ -7,6 +7,7 @@ import {
   setProfileImage,
   setUserData,
   getUserPosts,
+  getUserFavorites,
 } from "@/networking/userService";
 import {
   APIError,
@@ -42,6 +43,7 @@ interface ProfileState {
   theme: string;
   language: string;
   posts: Post[];
+  favorites: Post[];
 }
 
 const initialState: ProfileState = {
@@ -64,6 +66,7 @@ const initialState: ProfileState = {
   theme: "dark",
   language: "Español",
   posts: [],
+  favorites: [],
 };
 
 export const fetchUserInfo = createAsyncThunk(
@@ -156,6 +159,17 @@ export const updateProfileDataAsync = createAsyncThunk<
       return rejectWithValue(
         error.message ?? "Error desconocido al actualizar los datos del perfil"
       );
+    }
+  }
+);
+export const fetchUserFavorites = createAsyncThunk(
+  "favorites/fetchUserFavorites",
+  async (userId: string, { rejectWithValue }) => {
+    try {
+      const favorites = await getUserFavorites(userId);
+      return favorites;
+    } catch (error: any) {
+      return rejectWithValue(error.message || "Error al obtener favoritos");
     }
   }
 );
@@ -339,6 +353,21 @@ const profileSlice = createSlice({
       .addCase(fetchUserPosts.rejected, (state, action) => {
         state.error = action.error.message ?? "Error al obtener los posts";
         state.loading = false;
+      })
+      .addCase(fetchUserFavorites.pending, (state) => {
+        state.loading = true;
+        state.error = null;
+      })
+      .addCase(
+        fetchUserFavorites.fulfilled,
+        (state, action: PayloadAction<Post[]>) => {
+          state.loading = false;
+          state.favorites = action.payload;
+        }
+      )
+      .addCase(fetchUserFavorites.rejected, (state, action) => {
+        state.loading = false;
+        state.error = action.payload as string;
       });
   },
 });

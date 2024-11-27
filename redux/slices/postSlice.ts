@@ -1,6 +1,10 @@
 import { createSlice, createAsyncThunk, PayloadAction } from "@reduxjs/toolkit";
 import { Post } from "@/types/apiContracts"; // Definir el tipo de Post
-import { getPosts } from "@/networking/postService";
+import {
+  getPosts,
+  unfavoritePost,
+  favoritePost,
+} from "@/networking/postService";
 import APIConstants from "@/constants/APIConstants";
 import { RootState } from "@/redux/store";
 
@@ -46,6 +50,34 @@ export const fetchPosts = createAsyncThunk(
     }
   }
 );
+export const favoritePostAsync = createAsyncThunk(
+  "posts/favoritePost",
+  async (
+    { postId, userId }: { postId: string; userId: string },
+    { rejectWithValue }
+  ) => {
+    try {
+      await favoritePost(postId, userId);
+    } catch (error: any) {
+      return rejectWithValue(error.response?.data || error.message);
+    }
+  }
+);
+
+// Acción para eliminar un post de favoritos
+export const unfavoritePostAsync = createAsyncThunk(
+  "posts/unfavoritePost",
+  async (
+    { postId, userId }: { postId: string; userId: string },
+    { rejectWithValue }
+  ) => {
+    try {
+      await unfavoritePost(postId, userId);
+    } catch (error: any) {
+      return rejectWithValue(error.response?.data || error.message);
+    }
+  }
+);
 
 const postSlice = createSlice({
   name: "posts",
@@ -83,6 +115,28 @@ const postSlice = createSlice({
       .addCase(fetchPosts.rejected, (state, action) => {
         state.loading = false;
         state.error = action.error.message ?? "Failed to fetch posts";
+      })
+      .addCase(favoritePostAsync.pending, (state) => {
+        state.loading = true;
+        state.error = null;
+      })
+      .addCase(favoritePostAsync.fulfilled, (state, action) => {
+        state.loading = false;
+      })
+      .addCase(favoritePostAsync.rejected, (state, action) => {
+        state.loading = false;
+        state.error = action.payload as string;
+      })
+      .addCase(unfavoritePostAsync.pending, (state) => {
+        state.loading = true;
+        state.error = null;
+      })
+      .addCase(unfavoritePostAsync.fulfilled, (state, action) => {
+        state.loading = false;
+      })
+      .addCase(unfavoritePostAsync.rejected, (state, action) => {
+        state.loading = false;
+        state.error = action.payload as string;
       });
   },
 });

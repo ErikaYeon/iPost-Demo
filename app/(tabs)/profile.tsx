@@ -6,11 +6,15 @@ import ProfileHeader from "@/ui/components/ProfileHeader";
 import ProfileAdditionalInfo from "@/ui/components/ProfileAdditionalInfo";
 import TabButton from "@/ui/components/TabButton";
 import PostImageGrid from "@/ui/components/PostImageGrid";
-import { fetchUserPosts } from "@/redux/slices/profileSlice";
+import {
+  fetchUserPosts,
+  fetchUserFavorites,
+} from "@/redux/slices/profileSlice";
 import { RootState, AppDispatch } from "@/redux/store";
 import { createProfileScreenStyles } from "@/ui/styles/ProfileStyles";
 import { darkTheme, lightTheme } from "@/ui/styles/Theme";
 import * as VideoThumbnails from "expo-video-thumbnails";
+import NoPosts from "@/ui/components/NoPost";
 import { router } from "expo-router";
 
 type PostImage = {
@@ -24,9 +28,10 @@ type PostImage = {
 const ProfileScreen: React.FC = () => {
   const [activeTab, setActiveTab] = useState("post");
   const [postImages, setPostImages] = useState<PostImage[]>([]);
+  const [favoritesImages, setFavoritesImages] = useState<PostImage[]>([]);
   const dispatch = useDispatch<AppDispatch>();
   const userProfile = useSelector((state: RootState) => state.profile);
-  const { id, posts, loading } = userProfile;
+  const { id, posts, loading, favorites } = userProfile;
 
   const theme = darkTheme;
   const styles = createProfileScreenStyles(theme);
@@ -54,9 +59,35 @@ const ProfileScreen: React.FC = () => {
       );
       setPostImages(updatedPostImages);
     };
+    const generateThumbnailsF = async () => {
+      const favoritesImages =
+        favorites?.map((fav) => ({
+          id: fav.id,
+          uri: fav.contents[0] || "", // Asegúrate de que siempre haya un URI válido
+          user: userProfile.username,
+          description: fav.title,
+          isVideo: fav.contents[0]?.endsWith(".mp4") || false,
+        })) || [];
+
+      const updatedFavoritesImages = await Promise.all(
+        favoritesImages.map(async (fav) => {
+          if (fav.isVideo) {
+            const thumbnailUri = await generateVideoThumbnail(fav.uri);
+            return { ...fav, uri: thumbnailUri || fav.uri };
+          }
+          return fav; // Si no es video, regresa el favorito tal cual
+        })
+      );
+      console.log("entro");
+      setFavoritesImages(updatedFavoritesImages);
+    };
 
     if (activeTab === "post" && posts.length > 0) {
       generateThumbnails();
+    }
+    if (activeTab === "saved" && favorites.length > 0) {
+      console.log("entro por aca");
+      generateThumbnailsF();
     }
   }, [posts, activeTab]);
 
@@ -64,6 +95,9 @@ const ProfileScreen: React.FC = () => {
   useEffect(() => {
     if (id && activeTab === "post") {
       dispatch(fetchUserPosts(id));
+    }
+    if (id && activeTab === "saved") {
+      dispatch(fetchUserFavorites(id));
     }
   }, [dispatch, id, activeTab]);
 
@@ -96,6 +130,8 @@ const ProfileScreen: React.FC = () => {
         {activeTab === "post" &&
           (loading ? (
             <ActivityIndicator size="large" color={theme.colors.primary} />
+          ) : postImages.length === 0 ? (
+            <NoPosts theme={theme} />
           ) : (
             <PostImageGrid
               posts={postImages}
@@ -106,6 +142,30 @@ const ProfileScreen: React.FC = () => {
                     params: {
                       profileId: id,
                       listPost: JSON.stringify(posts),
+                      postId,
+                    },
+                  });
+                } else {
+                  console.error("ID de perfil no definido");
+                }
+              }}
+            />
+          ))}
+        {activeTab === "saved" &&
+          (loading ? (
+            <ActivityIndicator size="large" color={theme.colors.primary} />
+          ) : favoritesImages.length === 0 ? (
+            <NoPosts theme={theme} />
+          ) : (
+            <PostImageGrid
+              posts={favoritesImages}
+              onPressImage={(postId) => {
+                if (id) {
+                  router.push({
+                    pathname: "/Timeline",
+                    params: {
+                      profileId: id,
+                      listPost: JSON.stringify(favorites),
                       postId,
                     },
                   });

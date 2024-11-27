@@ -45,6 +45,10 @@ import {
 } from "@/redux/slices/commentsSlice";
 import { commentType1 } from "@/types/apiContracts";
 import { levelToCrown } from "@/types/mappers";
+import {
+  favoritePostAsync,
+  unfavoritePostAsync,
+} from "@/redux/slices/postSlice";
 
 type PostProps = {
   profilePictureUrl: string;
@@ -188,9 +192,25 @@ const Post: React.FC<PostProps> = ({
     }
   };
 
-  const toggleSave = () => {
-    setIsSaved(!isSaved);
-    onSave();
+  const toggleSave = async () => {
+    try {
+      if (isSaved) {
+        // Si está guardado, quítalo de favoritos
+        await dispatch(unfavoritePostAsync({ postId, userId: userProfile.id }));
+        await AsyncStorage.removeItem(`favorite_${postId}_${userProfile.id}`);
+      } else {
+        // Si no está guardado, agrégalo a favoritos
+        await dispatch(favoritePostAsync({ postId, userId: userProfile.id }));
+        await AsyncStorage.setItem(
+          `favorite_${postId}_${userProfile.id}`,
+          "true"
+        );
+      }
+      setIsSaved(!isSaved); // Cambia el estado local
+      onSave();
+    } catch (error) {
+      console.error("Error al cambiar el estado de favorito:", error);
+    }
   };
 
   const openModal = async () => {

@@ -136,3 +136,14 @@ export const getUserPosts = async (userId: string): Promise<Post[]> => {
     throw new APIError("Error al obtener los posts del usuario");
   }
 };
+export const getUserFavorites = async (userId: string): Promise<Post[]> => {
+  try {
+    const response = await api.get(`users/${userId}/favorites`);
+    console.log("get favorites exitoso");
+    return response.data;
+  } catch (error: any) {
+    console.log("error al traer los favoritos");
+    handleError(error);
+    throw new Error("No se pudieron obtener los favoritos");
+  }
+};
