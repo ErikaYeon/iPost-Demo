@@ -84,9 +84,8 @@ export const fetchUserInfo = createAsyncThunk(
 
 export const fetchUserPosts = createAsyncThunk(
   "profile/fetchUserPosts",
-  async (params: { userId: string; offset: number; limit: number }) => {
-    const { userId, offset, limit } = params;
-    return await getUserPosts(userId, offset, limit);
+  async (userId: string) => {
+    return await getUserPosts(userId);
   }
 );
 

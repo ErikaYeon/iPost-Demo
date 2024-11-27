@@ -12,9 +12,10 @@ import {
 } from "@/redux/slices/profileSlice";
 import { RootState, AppDispatch } from "@/redux/store";
 import { createProfileScreenStyles } from "@/ui/styles/ProfileStyles";
-import { darkTheme } from "@/ui/styles/Theme";
+import { darkTheme, lightTheme } from "@/ui/styles/Theme";
 import * as VideoThumbnails from "expo-video-thumbnails";
 import NoPosts from "@/ui/components/NoPost";
+import { router } from "expo-router";
 
 type PostImage = {
   id: string;
@@ -38,19 +39,22 @@ const ProfileScreen: React.FC = () => {
   // Genera thumbnails y construye los datos para la grilla
   useEffect(() => {
     const generateThumbnails = async () => {
+      const postImages =
+        posts?.map((post) => ({
+          id: post.id,
+          uri: post.contents[0] || "", // Asegúrate de que siempre haya un URI válido
+          user: userProfile.username,
+          description: post.title,
+          isVideo: post.contents[0]?.endsWith(".mp4") || false,
+        })) || [];
+
       const updatedPostImages = await Promise.all(
-        posts.map(async (post) => {
-          const isVideo = post.contents[0]?.endsWith(".mp4");
-          const thumbnailUri = isVideo
-            ? await generateVideoThumbnail(post.contents[0])
-            : post.contents[0];
-          return {
-            id: post.id,
-            uri: thumbnailUri || post.contents[0], // Fallback en caso de error
-            user: userProfile.username,
-            description: post.title,
-            isVideo,
-          };
+        postImages.map(async (post) => {
+          if (post.isVideo) {
+            const thumbnailUri = await generateVideoThumbnail(post.uri);
+            return { ...post, uri: thumbnailUri || post.uri };
+          }
+          return post; // Si no es video, regresa el post tal cual
         })
       );
       setPostImages(updatedPostImages);
@@ -87,7 +91,7 @@ const ProfileScreen: React.FC = () => {
   // Fetch de los posts cuando cambia el tab
   useEffect(() => {
     if (id && activeTab === "post") {
-      dispatch(fetchUserPosts({ userId: id, offset: 0, limit: 10 }));
+      dispatch(fetchUserPosts(id));
     } else if (id && activeTab === "saved") {
       dispatch(fetchUserFavorites(id));
     }
@@ -125,7 +129,23 @@ const ProfileScreen: React.FC = () => {
           ) : postImages.length === 0 ? (
             <NoPosts theme={theme} />
           ) : (
-            <PostImageGrid posts={postImages} />
+            <PostImageGrid
+              posts={postImages}
+              onPressImage={(postId) => {
+                if (id) {
+                  router.push({
+                    pathname: "/Timeline",
+                    params: {
+                      profileId: id,
+                      listPost: JSON.stringify(posts),
+                      postId,
+                    },
+                  });
+                } else {
+                  console.error("ID de perfil no definido");
+                }
+              }}
+            />
           ))}
         {activeTab === "saved" &&
           (loading ? (
@@ -133,7 +153,23 @@ const ProfileScreen: React.FC = () => {
           ) : favoritesImages.length === 0 ? (
             <NoPosts theme={theme} />
           ) : (
-            <PostImageGrid posts={favoritesImages} />
+            <PostImageGrid
+              posts={favoritesImages}
+              onPressImage={(postId) => {
+                if (id) {
+                  router.push({
+                    pathname: "/Timeline",
+                    params: {
+                      profileId: id,
+                      listPost: JSON.stringify(favorites),
+                      postId,
+                    },
+                  });
+                } else {
+                  console.error("ID de perfil no definido");
+                }
+              }}
+            />
           ))}
       </View>
     </SafeAreaView>

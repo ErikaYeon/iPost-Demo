@@ -56,16 +56,9 @@ export const fetchOtherProfile = createAsyncThunk(
 
 export const fetchOtherProfilePosts = createAsyncThunk(
   "otherProfile/fetchOtherProfilePosts",
-  async (
-    {
-      userId,
-      offset,
-      limit,
-    }: { userId: string; offset: number; limit: number },
-    { rejectWithValue }
-  ) => {
+  async ({ userId }: { userId: string }, { rejectWithValue }) => {
     try {
-      const posts: Post[] = await getUserPosts(userId, offset, limit);
+      const posts: Post[] = await getUserPosts(userId);
       return posts;
     } catch (error: APIError | any) {
       return rejectWithValue(error.message ?? "Error fetching user posts");

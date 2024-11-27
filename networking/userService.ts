@@ -126,15 +126,9 @@ export const setUserData = async (
   }
 };
 
-export const getUserPosts = async (
-  userId: string,
-  offset: number = 0,
-  limit: number = 10
-): Promise<Post[]> => {
+export const getUserPosts = async (userId: string): Promise<Post[]> => {
   try {
-    const response = await api.get(`/users/${userId}/posts`, {
-      params: { offset, limit },
-    });
+    const response = await api.get(`/users/${userId}/posts`);
     console.log("Posts del usuario obtenidos exitosamente.");
     return response.data;
   } catch (error: any) {

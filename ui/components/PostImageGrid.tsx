@@ -9,9 +9,10 @@ type PostImageGridProps = {
     description: string;
     isVideo: boolean;
   }[];
+  onPressImage: (postId: string) => void; // Función para manejar el evento al presionar
 };
 
-const PostImageGrid: React.FC<PostImageGridProps> = ({ posts }) => {
+const PostImageGrid: React.FC<PostImageGridProps> = ({ posts, onPressImage  }) => {
   const screenWidth = Dimensions.get("window").width; // Obtener el ancho de la pantalla
   const imageWidth = screenWidth / 3; // Dividir la pantalla en 3 columnas
 
@@ -19,6 +20,7 @@ const PostImageGrid: React.FC<PostImageGridProps> = ({ posts }) => {
     <TouchableOpacity
       key={item.id}
       style={{ width: imageWidth, height: imageWidth }}
+      onPress={() => onPressImage(item.id)} // Llamada a la función con el ID del post
     >
       <Image source={{ uri: item.uri }} style={styles.image} />
       {item.isVideo && (
