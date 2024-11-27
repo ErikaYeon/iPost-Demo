@@ -1,27 +1,18 @@
 import React from "react";
-import {
-  SafeAreaView,
-  Image,
-  TouchableOpacity,
-  View,
-  Text,
-} from "react-native";
-
-import createSharedStyles from "@/ui/styles/SharedStyles";
-import { lightTheme, darkTheme } from "@/ui/styles/Theme";
-import Welcome from "./Welcome";
-import store from "../redux/store";
 import { Provider } from "react-redux";
 import { Redirect } from "expo-router";
 
-const theme = darkTheme; // Para alternar entre light y dark mode manualmente
-const sharedStyles = createSharedStyles(theme);
+import store from "../redux/store";
+import "./i18n";
+import { I18nextProvider } from "react-i18next";
+import i18n from "../utils/i18n";
 
 const index = () => {
-  // return <Redirect href="/home" />;
   return (
     <Provider store={store}>
-      <Redirect href="/Welcome" />
+      <I18nextProvider i18n={i18n}>
+        <Redirect href="/Welcome" />
+      </I18nextProvider>
     </Provider>
   );
 };

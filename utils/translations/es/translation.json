@@ -1,0 +1,82 @@
+{
+    "activate_account": {
+      "title": "Activa tu iPost",
+      "message": "Se ha enviado un enlace de acceso a su correo. Por favor, verifique su bandeja de entrada.",
+      "bold_message": "enlace de acceso",
+      "resend_link": "Reenviar enlace",
+      "go_to_login": "Volver a inicio de sesión",
+      "success_message": "Correo enviado con éxito",
+      "error_message": "Ocurrió un error, intentalo nuevamente."
+    },
+    "add_location": {
+    "title": "Agregar ubicación",
+    "search_placeholder": "Buscar una ubicación",
+    "searching": "Buscando ubicación:"
+    },
+    "change_password": {
+      "title": "Cambiar contraseña",
+      "labels": {
+        "current_password": "Contraseña actual",
+        "new_password": "Contraseña nueva",
+        "confirm_new_password": "Confirmación de contraseña nueva"
+      },
+      "buttons": {
+        "change": "Cambiar"
+      },
+      "links": {
+        "forgot_password": "Olvidé mi contraseña"
+      },
+      "errors": {
+        "empty_fields": "Por favor, completa todos los campos.",
+        "passwords_mismatch": "La nueva contraseña y su confirmación no coinciden.",
+        "invalid_password": "La contraseña debe tener al menos 6 caracteres y un carácter especial.",
+        "short_password": "La nueva contraseña debe tener al menos 8 caracteres.",
+        "unexpected_error": "Error inesperado"
+      }
+    },
+    
+    "change_password_2": {
+        "title": "Recuperar contraseña",
+        "message": "Se le enviará un link de verificación al correo asociado a esta cuenta. Revisa tu carpeta de correo no deseado o spam si no lo ves en la casilla de entrada.",
+        "bold_text": "link de verificación",
+        "button": "Enviar enlace",
+        "success_message": "Email enviado con éxito"
+    },
+    "createPostTitle": "Crear Post",
+    "postPlaceholder": "¿Qué te gustaría publicar?",
+    "selectPhotosOrVideos": "Seleccionar fotos o videos",
+    "addLocation": "Agregar ubicación",
+    "publishButton": "Publicar",
+    "postCreated": "Post creado y añadido al timeline",
+    "errorCreatingPost": "Error al crear el Post",
+
+        "editProfile": {
+            "title": "Editar perfil",
+            "profileAndCover": "Perfil y portada",
+            "tapToChangePhoto": "Toca la foto para cambiarla",
+            "firstName": "Nombre:",
+            "lastName": "Apellido:",
+            "username": "Usuario:",
+            "gender": "Género:",
+            "description": "Descripción:",
+            "saveChanges": "Guardar cambios"
+    },
+
+    "permissions": {
+    "denied": "Permiso denegado",
+    "camera_required": "Se necesita acceso a la cámara para tomar fotos.",
+    "gallery_required": "Se necesita acceso a la galería para subir imágenes."
+  },
+    "edit_profile": {
+        "cover_photo": "Editar foto de portada",
+        "take_photo": "Tomar foto",
+        "upload_image": "Subir imagen"
+    },
+  "cancel": "Cancelar",
+  "save": "Guardar"
+      
+      
+  
+  
+}
+  

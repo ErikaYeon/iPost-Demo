@@ -3,7 +3,6 @@ import {
   SafeAreaView,
   View,
   StatusBar,
-  Platform,
   FlatList,
   Image,
   TouchableOpacity,
@@ -39,9 +38,11 @@ import { CreatePostRequest } from "@/types/apiContracts";
 import Placeholders from "@/constants/ProfilePlaceholders";
 import { addPost } from "@/redux/slices/timelineSlice";
 import { Video } from "expo-av";
+import { useTranslation } from "react-i18next"; // Importa el hook useTranslation
 
 const CreatePost: React.FC = () => {
-  const theme = darkTheme; // Cambiar a `lightTheme` si es necesario
+  const { t } = useTranslation(); // Usamos el hook para acceder a las traducciones
+  const theme = darkTheme; 
   const sharedStyles = createSharedStyles(theme);
   const styles = createEditProfilePhotoStyles(theme);
 
@@ -148,13 +149,14 @@ const CreatePost: React.FC = () => {
     if (createPostAsync.fulfilled.match(result)) {
       const post = result.payload;
       dispatch(addPost(post)); // Despacha la acción para actualizar el timeline
-      console.log("Post creado y añadido al timeline");
+      console.log(t("postCreated")); // Usa la traducción
       dispatch(clearPost());
       router.push("/(tabs)/home");
     } else {
-      console.log("Error al crear el Post");
+      console.log(t("errorCreatingPost")); // Usa la traducción
     }
   };
+  
   const handleCloseButton = () => {
     dispatch(clearPost());
     router.push("/(tabs)/home");
@@ -180,25 +182,16 @@ const CreatePost: React.FC = () => {
             <CloseIconLight width={15} height={15} />
           )
         }
-        title="Crear Post"
+        title={t("createPostTitle")} // Traducción para el título
         onPress={handleCloseButton}
         theme={theme}
       />
 
       <SafeAreaView
-        style={[
-          sharedStyles.screenContainer,
-          {
-            width: "100%",
-            alignSelf: "center",
-            paddingHorizontal: 20,
-            justifyContent: "flex-start",
-            alignItems: "stretch",
-          },
-        ]}
+        style={[sharedStyles.screenContainer, { width: "100%" }]}
       >
         <PostTextInput
-          placeholder="¿Qué te gustaría publicar?"
+          placeholder={t("postPlaceholder")} // Traducción para el placeholder
           value={postContent}
           onChangeText={(text) => dispatch(setPostContent(text))}
           multiline={true}
@@ -223,7 +216,7 @@ const CreatePost: React.FC = () => {
               <PhotoIconLight width={20} height={20} />
             )
           }
-          text="Seleccionar fotos o videos"
+          text={t("selectPhotosOrVideos")} // Traducción
           onPress={selectImages}
           theme={theme}
         />
@@ -236,14 +229,14 @@ const CreatePost: React.FC = () => {
               <LocationIconLight width={20} height={20} />
             )
           }
-          text={location ? location : "Agregar ubicación"}
+          text={location ? location : t("addLocation")} // Traducción
           onPress={() => router.push("/AddLocation")}
           theme={theme}
         />
 
         <View style={{ width: "100%", alignItems: "center" }}>
           <CustomButton
-            title="Publicar"
+            title={t("publishButton")} // Traducción
             onPress={handlePublish}
             type="secondary"
             theme={theme}

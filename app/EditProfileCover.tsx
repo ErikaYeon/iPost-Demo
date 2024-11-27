@@ -4,8 +4,8 @@ import HeaderWithIcon from "../ui/components/HeaderWithIcon";
 import OptionButton from "../ui/components/OptionButton";
 import CustomButton from "../ui/components/CustomButton";
 import * as ImagePicker from "expo-image-picker";
-import * as FileSystem from "expo-file-system"; // Importar FileSystem
-import { createEditProfilePhotoStyles } from "../ui/styles/EditProfilePhotoStyles"; // Puedes usar los mismos estilos o crear otros específicos
+import * as FileSystem from "expo-file-system";
+import { createEditProfilePhotoStyles } from "../ui/styles/EditProfilePhotoStyles";
 import { darkTheme, lightTheme } from "../ui/styles/Theme";
 import BackIcon from "../assets/images/icons/navigate_before.svg";
 import BackIconLightMode from "../assets/images/icons/navigate_before_lightMode.svg";
@@ -21,8 +21,10 @@ import {
   updateProfileImageAsync,
 } from "@/redux/slices/profileSlice";
 import { ProfileImageRequest } from "@/types/apiContracts";
+import { useTranslation } from "react-i18next"; // Importar i18next
 
 const EditProfileCover: React.FC = () => {
+  const { t } = useTranslation(); // Usar el hook para traducción
   const Profile = useSelector((state: RootState) => state.profile);
   const ProfileCover = Profile.coverImage;
   const userId = Profile.id;
@@ -31,7 +33,7 @@ const EditProfileCover: React.FC = () => {
   );
   const [base64Image, setBase64Image] = useState<string | null>(null);
   const router = useRouter();
-  const theme = darkTheme; // Cambiar a `darkTheme` si es necesario
+  const theme = darkTheme;
   const styles = createEditProfilePhotoStyles(theme);
   const dispatch = useDispatch<AppDispatch>();
 
@@ -51,8 +53,8 @@ const EditProfileCover: React.FC = () => {
     const permission = await ImagePicker.requestCameraPermissionsAsync();
     if (!permission.granted) {
       Alert.alert(
-        "Permiso denegado",
-        "Se necesita acceso a la cámara para tomar fotos."
+        t("permissions.denied"),
+        t("permissions.camera_required")
       );
       return;
     }
@@ -60,7 +62,7 @@ const EditProfileCover: React.FC = () => {
     const result = await ImagePicker.launchCameraAsync({
       mediaTypes: ImagePicker.MediaTypeOptions.Images,
       allowsEditing: true,
-      aspect: [16, 7], // Define el aspecto para la foto de portada
+      aspect: [16, 7],
       quality: 0.8,
     });
 
@@ -69,7 +71,7 @@ const EditProfileCover: React.FC = () => {
       setSelectedImage(uri);
       const base64 = await convertToBase64(uri);
       if (base64) {
-        setBase64Image(base64); // Guardar la imagen en Base64
+        setBase64Image(base64);
       }
     }
   };
@@ -78,8 +80,8 @@ const EditProfileCover: React.FC = () => {
     const permission = await ImagePicker.requestMediaLibraryPermissionsAsync();
     if (!permission.granted) {
       Alert.alert(
-        "Permiso denegado",
-        "Se necesita acceso a la galería para subir imágenes."
+        t("permissions.denied"),
+        t("permissions.gallery_required")
       );
       return;
     }
@@ -87,7 +89,7 @@ const EditProfileCover: React.FC = () => {
     const result = await ImagePicker.launchImageLibraryAsync({
       mediaTypes: ImagePicker.MediaTypeOptions.Images,
       allowsEditing: true,
-      aspect: [16, 7], // Define el aspecto para la foto de portada
+      aspect: [16, 7],
       quality: 0.8,
     });
 
@@ -96,14 +98,13 @@ const EditProfileCover: React.FC = () => {
       setSelectedImage(uri);
       const base64 = await convertToBase64(uri);
       if (base64) {
-        setBase64Image(base64); // Guardar la imagen en Base64
+        setBase64Image(base64);
       }
     }
   };
 
   const handleCancel = () => {
-    console.log("Cancelado");
-    router.back(); // Regresa al perfil
+    router.back();
   };
 
   const handleSave = async () => {
@@ -113,8 +114,7 @@ const EditProfileCover: React.FC = () => {
       type: "COVER",
     };
     await dispatch(updateProfileImageAsync({ userId, profileImageData }));
-    // Implementa la lógica para guardar la imagen seleccionada y su versión en Base64
-    router.back(); // Regresa al perfil
+    router.back();
   };
 
   return (
@@ -123,8 +123,6 @@ const EditProfileCover: React.FC = () => {
         backgroundColor={theme.colors.background}
         barStyle={theme === darkTheme ? "light-content" : "dark-content"}
       />
-
-      {/* Header */}
       <HeaderWithIcon
         iconComponent={() =>
           theme === darkTheme ? (
@@ -137,22 +135,18 @@ const EditProfileCover: React.FC = () => {
             />
           )
         }
-        title="Editar foto de portada"
+        title={t("edit_profile.cover_photo")}
         onPress={() => router.back()}
         theme={theme}
       />
-
-      {/* Imagen Seleccionada */}
       <View style={styles.imageContainer}>
         <Image
           source={{
-            uri: selectedImage || "https://via.placeholder.com/600x150", // Imagen por defecto
+            uri: selectedImage || "https://via.placeholder.com/600x150",
           }}
-          style={styles.coverImage} // Cambia a estilos específicos para la portada
+          style={styles.coverImage}
         />
       </View>
-
-      {/* Contenedor de Opciones */}
       <View style={styles.optionContainer}>
         <OptionButton
           iconComponent={() =>
@@ -162,7 +156,7 @@ const EditProfileCover: React.FC = () => {
               <CameraIconLight width={24} height={24} />
             )
           }
-          text="Tomar foto"
+          text={t("edit_profile.take_photo")}
           onPress={handleTakePhoto}
           theme={theme}
         />
@@ -174,23 +168,21 @@ const EditProfileCover: React.FC = () => {
               <UploadIconLight width={24} height={24} />
             )
           }
-          text="Subir imagen"
+          text={t("edit_profile.upload_image")}
           onPress={handleUploadImage}
           theme={theme}
         />
       </View>
-
-      {/* Botones */}
       <View style={styles.buttonsContainer}>
         <CustomButton
-          title="Cancelar"
+          title={t("cancel")}
           onPress={handleCancel}
           type="secondary"
           theme={theme}
           style={styles.cancelButton}
         />
         <CustomButton
-          title="Guardar"
+          title={t("save")}
           onPress={handleSave}
           type="primary"
           theme={theme}

@@ -1,16 +1,16 @@
 import React from 'react';
-import { View, Text, TouchableOpacity, StyleSheet, Alert } from 'react-native';
-import * as ImagePicker from 'expo-image-picker';
+import { View, Text, TouchableOpacity, StyleSheet } from 'react-native';
 
 interface OptionButtonProps {
-  iconComponent: () => React.ReactNode; 
+  iconComponent: () => React.ReactNode;  // El componente de ícono
+  text: string; // Añadimos 'text' como propiedad
   onPress?: () => void;
   theme: any;
 }
 
 const OptionButton: React.FC<OptionButtonProps> = ({ iconComponent, text, onPress, theme }) => {
   const handlePress = async () => {
-    // Aquí puedes manejar diferentes acciones según el uso
+    // Llamar a la función onPress si está definida
     onPress && onPress();
   };
 
