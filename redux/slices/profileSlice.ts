@@ -6,7 +6,7 @@ import {
   setUserSettings,
   setProfileImage,
   setUserData,
-  getUserPosts
+  getUserPosts,
 } from "@/networking/userService";
 import {
   APIError,
@@ -16,7 +16,7 @@ import {
   UserSettingsResponse,
   ProfileImageRequest,
   ProfileUpdateRequest,
-  Post
+  Post,
 } from "@/types/apiContracts";
 import { Crown } from "@/types/models";
 import { levelToCrown } from "@/types/mappers";
@@ -81,9 +81,8 @@ export const fetchUserInfo = createAsyncThunk(
 
 export const fetchUserPosts = createAsyncThunk(
   "profile/fetchUserPosts",
-  async (params: { userId: string; offset: number; limit: number }) => {
-    const { userId, offset, limit } = params;
-    return await getUserPosts(userId, offset, limit);
+  async (userId: string) => {
+    return await getUserPosts(userId);
   }
 );
 
