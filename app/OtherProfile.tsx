@@ -23,6 +23,7 @@ import BackIconLight from "../assets/images/icons/navigate_before_lightMode.svg"
 import * as VideoThumbnails from "expo-video-thumbnails";
 import { router } from "expo-router";
 import NoPosts from "@/ui/components/NoPost";
+import { followUserThunk, unfollowUserThunk } from "@/redux/slices/searchSlice";
 
 type PostImage = {
   id: string;
@@ -34,10 +35,12 @@ type PostImage = {
 
 const OtherProfile: React.FC = () => {
   const [postImages, setPostImages] = useState<PostImage[]>([]);
-  const [isFollowing, setIsFollowing] = useState(false); // Estado para el botón "Seguir"
+  const [isFollowing, setIsFollowing] = useState(false);
+  const [Loading, setLoading] = useState(false);
   const theme = darkTheme;
   const styles = createProfileScreenStyles(theme);
   const dispatch = useDispatch<AppDispatch>();
+  const Profile = useSelector((state: RootState) => state.profile);
   const otherProfileData = useSelector(
     (state: RootState) => state.otherProfile
   );
@@ -45,6 +48,28 @@ const OtherProfile: React.FC = () => {
 
   const screenWidth = Dimensions.get("window").width;
   const buttonWidth = screenWidth * 0.85;
+
+  const handleFollowToggle = async () => {
+    setLoading(true);
+    try {
+      if (isFollowing) {
+        await dispatch(
+          unfollowUserThunk({ userId: Profile.id, userToUnfollow: id })
+        ).unwrap();
+        console.log("Dejó de seguir con éxito");
+      } else {
+        await dispatch(
+          followUserThunk({ userId: Profile.id, userToFollow: id })
+        ).unwrap();
+        console.log("Siguió con éxito");
+      }
+      setIsFollowing(!isFollowing);
+    } catch (error) {
+      console.error("Error al cambiar el estado de seguimiento:", error);
+    } finally {
+      setLoading(false);
+    }
+  };
 
   // Carga inicial de los posts
   useEffect(() => {
@@ -122,18 +147,23 @@ const OtherProfile: React.FC = () => {
               : { backgroundColor: theme.colors.primary },
             { width: buttonWidth },
           ]}
-          onPress={() => setIsFollowing(!isFollowing)}
+          onPress={handleFollowToggle}
+          disabled={loading}
         >
-          <Text
-            style={[
-              styles.followButtonText,
-              isFollowing
-                ? { color: theme.colors.textPrimary }
-                : { color: theme.colors.textPrimary },
-            ]}
-          >
-            {isFollowing ? "Dejar de Seguir" : "Seguir"}
-          </Text>
+          {loading ? (
+            <ActivityIndicator color={isFollowing ? "#B5BACB" : "#FFFFFF"} />
+          ) : (
+            <Text
+              style={[
+                styles.followButtonText,
+                isFollowing
+                  ? { color: theme.colors.textPrimary }
+                  : { color: theme.colors.textPrimary },
+              ]}
+            >
+              {isFollowing ? "Dejar de Seguir" : "Seguir"}
+            </Text>
+          )}
         </TouchableOpacity>
       </View>
 

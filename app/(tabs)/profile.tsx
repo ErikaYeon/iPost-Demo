@@ -60,29 +60,32 @@ const ProfileScreen: React.FC = () => {
       setPostImages(updatedPostImages);
     };
     const generateThumbnailsF = async () => {
-      const updatedPostImages = await Promise.all(
-        favorites.map(async (fav) => {
-          const isVideo = fav.contents[0]?.endsWith(".mp4");
-          const thumbnailUri = isVideo
-            ? await generateVideoThumbnail(fav.contents[0])
-            : fav.contents[0];
-          return {
-            id: fav.id,
-            uri: thumbnailUri || fav.contents[0], // Fallback en caso de error
-            user: userProfile.username,
-            description: fav.title,
-            isVideo,
-          };
+      const favoritesImages =
+        favorites?.map((fav) => ({
+          id: fav.id,
+          uri: fav.contents[0] || "", // Asegúrate de que siempre haya un URI válido
+          user: userProfile.username,
+          description: fav.title,
+          isVideo: fav.contents[0]?.endsWith(".mp4") || false,
+        })) || [];
+
+      const updatedFavoritesImages = await Promise.all(
+        favoritesImages.map(async (fav) => {
+          if (fav.isVideo) {
+            const thumbnailUri = await generateVideoThumbnail(fav.uri);
+            return { ...fav, uri: thumbnailUri || fav.uri };
+          }
+          return fav; // Si no es video, regresa el favorito tal cual
         })
       );
       console.log("entro");
-      console.log(updatedPostImages);
-      setFavoritesImages(updatedPostImages);
+      setFavoritesImages(updatedFavoritesImages);
     };
 
     if (activeTab === "post" && posts.length > 0) {
       generateThumbnails();
-    } else if (activeTab === "saved" && favorites.length > 0) {
+    }
+    if (activeTab === "saved" && favorites.length > 0) {
       console.log("entro por aca");
       generateThumbnailsF();
     }
@@ -92,7 +95,8 @@ const ProfileScreen: React.FC = () => {
   useEffect(() => {
     if (id && activeTab === "post") {
       dispatch(fetchUserPosts(id));
-    } else if (id && activeTab === "saved") {
+    }
+    if (id && activeTab === "saved") {
       dispatch(fetchUserFavorites(id));
     }
   }, [dispatch, id, activeTab]);

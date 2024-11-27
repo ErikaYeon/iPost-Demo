@@ -363,7 +363,6 @@ const profileSlice = createSlice({
         (state, action: PayloadAction<Post[]>) => {
           state.loading = false;
           state.favorites = action.payload;
-          console.log(state.favorites);
         }
       )
       .addCase(fetchUserFavorites.rejected, (state, action) => {

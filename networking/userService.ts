@@ -140,7 +140,7 @@ export const getUserFavorites = async (userId: string): Promise<Post[]> => {
   try {
     const response = await api.get(`users/${userId}/favorites`);
     console.log("get favorites exitoso");
-    return response.data.postDTO;
+    return response.data;
   } catch (error: any) {
     console.log("error al traer los favoritos");
     handleError(error);
