@@ -93,7 +93,7 @@ const Timeline: React.FC = () => {
             }))}
             initialLikes={item.likesCount}
             comments={item.commentsCount}
-            isLikedByUser={item.isLikedByUser}
+            isLikedByUser={item.liked}
             postId={item.id}
             userId={userId as string}
             crownType={levelToCrown(item.author.level)}
@@ -102,6 +102,7 @@ const Timeline: React.FC = () => {
             onComment={() => console.log("Commented on post " + item.id)}
             onSave={() => console.log("Saved post " + item.id)}
             isAd={item.isAd}
+            isSavedByUser={item.favorite}
           />
         )}
         keyExtractor={(item) => item.id}
