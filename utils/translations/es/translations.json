@@ -1,0 +1,17 @@
+{
+    "settings": {
+      "title": "Configuración",
+      "theme": "Tema",
+      "lightMode": "Modo Claro",
+      "darkMode": "Modo Oscuro",
+      "language": "Idioma",
+      "spanish": "Español",
+      "english": "Inglés",
+      "changePassword": "Cambiar Contraseña",
+      "logout": "Cerrar Sesión",
+      "deleteAccount": "Eliminar Cuenta"
+    }
+
+
+}
+  

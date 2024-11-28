@@ -27,8 +27,11 @@ import {
 import { resetPosts } from "@/redux/slices/timelineSlice";
 import { languageToLevel, themeToLevel } from "../types/mappers";
 import { UserSettingsResponse } from "@/types/apiContracts";
+import { useTranslation } from "react-i18next";
+import i18next from "i18next"; // Asegúrate de importar i18next
 
 const SettingsScreen: React.FC = () => {
+  const { t } = useTranslation("translation"); // Usando i18next para la traducción
   const [isLogoutVisible, setLogoutVisible] = useState(false);
   const [isDeleteAccountVisible, setDeleteAccountVisible] = useState(false);
   const dispatch = useDispatch<AppDispatch>();
@@ -63,14 +66,15 @@ const SettingsScreen: React.FC = () => {
       console.error("Error al cerrar sesión:", error);
     }
   };
+  
   const handleDeleteAccount = async () => {
     try {
-      const result = await dispatch(deleteAccountAsync(userId)).unwrap(); //Todo: no fucniona
-      console.log("cuenta eliminada con exito" + result);
+      const result = await dispatch(deleteAccountAsync(userId)).unwrap(); 
+      console.log("Cuenta eliminada con éxito: " + result);
       router.push("/Welcome");
     } catch (error: any) {
       console.log(error);
-      console.log("error al querer eliminar la cuenta");
+      console.log("Error al intentar eliminar la cuenta");
     }
   };
 
@@ -81,6 +85,12 @@ const SettingsScreen: React.FC = () => {
     };
     dispatch(setUserSettingsAsync({ userSettings, userId }));
     router.back();
+  };
+
+  // Función para cambiar el idioma
+  const handleChangeLanguage = (lang: string) => {
+    i18next.changeLanguage(lang); // Cambia el idioma con i18next
+    dispatch(updateLanguage(lang)); // Actualiza el idioma en Redux
   };
 
   const renderSelectableOption = ({
@@ -131,35 +141,21 @@ const SettingsScreen: React.FC = () => {
 
   return (
     <SafeAreaView
-      style={[
-        SettingsStyles.safeArea,
-        { backgroundColor: theme.colors.background },
-      ]}
+      style={[SettingsStyles.safeArea, { backgroundColor: theme.colors.background }]}
     >
-      <StatusBar
-        backgroundColor={theme.colors.background}
-        barStyle="light-content"
-      />
+      <StatusBar backgroundColor={theme.colors.background} barStyle="light-content" />
 
       {/* Header */}
       <View style={SettingsStyles.headerContainer}>
         <HeaderWithIcon
           iconComponent={() =>
             themeMode === "light" ? (
-              <BackIconLightMode
-                width={15}
-                height={15}
-                fill={theme.colors.textPrimary}
-              />
+              <BackIconLightMode width={15} height={15} fill={theme.colors.textPrimary} />
             ) : (
-              <BackIcon
-                width={18}
-                height={18}
-                fill={theme.colors.textPrimary}
-              />
+              <BackIcon width={18} height={18} fill={theme.colors.textPrimary} />
             )
           }
-          title="Ajustes"
+          title={t("settings.title")} 
           onPress={handleGoBack}
           theme={theme}
         />
@@ -168,25 +164,14 @@ const SettingsScreen: React.FC = () => {
       {/* Body */}
       <View style={SettingsStyles.container}>
         {/* Tema */}
-        <Text
-          style={[
-            SettingsStyles.sectionTitle,
-            { color: theme.colors.textPrimary },
-          ]}
-        >
-          Tema
+        <Text style={[SettingsStyles.sectionTitle, { color: theme.colors.textPrimary }]}>
+          {t("settings.theme")}
         </Text>
-        <View
-          style={[
-            SettingsStyles.optionContainer,
-            { backgroundColor: containerBackgroundColor },
-          ]}
-        >
+        <View style={[SettingsStyles.optionContainer, { backgroundColor: containerBackgroundColor }]}>
           {renderSelectableOption({
             isSelected: themeMode === "light",
-            // onPress: () => setThemeMode("light"),
             onPress: () => dispatch(updateTheme("light")),
-            text: "Claro",
+            text: t("settings.lightMode"),
             icon:
               themeMode === "light" ? (
                 <LightModeSelectedIcon width={24} height={24} />
@@ -198,9 +183,8 @@ const SettingsScreen: React.FC = () => {
           })}
           {renderSelectableOption({
             isSelected: themeMode === "dark",
-            // onPress: () => setThemeMode("dark"),
             onPress: () => dispatch(updateTheme("dark")),
-            text: "Oscuro",
+            text: t("settings.darkMode"),
             icon: <DarkModeIcon width={24} height={24} />,
             selectedTextColor: darkModeTextColor,
             unselectedTextColor: "#201E43",
@@ -208,60 +192,43 @@ const SettingsScreen: React.FC = () => {
         </View>
 
         {/* Idioma */}
-        <Text
-          style={[
-            SettingsStyles.sectionTitle,
-            { color: theme.colors.textPrimary },
-          ]}
-        >
-          Idioma
+        <Text style={[SettingsStyles.sectionTitle, { color: theme.colors.textPrimary }]}>
+          {t("settings.language")}
         </Text>
-        <View
-          style={[
-            SettingsStyles.optionContainer,
-            { backgroundColor: containerBackgroundColor },
-          ]}
-        >
+        <View style={[SettingsStyles.optionContainer, { backgroundColor: containerBackgroundColor }]}>
           {renderSelectableOption({
             isSelected: language === "Español",
-            // onPress: () => setLanguage("Español"),
-            onPress: () => dispatch(updateLanguage("Español")),
-            text: "Español",
+            onPress: () => handleChangeLanguage("es"), // Cambia a Español
+            text: t("settings.spanish"),
             selectedTextColor: languageSelectedTextColor,
             unselectedTextColor: theme.colors.textSecondary,
           })}
           {renderSelectableOption({
             isSelected: language === "Inglés",
-            // onPress: () => setLanguage("Inglés"),
-            onPress: () => dispatch(updateLanguage("Inglés")),
-            text: "Inglés",
+            onPress: () => handleChangeLanguage("en"), // Cambia a Inglés
+            text: t("settings.english"),
             selectedTextColor: languageSelectedTextColor,
             unselectedTextColor: theme.colors.textSecondary,
           })}
         </View>
 
         {/* Opciones adicionales */}
-        <View
-          style={[
-            SettingsStyles.fullWidthDivider,
-            { backgroundColor: theme.colors.textSecondary },
-          ]}
-        />
+        <View style={[SettingsStyles.fullWidthDivider, { backgroundColor: theme.colors.textSecondary }]} />
         <View>
           {renderSettingsOption({
-            text: "Cambiar contraseña",
+            text: t("settings.changePassword"),
             onPress: () => router.push("/ChangePassword"),
             color: theme.colors.textPrimary,
             dividerColor: theme.colors.textSecondary,
           })}
           {renderSettingsOption({
-            text: "Cerrar sesión",
+            text: t("settings.logout"),
             onPress: () => setLogoutVisible(true),
             color: theme.colors.textPrimary,
             dividerColor: theme.colors.textSecondary,
           })}
           {renderSettingsOption({
-            text: "Eliminar cuenta",
+            text: t("settings.deleteAccount"),
             onPress: () => setDeleteAccountVisible(true),
             color: theme.colors.error,
             dividerColor: theme.colors.textSecondary,
@@ -274,10 +241,7 @@ const SettingsScreen: React.FC = () => {
         <ConfirmLogout
           visible={isLogoutVisible}
           onCancel={() => setLogoutVisible(false)}
-          onConfirm={() => {
-            setLogoutVisible(false);
-            handleLogout();
-          }}
+          onConfirm={handleLogout}
           theme={theme}
         />
       )}
@@ -285,10 +249,7 @@ const SettingsScreen: React.FC = () => {
         <ConfirmDeleteAccount
           visible={isDeleteAccountVisible}
           onCancel={() => setDeleteAccountVisible(false)}
-          onConfirm={() => {
-            setDeleteAccountVisible(false);
-            handleDeleteAccount();
-          }}
+          onConfirm={handleDeleteAccount}
           theme={theme}
         />
       )}

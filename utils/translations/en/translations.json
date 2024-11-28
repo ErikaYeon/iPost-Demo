@@ -1,0 +1,15 @@
+{
+    "settings": {
+      "title": "Settings",
+      "theme": "Theme",
+      "lightMode": "Light Mode",
+      "darkMode": "Dark Mode",
+      "language": "Language",
+      "spanish": "Spanish",
+      "english": "English",
+      "changePassword": "Change Password",
+      "logout": "Log Out",
+      "deleteAccount": "Delete Account"
+    }
+  }
+  
