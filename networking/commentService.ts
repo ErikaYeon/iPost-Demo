@@ -1,6 +1,6 @@
 import api from "./api";
-import { handleError } from "./api";
 import { APIError, commentType1 } from "@/types/apiContracts";
+import { handleError } from "./utils";
 
 export const getComments = async (postId: string): Promise<commentType1[]> => {
   try {

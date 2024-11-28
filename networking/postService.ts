@@ -1,6 +1,6 @@
 import api from "./api";
-import { handleError } from "./api";
 import { Ads, APIError, CreatePostRequest, Post } from "@/types/apiContracts";
+import { handleError } from "./utils";
 
 export const getPosts = async (
   userId: string,

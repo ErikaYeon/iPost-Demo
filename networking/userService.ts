@@ -1,5 +1,4 @@
 import api from "./api";
-import { handleError } from "./api";
 import {
   APIError,
   ProfileImageRequest,
@@ -9,6 +8,7 @@ import {
   UserShort,
   Post,
 } from "@/types/apiContracts";
+import { handleError } from "./utils";
 
 export const getUserData = async (userId: string): Promise<UserResponse> => {
   try {

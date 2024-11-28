@@ -4,11 +4,11 @@ import {
   EmailType,
   LoginRequest,
   LoginResponse,
-  RejectedPayload,
   SignupRequest,
 } from "@/types/apiContracts";
 import api from "./api";
-import { handleError } from "./api";
+import AsyncStorage from "@react-native-async-storage/async-storage";
+import { handleError } from "./utils";
 
 export const signup = async (
   data: SignupRequest
@@ -35,6 +35,7 @@ export const signup = async (
     throw new APIError("Never executed");
   }
 };
+
 export const resendEmail = async (data: {
   email: string;
   emailType: EmailType;
@@ -70,6 +71,7 @@ export const login = async (data: LoginRequest): Promise<LoginResponse> => {
     }
   }
 };
+
 export const ChangePassword = async (
   data: ChangePasswordRequest
 ): Promise<{ status: number; message: string }> => {
@@ -104,6 +106,7 @@ export const deleteAccount = async (userId: string): Promise<void> => {
     throw new APIError("Ocurrió un error");
   }
 };
+
 export const forgotPassword = async (email: string): Promise<void> => {
   try {
     await api.post(`accounts/password/forgot`, email);

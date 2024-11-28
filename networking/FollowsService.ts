@@ -1,6 +1,6 @@
 import api from "./api";
-import { handleError } from "./api";
 import { APIError, UserShort } from "@/types/apiContracts";
+import { handleError } from "./utils";
 
 export const getFollowingsUser = async (
   userId: string
