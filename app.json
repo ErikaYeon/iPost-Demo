@@ -19,7 +19,8 @@
       "adaptiveIcon": {
         "foregroundImage": "./assets/images/icons/ic_launcher_foreground.png",
         "backgroundColor": "#ffffff"
-      }
+      },
+      "package": "com.ipost.iPost"
     },
     "web": {
       "bundler": "metro",
@@ -31,6 +32,14 @@
     ],
     "experiments": {
       "typedRoutes": true
+    },
+    "extra": {
+      "router": {
+        "origin": false
+      },
+      "eas": {
+        "projectId": "eaf79ae7-5e48-4743-9472-c25fb37df7d0"
+      }
     }
   }
 }
