@@ -124,7 +124,7 @@ const LogInScreen: React.FC = () => {
         />
       </View>
 
-      <RegularTextLine text="o continua con" theme={theme} />
+      {/* <RegularTextLine text="o continua con" theme={theme} />
 
       <TouchableOpacity
         style={[sharedStyles.googleButton, { marginTop: theme.spacing.medium }]}
@@ -135,7 +135,7 @@ const LogInScreen: React.FC = () => {
           style={{ width: 24, height: 24 }}
         />
         <Text style={sharedStyles.googleText}>Google</Text>
-      </TouchableOpacity>
+      </TouchableOpacity> */}
 
       {/* Error message banner */}
       {errorMessage ? (
