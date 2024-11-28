@@ -1,6 +1,7 @@
-import { APIError, LoginResponse } from "@/types/apiContracts";
+import { LoginResponse } from "@/types/apiContracts";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import axios from "axios";
+import { router } from "expo-router";
 
 const api = axios.create({
   baseURL: "https://ipost-api.onrender.com/api",
@@ -41,12 +42,11 @@ const processQueue = (error: any, token: string | null = null) => {
   failedQueue = [];
 };
 
+// Interceptor para hacer refresh token en errores 403
 api.interceptors.response.use(
   (response) => response,
   async (error) => {
     const originalRequest = error.config;
-
-    console.log(originalRequest.url);
 
     if (
       error.response?.status === 403 &&
@@ -59,19 +59,16 @@ api.interceptors.response.use(
 
       // Si los tokens son diferentes, actualizar y reintentar
       if (storedAccessToken && storedAccessToken !== originalAccessToken) {
-        console.log("no coinciden");
         originalRequest.headers[
           "Authorization"
         ] = `Bearer ${storedAccessToken}`;
         return api(originalRequest);
       }
 
-      console.log({ isRefreshing });
       if (isRefreshing) {
         // Si hay un refresh en curso, agregar este request a la cola
         return new Promise((resolve, reject) => {
           failedQueue.push({ resolve, reject });
-          console.log("failedQueue pushed");
         })
           .then((token) => {
             originalRequest.headers["Authorization"] = `Bearer ${token}`;
@@ -85,9 +82,7 @@ api.interceptors.response.use(
       isRefreshing = true;
       refreshPromise = (async () => {
         try {
-          console.log("refreshPromise dispatched");
           const refreshToken = await AsyncStorage.getItem("refresh_token");
-          console.log({ refreshToken });
           if (!refreshToken) {
             throw new Error("No refresh token available");
           }
@@ -110,24 +105,29 @@ api.interceptors.response.use(
 
       try {
         const newToken = await refreshPromise;
-        console.log({ newToken });
         originalRequest.headers["Authorization"] = `Bearer ${newToken}`;
         return api(originalRequest);
-      } catch (refreshError) {
+      } catch (refreshError: any) {
+        if (
+          refreshError.message === "INVALID_REFRESH_TOKEN" ||
+          refreshError.message === "NO_REFRESH_TOKEN" ||
+          refreshError.message === "REFRESH_TOKEN_ERROR"
+        ) {
+          processQueue(refreshError);
+          router.push("/Welcome");
+        }
         throw refreshError;
       }
     }
-
     return Promise.reject(error);
   }
 );
 
 export const refreshAccessToken = async (): Promise<string> => {
   try {
-    console.log("Entró en refreshAccessToken");
     const refreshToken = await AsyncStorage.getItem("refresh_token");
     if (!refreshToken) {
-      throw new Error("No se encontró el refresh token");
+      throw new Error("NO_REFRESH_TOKEN");
     }
 
     const response = await api.post(
@@ -140,14 +140,23 @@ export const refreshAccessToken = async (): Promise<string> => {
       }
     );
 
-    console.log("Respuesta del back: ", response);
     const refreshResponse: LoginResponse = response.data;
     await AsyncStorage.setItem("access_token", refreshResponse.access_token);
 
     return refreshResponse.access_token;
   } catch (error) {
     console.error("Error al renovar el access token: ", error);
-    throw new APIError("Ocurrió un error renovando el access token");
+
+    await AsyncStorage.removeItem("access_token");
+    await AsyncStorage.removeItem("refresh_token");
+
+    if (axios.isAxiosError(error)) {
+      if (error.response?.status === 401 || error.response?.status === 403) {
+        throw new Error("INVALID_REFRESH_TOKEN");
+      }
+    }
+
+    throw new Error("REFRESH_TOKEN_ERROR");
   }
 };
 
