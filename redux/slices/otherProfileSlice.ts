@@ -1,4 +1,3 @@
-// slices/otherProfileSlice.ts
 import { createSlice, createAsyncThunk, PayloadAction } from "@reduxjs/toolkit";
 import { getUserData, getUserPosts } from "@/networking/userService";
 import { APIError, UserResponse, Post } from "@/types/apiContracts";

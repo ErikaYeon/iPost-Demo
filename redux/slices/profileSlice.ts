@@ -178,6 +178,9 @@ const profileSlice = createSlice({
   name: "user",
   initialState,
   reducers: {
+    setProfileUserId: (state, action: PayloadAction<string>) => {
+      state.id = action.payload;
+    },
     setProfileEmail: (state, action: PayloadAction<{ email: string }>) => {
       const { email } = action.payload;
       state.email = email;
@@ -384,6 +387,7 @@ export const {
   setProfileCover,
   setProifilePhoto,
   setProfileData,
+  setProfileUserId,
 } = profileSlice.actions;
 
 export const selectProfile = (state: RootState) => state;
