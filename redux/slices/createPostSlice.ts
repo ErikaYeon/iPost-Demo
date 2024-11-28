@@ -1,8 +1,6 @@
-// createPostSlice.ts
-
 import { createSlice, createAsyncThunk, PayloadAction } from "@reduxjs/toolkit";
 import { addPost } from "@/networking/postService";
-import { APIError, CreatePostRequest, Post } from "@/types/apiContracts";
+import { APIError, CreatePostRequest } from "@/types/apiContracts";
 
 interface CreatePostState {
   postContent: string;

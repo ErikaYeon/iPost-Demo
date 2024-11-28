@@ -165,19 +165,6 @@ export const autoLoginAsync = createAsyncThunk(
       const refreshToken = await AsyncStorage.getItem("refresh_token");
       const userId = await AsyncStorage.getItem("user_id");
 
-      // if (!accessToken && refreshToken) {
-      //   // const newAccessToken = await refreshAccessToken(refreshToken);
-      //   if (!newAccessToken) {
-      //     throw new Error("No se pudo renovar el token de acceso.");
-      //   }
-
-      //   return {
-      //     access_token: newAccessToken,
-      //     refresh_token: refreshToken,
-      //     userId: userId || "",
-      //   };
-      // }
-
       if (accessToken && userId && refreshToken) {
         return {
           access_token: accessToken,

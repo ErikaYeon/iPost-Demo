@@ -7,7 +7,6 @@ import {
   SignupRequest,
 } from "@/types/apiContracts";
 import api from "./api";
-import AsyncStorage from "@react-native-async-storage/async-storage";
 import { handleError } from "./utils";
 
 export const signup = async (
