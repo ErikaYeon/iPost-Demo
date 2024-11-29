@@ -14,15 +14,22 @@ export const getPosts = async (
     if (time) {
       params.time = time;
     }
-    if (time) {
-      const response = await api.get("/posts", {
-        params: { userId, offset, limit, time },
-      });
-    }
+    console.log(params);
+    // if (time) {
+    //   const response = await api.get("/posts", {
+    //     params: { userId, offset, limit, time },
+    //   });
+    //   console.log("response de get timeline" + response.data);
+    //   return response.data;
+    // } else {
     const response = await api.get("/posts", {
-      params: { userId, offset, limit },
+      params,
     });
+    console.log(response.data);
     return response.data;
+    // }
+
+    // return response.data;
   } catch (error: any) {
     handleError(error);
     throw new APIError("Never executed");

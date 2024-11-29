@@ -93,6 +93,9 @@ const postSlice = createSlice({
     clearPosts: (state) => {
       (state.posts = []), (state.offset = 0);
     },
+    UpdateTime(state, action) {
+      state.time = action.payload;
+    },
   },
   extraReducers: (builder) => {
     builder
@@ -110,8 +113,14 @@ const postSlice = createSlice({
         }));
         state.hasMore = action.payload.length > 0;
         state.offset += APIConstants.LIST_LIMIT;
-        state.time = new Date().toISOString();
+        state.time =
+          state.posts.length > 0
+            ? state.posts[state.posts.length - 1].createdAt
+            : new Date().toISOString();
+        console.log(action.payload);
+        console.log(state.posts);
       })
+
       .addCase(fetchPosts.rejected, (state, action) => {
         state.loading = false;
         state.error = action.error.message ?? "Failed to fetch posts";
@@ -142,6 +151,6 @@ const postSlice = createSlice({
 });
 
 // Exporta la nueva acción
-export const { addNewPost, clearPosts } = postSlice.actions;
+export const { addNewPost, clearPosts, UpdateTime } = postSlice.actions;
 
 export default postSlice.reducer;

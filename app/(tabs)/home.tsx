@@ -16,7 +16,7 @@ import { useSelector, useDispatch } from "react-redux";
 import { AppDispatch, RootState } from "../../redux/store";
 import Placeholders from "@/constants/ProfilePlaceholders";
 import { levelToCrown } from "@/types/mappers";
-import { fetchPosts } from "@/redux/slices/postSlice";
+import { fetchPosts, UpdateTime } from "@/redux/slices/postSlice";
 import { addPost, addPosts } from "@/redux/slices/timelineSlice";
 import { fetchAds, fillPostsFromAds } from "@/redux/slices/adsSlice";
 import {
@@ -24,6 +24,8 @@ import {
   getUserSettingsAsync,
 } from "../../redux/slices/profileSlice";
 import { isEmpty } from "@/utils/RegexExpressions";
+import moment from "moment";
+moment().format();
 
 const home = () => {
   const theme = darkTheme;
@@ -38,10 +40,27 @@ const home = () => {
   const ListAdsPost = useSelector((state: RootState) => state.ads.postsFromAds);
   const [hasFetched, setHasFetched] = useState(false);
   const [refreshing, setRefreshing] = useState(false);
+  var twDate = "2016-01-08T00:00:00-06:00";
+  // tu fecha originalvar d = new Date(twDate);
+  // convierte a objeto Datevar m = moment(d).utc().format("YYYY-MM-DDTHH:mm:ss.SSS[Z]");
+  // convierte a UTC y formateaconsole.log(m);
+  // ejemplo de salida:// 2016-01-08T06:00:00.000Z
+
+  // const time2 = moment(new Date(localPosts[0].createdAt))
+  //   .format("YYYY-MM-DDTHH:mm:ss.SSS[Z]")
+  //   .toString();
+  // console.log("time2" + time2);
+  // console.log("time 1" + time1);
+  // console.log("create at de local post title" + localPosts[0].title);
 
   // Función para cargar los posts (llama al thunk fetchPosts)
   const loadPosts = (userId: string, isRefreshing: boolean) => {
+    // dispatch(TimePostsList(localPosts[(localPosts.length -1)].createdAt))
     if (isRefreshing) {
+      const time1 = moment(localPosts[0].createdAt).format(
+        "YYYY-MM-DDTHH:mm:ss.SSS[Z]"
+      );
+      dispatch(UpdateTime(time1));
       dispatch(fetchPosts({ userId, isRefreshing }));
     } else {
       dispatch(fetchPosts({ userId, isRefreshing: false }));
