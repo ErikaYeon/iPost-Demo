@@ -31,7 +31,9 @@ import { useTranslation } from "react-i18next";
 import i18next from "i18next"; // Asegúrate de importar i18next
 
 const SettingsScreen: React.FC = () => {
-  const { t } = useTranslation("translation"); // Usando i18next para la traducción
+  const { t, i18n } = useTranslation("translations"); // Usando i18next para la traducción
+  console.log(i18n.t("settings.title"))
+  
   const [isLogoutVisible, setLogoutVisible] = useState(false);
   const [isDeleteAccountVisible, setDeleteAccountVisible] = useState(false);
   const dispatch = useDispatch<AppDispatch>();
@@ -91,8 +93,9 @@ const SettingsScreen: React.FC = () => {
   const handleChangeLanguage = (lang: string) => {
     i18next.changeLanguage(lang); // Cambia el idioma con i18next
     dispatch(updateLanguage(lang)); // Actualiza el idioma en Redux
+    AsyncStorage.setItem('language', lang); // Guarda el idioma en AsyncStorage
   };
-
+  
   const renderSelectableOption = ({
     isSelected,
     onPress,
@@ -155,7 +158,7 @@ const SettingsScreen: React.FC = () => {
               <BackIcon width={18} height={18} fill={theme.colors.textPrimary} />
             )
           }
-          title={t("settings.title")} 
+          title={i18n.t("settings.title")}  //PONER i18n!!!
           onPress={handleGoBack}
           theme={theme}
         />
