@@ -22,14 +22,31 @@ import { router } from "expo-router";
 import { useSelector } from "react-redux";
 import { RootState } from "@/redux/store";
 import NoFollowings from "@/ui/components/NoFollowings";
+import { UserShort } from "@/types/apiContracts";
 
 const SearchFollowing: React.FC = () => {
   const theme = darkTheme;
   const styles = createSearchProfilesStyles(theme);
+  const [searchQuery, setSearchQuery] = useState("");
+  const [filteredList, setFilteredList] = useState<UserShort[]>([]);
 
   const followingList = useSelector(
     (state: RootState) => state.search.followingsList
   );
+  const handleSearch = (query: string) => {
+    setSearchQuery(query);
+    if (query.trim() === "") {
+      setFilteredList([]); // Resetea la lista filtrada si no hay búsqueda
+    } else {
+      const results = followingList.filter(
+        (item) =>
+          item.name.toLowerCase().includes(query.toLowerCase()) ||
+          item.username.toLowerCase().includes(query.toLowerCase())
+      );
+      console.log(results);
+      setFilteredList(results);
+    }
+  };
 
   const renderCrownIcon = (level: number) => {
     switch (level) {
@@ -58,6 +75,8 @@ const SearchFollowing: React.FC = () => {
       </View>
     </View>
   );
+
+  const listToDisplay = searchQuery ? filteredList : followingList;
 
   return (
     <SafeAreaView style={styles.container}>
@@ -88,12 +107,21 @@ const SearchFollowing: React.FC = () => {
           theme={theme}
         />
       </SafeAreaView>
+      {/* Barra de búsqueda */}
+      <View style={styles.searchBarContainer}>
+        <SearchBar
+          placeholder="Buscar"
+          onChangeText={handleSearch}
+          value={searchQuery}
+          theme={theme}
+        />
+      </View>
 
-      {followingList.length === 0 ? (
+      {listToDisplay.length === 0 ? (
         <NoFollowings theme={theme} />
       ) : (
         <FlatList
-          data={followingList}
+          data={listToDisplay}
           keyExtractor={(item) => item.id}
           renderItem={renderProfile}
           contentContainerStyle={styles.listContainer}

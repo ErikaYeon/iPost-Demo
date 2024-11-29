@@ -22,14 +22,31 @@ import { router } from "expo-router";
 import { RootState } from "@/redux/store";
 import { useSelector } from "react-redux";
 import NoFollowers from "@/ui/components/NoFollowers";
+import { UserShort } from "@/types/apiContracts";
 
 const SearchFollowers: React.FC = () => {
   const theme = darkTheme;
   const styles = createSearchProfilesStyles(theme);
-
+  const [searchQuery, setSearchQuery] = useState("");
+  const [filteredList, setFilteredList] = useState<UserShort[]>([]);
   const followersList = useSelector(
     (state: RootState) => state.search.followersList
   );
+
+  const handleSearch = (query: string) => {
+    setSearchQuery(query);
+    if (query.trim() === "") {
+      setFilteredList([]); // Resetea la lista filtrada si no hay búsqueda
+    } else {
+      const results = followersList.filter(
+        (item) =>
+          item.name.toLowerCase().includes(query.toLowerCase()) ||
+          item.username.toLowerCase().includes(query.toLowerCase())
+      );
+      console.log(results);
+      setFilteredList(results);
+    }
+  };
 
   const renderCrownIcon = (level: number) => {
     switch (level) {
@@ -58,6 +75,8 @@ const SearchFollowers: React.FC = () => {
       </View>
     </TouchableOpacity>
   );
+
+  const listToDisplay = searchQuery ? filteredList : followersList;
 
   return (
     <SafeAreaView style={styles.container}>
@@ -89,11 +108,21 @@ const SearchFollowers: React.FC = () => {
         />
       </SafeAreaView>
 
-      {followersList.length === 0 ? (
+      {/* Barra de búsqueda */}
+      <View style={styles.searchBarContainer}>
+        <SearchBar
+          placeholder="Buscar"
+          onChangeText={handleSearch}
+          value={searchQuery}
+          theme={theme}
+        />
+      </View>
+
+      {listToDisplay.length === 0 ? (
         <NoFollowers theme={theme} />
       ) : (
         <FlatList
-          data={followersList}
+          data={listToDisplay}
           keyExtractor={(item) => item.id}
           renderItem={renderProfile}
           contentContainerStyle={styles.listContainer}
