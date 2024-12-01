@@ -22,8 +22,10 @@ import { router } from "expo-router";
 import { RootState } from "@/redux/store";
 import { useSelector } from "react-redux";
 import NoFollowers from "@/ui/components/NoFollowers";
+import { useTranslation } from "react-i18next";
 
 const SearchFollowers: React.FC = () => {
+  const { t, i18n } = useTranslation();
   const theme = darkTheme;
   const styles = createSearchProfilesStyles(theme);
 
@@ -83,7 +85,7 @@ const SearchFollowers: React.FC = () => {
               />
             )
           }
-          title="Seguidores"
+          title={i18n.t('searchFollowers.title')}
           onPress={() => router.back()}
           theme={theme}
         />

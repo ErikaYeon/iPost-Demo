@@ -168,13 +168,13 @@ const SettingsScreen: React.FC = () => {
       <View style={SettingsStyles.container}>
         {/* Tema */}
         <Text style={[SettingsStyles.sectionTitle, { color: theme.colors.textPrimary }]}>
-          {t("settings.theme")}
+          {i18n.t("settings.theme")}
         </Text>
         <View style={[SettingsStyles.optionContainer, { backgroundColor: containerBackgroundColor }]}>
           {renderSelectableOption({
             isSelected: themeMode === "light",
             onPress: () => dispatch(updateTheme("light")),
-            text: t("settings.lightMode"),
+            text: i18n.t("settings.lightMode"),
             icon:
               themeMode === "light" ? (
                 <LightModeSelectedIcon width={24} height={24} />
@@ -187,7 +187,7 @@ const SettingsScreen: React.FC = () => {
           {renderSelectableOption({
             isSelected: themeMode === "dark",
             onPress: () => dispatch(updateTheme("dark")),
-            text: t("settings.darkMode"),
+            text: i18n.t("settings.darkMode"),
             icon: <DarkModeIcon width={24} height={24} />,
             selectedTextColor: darkModeTextColor,
             unselectedTextColor: "#201E43",
@@ -196,20 +196,20 @@ const SettingsScreen: React.FC = () => {
 
         {/* Idioma */}
         <Text style={[SettingsStyles.sectionTitle, { color: theme.colors.textPrimary }]}>
-          {t("settings.language")}
+          {i18n.t("settings.language")}
         </Text>
         <View style={[SettingsStyles.optionContainer, { backgroundColor: containerBackgroundColor }]}>
           {renderSelectableOption({
             isSelected: language === "Español",
             onPress: () => handleChangeLanguage("es"), // Cambia a Español
-            text: t("settings.spanish"),
+            text: i18n.t("settings.spanish"),
             selectedTextColor: languageSelectedTextColor,
             unselectedTextColor: theme.colors.textSecondary,
           })}
           {renderSelectableOption({
             isSelected: language === "Inglés",
             onPress: () => handleChangeLanguage("en"), // Cambia a Inglés
-            text: t("settings.english"),
+            text: i18n.t("settings.english"),
             selectedTextColor: languageSelectedTextColor,
             unselectedTextColor: theme.colors.textSecondary,
           })}
@@ -219,19 +219,19 @@ const SettingsScreen: React.FC = () => {
         <View style={[SettingsStyles.fullWidthDivider, { backgroundColor: theme.colors.textSecondary }]} />
         <View>
           {renderSettingsOption({
-            text: t("settings.changePassword"),
+            text: i18n.t("settings.changePassword"),
             onPress: () => router.push("/ChangePassword"),
             color: theme.colors.textPrimary,
             dividerColor: theme.colors.textSecondary,
           })}
           {renderSettingsOption({
-            text: t("settings.logout"),
+            text: i18n.t("settings.logout"),
             onPress: () => setLogoutVisible(true),
             color: theme.colors.textPrimary,
             dividerColor: theme.colors.textSecondary,
           })}
           {renderSettingsOption({
-            text: t("settings.deleteAccount"),
+            text: i18n.t("settings.deleteAccount"),
             onPress: () => setDeleteAccountVisible(true),
             color: theme.colors.error,
             dividerColor: theme.colors.textSecondary,

@@ -10,10 +10,199 @@
       "changePassword": "Change Password",
       "logout": "Log Out",
       "deleteAccount": "Delete Account"
+    },
+    "activateAccount": {
+      "titlePart1": "Activate your",
+      "infoMessage": "An access link has been sent to your email. Please check your inbox.",
+      "boldText": "access link",
+      "resendButton": "Resend link",
+      "backToLogin": "Back to login",
+      "successMessage": "Email sent successfully",
+      "errorMessage": "An error occurred, please try again"
+    },
+  
+    "addLocation": {
+      "headerTitle": "Add location",
+      "searchPlaceholder": "Search for a location",
+      "searching": "Searching"
+    },
+
+    "changePassword": {
+        "headerTitle": "Change Password",
+        "currentPasswordLabel": "Current Password",
+        "newPasswordLabel": "New Password",
+        "confirmNewPasswordLabel": "Confirm New Password",
+        "passwordPlaceholder": "**************",
+        "changeButton": "Change",
+        "forgotPasswordLink": "Forgot my password",
+        "errors": {
+          "emptyFields": "Please fill in all fields.",
+          "passwordMismatch": "The new password and its confirmation do not match.",
+          "invalidPassword": "The password must be at least 6 characters long and contain a special character.",
+          "shortPassword": "The new password must be at least 8 characters long.",
+          "unexpected": "Unexpected error"
+        }
+    },
+    
+    "changePassword2": {
+        "headerTitle": "Change Password",
+        "instructions": "A verification link will be sent to the email associated with this account. Check your junk or spam folder if you don't see it in the inbox",
+        "boldText": "verification link",
+        "sendLinkButton": "Send Link",
+        "successMessage": "Email sent successfully"
+    },
+    
+    "createPost": {
+        "headerTitle": "Create Post",
+        "placeholder": "What would you like to post?",
+        "selectMedia": "Select photos or videos",
+        "addLocation": "Add location",
+        "publishButton": "Publish",
+        "error": "Error creating the Post"
+    },
+    
+    "editProfile": {
+        "headerTitle": "Edit Profile",
+        "profileAndCover": "Profile and Cover",
+        "touchPhoto": "Tap the photo to change it",
+        "firstName": "First Name:",
+        "lastName": "Last Name:",
+        "username": "Username:",
+        "gender": "Gender:",
+        "description": "Description:",
+        "saveButton": "Save Changes"
+    },
+    
+    "permissions": {
+        "denied": "Permission denied",
+        "cameraNeeded": "Camera access is required to take photos.",
+        "galleryNeeded": "Gallery access is required to upload images."
+      },
+    
+    "editProfileCover": {
+        "title": "Edit Cover Photo",
+        "takePhoto": "Take Photo",
+        "uploadImage": "Upload Image",
+        "cancel": "Cancel",
+        "save": "Save"
+    },
+
+    "editProfilePhoto": {
+        "title": "Edit Profile Photo",
+        "takePhoto": "Take Photo",
+        "uploadImage": "Upload Image",
+        "cancel": "Cancel",
+        "save": "Save"
+    },
+    
+    "errorConexion": {
+        "title": "No internet connection",
+        "message": "Please check your internet connection.",
+        "retryButton": "Retry"
+    },
+    
+    "errorGeneral": {
+        "title": "Oops!",
+        "message": "Something went wrong, please try again.",
+        "retryButton": "Retry"
+    },
+  
+    "loginScreen": {
+        "header": {
+          "title": "Log in to"
+        },
+        "input": {
+          "email": {
+            "label": "Email",
+            "placeholder": "youremail@example.com"
+          },
+          "password": {
+            "label": "Password",
+            "placeholder": "********"
+          }
+        },
+        "link": {
+          "forgotPassword": "Forgot your password?",
+          "signup": "Sign up"
+        },
+        "button": {
+          "login": "Log in"
+        },
+        "text": {
+          "noAccount": "Don't have an account? "
+        },
+        "errorMessage": {
+          "fillFields": "Please fill in all fields.",
+          "invalidEmail": "Please enter a valid email address.",
+          "invalidCredentials": "Invalid credentials, please try again.",
+          "genericError": "An error occurred, please try again."
+        }
+    },
+    
+    "logInFaceIdScreen": {
+        "header": {
+          "hello": "Hello"
+        },
+        "input": {
+          "password": {
+            "label": "Password",
+            "placeholder": "********"
+          }
+        },
+        "link": {
+          "forgotPassword": "Forgot your password?",
+          "changeUser": "Change user"
+        },
+        "button": {
+          "login": "Log in"
+        },
+        "errorMessage": {
+          "fillFields": "Please fill in all fields.",
+          "invalidPassword": "Password must be at least 6 characters and contain a special character."
+        }
+    },
+
+    "follow": {
+        "stop": "Unfollow",
+        "start": "Follow",
+        "stop_success": "Successfully unfollowed",
+        "start_success": "Successfully followed",
+        "error": "Error changing follow status"
+    },
+
+    "tabs": {
+        "post": "POST"
+    },
+    
+    "restorePassword": {
+        "header": "Reset Password",
+        "info": "Enter your email address and we'll send you a link to recover access to your account.",
+        "errorFields": "Please complete the fields.",
+        "errorInvalidEmail": "Please enter a valid email address.",
+        "buttonText": "Send Link",
+        "linkText": "Back to login"
+    },
+    
+    "restorePassword2": {
+        "header": "Reset Password",
+        "infoMessage": "A recovery link has been sent to the email associated with your account. Check the spam or junk folder if you can't find it.",
+        "boldText": "recovery link",
+        "buttonText": "Resend Link",
+        "linkText": "Back to login",
+        "successMessage": "Email sent successfully"
+    },
+    
+    "searchFollowers": {
+        "title": "Followers"
+    },
+    
+    "searchFollowing": {
+        "title": "Followings"
     }
     
+    
 
-
+    
 
 }
   

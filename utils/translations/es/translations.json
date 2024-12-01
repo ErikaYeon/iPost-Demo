@@ -10,7 +10,198 @@
       "changePassword": "Cambiar Contraseña",
       "logout": "Cerrar Sesión",
       "deleteAccount": "Eliminar Cuenta"
+    },
+    "activateAccount": {
+      "titlePart1": "Activá tu",
+      "infoMessage": "Se ha enviado un enlace de acceso a su correo. Por favor, verifique su bandeja de entrada.",
+      "boldText": "enlace de acceso",
+      "resendButton": "Reenviar enlace",
+      "backToLogin": "Volver a inicio de sesión",
+      "successMessage": "Email enviado con éxito",
+      "errorMessage": "Ocurrió un error, intentalo nuevamente"
+    },
+    "addLocation": {
+      "headerTitle": "Agregar ubicación",
+      "searchPlaceholder": "Buscar una ubicación",
+      "searching": "Buscando"
+    },
+    
+    "changePassword": {
+        "headerTitle": "Cambiar contraseña",
+        "currentPasswordLabel": "Contraseña actual",
+        "newPasswordLabel": "Contraseña nueva",
+        "confirmNewPasswordLabel": "Confirmación de contraseña nueva",
+        "passwordPlaceholder": "**************",
+        "changeButton": "Cambiar",
+        "forgotPasswordLink": "Olvidé mi contraseña",
+        "errors": {
+          "emptyFields": "Por favor, completa todos los campos.",
+          "passwordMismatch": "La nueva contraseña y su confirmación no coinciden.",
+          "invalidPassword": "La contraseña debe tener al menos 6 caracteres y un carácter especial.",
+          "shortPassword": "La nueva contraseña debe tener al menos 8 caracteres.",
+          "unexpected": "Error inesperado"
+        }
+    },
+    
+    "changePassword2": {
+        "headerTitle": "Cambiar contraseña",
+        "instructions": "Se le enviará un link de verificación al correo asociado a esta cuenta. Revisa tu carpeta de correo no deseado o spam si no lo ves en la casilla de entrada",
+        "boldText": "link de verificación",
+        "sendLinkButton": "Enviar enlace",
+        "successMessage": "Email enviado con éxito"
+    },
+    
+    "createPost": {
+        "headerTitle": "Crear Post",
+        "placeholder": "¿Qué te gustaría publicar?",
+        "selectMedia": "Seleccionar fotos o videos",
+        "addLocation": "Agregar ubicación",
+        "publishButton": "Publicar",
+        "error": "Error al crear el Post"
+    },
+    
+    "editProfile": {
+        "headerTitle": "Editar perfil",
+        "profileAndCover": "Perfil y portada",
+        "touchPhoto": "Toca la foto para cambiarla",
+        "firstName": "Nombre:",
+        "lastName": "Apellido:",
+        "username": "Usuario:",
+        "gender": "Género:",
+        "description": "Descripción:",
+        "saveButton": "Guardar cambios"
+    },
+    
+    "permissions": {
+        "denied": "Permiso denegado",
+        "cameraNeeded": "Se necesita acceso a la cámara para tomar fotos.",
+        "galleryNeeded": "Se necesita acceso a la galería para subir imágenes."
+      },
+
+    "editProfileCover": {
+        "title": "Editar foto de portada",
+        "takePhoto": "Tomar foto",
+        "uploadImage": "Subir imagen",
+        "cancel": "Cancelar",
+        "save": "Guardar"
+    },
+
+    "editProfilePhoto": {
+        "title": "Editar foto de perfil",
+        "takePhoto": "Tomar foto",
+        "uploadImage": "Subir imagen",
+        "cancel": "Cancelar",
+        "save": "Guardar"
+    },
+
+    "errorConexion": {
+        "title": "No hay conexión a Internet",
+        "message": "Por favor, chequea tu conexión a Internet.",
+        "retryButton": "Reintentar"
+    },
+    
+    "errorGeneral": {
+        "title": "¡Ups!",
+        "message": "Algo salió mal, por favor intenta nuevamente.",
+        "retryButton": "Reintentar"
+    },
+    
+    "loginScreen": {
+        "header": {
+          "title": "Ingresar a"
+        },
+        "input": {
+          "email": {
+            "label": "Correo electrónico",
+            "placeholder": "micorreo@ejemplo.com"
+          },
+          "password": {
+            "label": "Contraseña",
+            "placeholder": "**************"
+          }
+        },
+        "link": {
+          "forgotPassword": "¿Olvidaste tu contraseña?",
+          "signup": "Regístrate"
+        },
+        "button": {
+          "login": "Iniciar sesión"
+        },
+        "text": {
+          "noAccount": "¿No tienes una cuenta? "
+        },
+        "errorMessage": {
+          "fillFields": "Por favor, completa todos los campos.",
+          "invalidEmail": "Por favor, ingresa un correo electrónico válido.",
+          "invalidCredentials": "Credenciales inválidas, intenta nuevamente.",
+          "genericError": "Ocurrió un error, intenta nuevamente."
+        }
+    },
+
+    
+    "logInFaceIdScreen": {
+        "header": {
+          "hello": "¡Hola"
+        },
+        "input": {
+          "password": {
+            "label": "Contraseña",
+            "placeholder": "**************"
+          }
+        },
+        "link": {
+          "forgotPassword": "¿Olvidaste tu contraseña?",
+          "changeUser": "Cambiar de usuario"
+        },
+        "button": {
+          "login": "Iniciar sesión"
+        },
+        "errorMessage": {
+          "fillFields": "Por favor, completa todos los campos.",
+          "invalidPassword": "La contraseña debe tener al menos 6 caracteres y un carácter especial."
+        }
+    },
+    "follow": {
+        "stop": "Dejar de Seguir",
+        "start": "Seguir",
+        "stop_success": "Dejó de seguir con éxito",
+        "start_success": "Siguió con éxito",
+        "error": "Error al cambiar el estado de seguimiento"
+    },
+
+    "tabs": {
+        "post": "POST"
+    },
+    
+    "restorePassword": {
+        "header": "Reestablecer Contraseña",
+        "info": "Ingresa tu correo electrónico y te enviaremos un enlace para que recuperes el acceso a tu cuenta.",
+        "errorFields": "Por favor, completa los campos.",
+        "errorInvalidEmail": "Por favor, ingresa un correo electrónico válido.",
+        "buttonText": "Enviar Enlace",
+        "linkText": "Volver a inicio de sesión"
+    },
+    
+    "restorePassword2": {
+        "header": "Reestablecer Contraseña",
+        "infoMessage": "Se ha enviado un enlace de recuperación al correo asociado a su cuenta. Revisa también la carpeta de spam o correo no deseado si no lo encuentras.",
+        "boldText": "enlace de recuperación",
+        "buttonText": "Reenviar enlace",
+        "linkText": "Volver a inicio de sesión",
+        "successMessage": "Email enviado con éxito"
+    },
+    
+    "searchFollowers": {
+        "title": "Seguidores"
+    },
+    
+    "searchFollowing": {
+        "title": "Seguidos"
     }
+    
+    
+    
+    
 
 
 }

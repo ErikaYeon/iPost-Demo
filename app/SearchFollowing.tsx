@@ -22,8 +22,10 @@ import { router } from "expo-router";
 import { useSelector } from "react-redux";
 import { RootState } from "@/redux/store";
 import NoFollowings from "@/ui/components/NoFollowings";
+import { useTranslation } from "react-i18next";
 
 const SearchFollowing: React.FC = () => {
+  const { t, i18n } = useTranslation();
   const theme = darkTheme;
   const styles = createSearchProfilesStyles(theme);
 
@@ -83,7 +85,7 @@ const SearchFollowing: React.FC = () => {
               />
             )
           }
-          title="Seguidos"
+          title={i18n.t('searchFollowing.title')}
           onPress={() => router.back()}
           theme={theme}
         />

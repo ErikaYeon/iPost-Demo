@@ -286,7 +286,7 @@ const profileSlice = createSlice({
           console.log(action.payload.theme);
           state.theme = action.payload.theme === "DARK" ? "dark" : "light";
           state.language =
-            action.payload.language === "ENGLISH" ? "Inglés" : "Español";
+            action.payload.language === "SPANISH" ? "Español" : "Inglés";
         }
       )
       .addCase(setUserSettingsAsync.pending, (state) => {

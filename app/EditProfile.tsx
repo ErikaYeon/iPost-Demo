@@ -25,12 +25,14 @@ import {
 } from "@/redux/slices/profileSlice";
 import { genderToString, stringToGender } from "@/types/mappers";
 import { ProfileUpdateRequest } from "@/types/apiContracts";
+import { useTranslation } from "react-i18next";
 
 const theme = darkTheme; // Cambia manualmente entre `darkTheme` y `lightTheme`
 
 const GENDER_OPTIONS = ["Mujer", "Hombre", "No binario", "Prefiero no decirlo"];
 
 const EditProfile: React.FC = () => {
+  const { t, i18n } = useTranslation("translations");
   const dispatch = useDispatch<AppDispatch>();
   const Profile = useSelector((state: RootState) => state.profile);
   const [genderDropdownVisible, setGenderDropdownVisible] = useState(false);
@@ -100,40 +102,42 @@ const EditProfile: React.FC = () => {
               />
             )
           }
-          title="Editar perfil"
+          title={i18n.t("editProfile.headerTitle")}
           onPress={() => router.back()}
           theme={theme}
         />
       </SafeAreaView>
 
       <View style={styles.sectionContainer}>
-        <Text style={styles.sectionTitle}>Perfil y portada</Text>
-        <Text style={styles.subtitle}>Toca la foto para cambiarla</Text>
+        <Text style={styles.sectionTitle}>
+          {i18n.t("editProfile.profileAndCover")}
+        </Text>
+        <Text style={styles.subtitle}>{i18n.t("editProfile.touchPhoto")}</Text>
       </View>
 
       <EditProfileHeader theme={theme} />
 
       <ScrollView contentContainerStyle={styles.contentContainer}>
         <InputRow
-          label="Nombre:"
+          label={i18n.t("editProfile.firstName")}
           value={firstName}
           onChangeText={setFirstName}
           theme={theme}
         />
         <InputRow
-          label="Apellido:"
+          label={i18n.t("editProfile.lastName")}
           value={lastName}
           onChangeText={setLastName}
           theme={theme}
         />
         <InputRow
-          label="Usuario:"
+          label={i18n.t("editProfile.username")}
           value={username}
           onChangeText={setUsername}
           theme={theme}
         />
         <InputRow
-          label="Género:"
+          label={i18n.t("editProfile.gender")}
           value={gender}
           isSelectable
           isDropdownVisible={genderDropdownVisible}
@@ -144,14 +148,14 @@ const EditProfile: React.FC = () => {
           theme={theme}
         />
         <InputRow
-          label="Descripción:"
+          label={i18n.t("editProfile.description")}
           value={description}
           onChangeText={setDescription}
           multiline
           theme={theme}
         />
         <CustomButton
-          title="Guardar cambios"
+          title={i18n.t("editProfile.saveButton")}
           onPress={handleSaveChanges}
           type="primary"
           theme={theme}
@@ -166,8 +170,6 @@ const EditProfile: React.FC = () => {
           onSelect={(option) => {
             setGender(option);
             setGenderDropdownVisible(false);
-            // console.log(stringToGender(option));
-            // setProfileGender(stringToGender(option));
           }}
           theme={theme}
         />

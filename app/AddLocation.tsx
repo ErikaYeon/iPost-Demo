@@ -1,12 +1,13 @@
-import React, { useState, useEffect} from 'react';
+import React, { useState } from 'react';
 import { SafeAreaView, View, StatusBar, Platform } from 'react-native';
 import HeaderNoIcon from '../ui/components/HeaderNoIcon';
 import SearchBar from '../ui/components/SearchBar';
 import SuggestionsList from '../ui/components/SuggestionsList'; 
 import { darkTheme, lightTheme } from '../ui/styles/Theme';
 import { useRouter } from 'expo-router'; 
-import { useDispatch, useSelector} from 'react-redux';
+import { useDispatch } from 'react-redux';
 import { setLocation } from '../redux/slices/createPostSlice'; 
+import { useTranslation } from "react-i18next";
 
 const theme = darkTheme;
 
@@ -30,7 +31,8 @@ const getPlacesSuggestions = async (query: string) => {
 };
 
 const AddLocation: React.FC = () => {
-  const router = useRouter(); // Inicializa el router
+  const { t, i18n } = useTranslation("translations"); // Inicializa las traducciones
+  const router = useRouter(); 
   const [searchQuery, setSearchQuery] = useState('');
   const [suggestions, setSuggestions] = useState([]);
   const dispatch = useDispatch();
@@ -46,17 +48,14 @@ const AddLocation: React.FC = () => {
   };
 
   const handleSearchPress = () => {
-    console.log("Buscar", `Buscando: ${searchQuery}`);
+    console.log(i18n.t("addLocation.searching"), `${i18n.t("addLocation.searching")}: ${searchQuery}`);
   };
 
   const handleSuggestionPress = (displayName: string) => {
-    // console.log("Ubicación seleccionada:", displayName);
     dispatch(setLocation(displayName));
-    
-    // Navega a CreatePost y pasa la ubicación seleccionada
     router.push({
       pathname: '/CreatePost',
-      params: { location: displayName }, // Pasa la ubicación seleccionada
+      params: { location: displayName }, 
     });
   };
 
@@ -65,12 +64,12 @@ const AddLocation: React.FC = () => {
       <StatusBar backgroundColor={theme.colors.background} barStyle="light-content" />
 
       <SafeAreaView style={{ backgroundColor: theme.colors.background, paddingTop: Platform.OS === 'android' ? StatusBar.currentHeight + 10 : 30 }}>
-        <HeaderNoIcon title="Agregar ubicación" theme={theme} />
+        <HeaderNoIcon title={i18n.t("addLocation.headerTitle")} theme={theme} />
       </SafeAreaView>
 
       <SafeAreaView style={{ paddingHorizontal: 10, marginBottom: 10 }}>
         <SearchBar
-          placeholder="Buscar una ubicación"
+          placeholder={i18n.t("addLocation.searchPlaceholder")}
           onChangeText={handleSearch}
           value={searchQuery}
           theme={theme}
@@ -80,7 +79,7 @@ const AddLocation: React.FC = () => {
 
       <SuggestionsList
         suggestions={suggestions}
-        onSuggestionPress={handleSuggestionPress} // Maneja la selección de sugerencias
+        onSuggestionPress={handleSuggestionPress}
         theme={theme}
       />
     </View>

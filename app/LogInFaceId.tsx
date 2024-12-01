@@ -12,11 +12,12 @@ import { setProfile } from "../redux/slices/profileSlice";
 import { router } from "expo-router";
 import { styles } from "@/ui/styles/LogIn";
 import { isPasswordValid } from "@/utils/RegexExpressions";
+import { useTranslation } from "react-i18next"; // Hook de i18n
 
 const LogInFaceIdScreen: React.FC = () => {
-
   const theme = darkTheme; // Para alternar entre light y dark mode
   const sharedStyles = createSharedStyles(theme);
+  const { t, i18n } = useTranslation(); // Hook de i18n para traducir
 
   const [password, setPassword] = useState("");
   const dispatch = useDispatch();
@@ -25,11 +26,9 @@ const LogInFaceIdScreen: React.FC = () => {
 
   const handleLogin = () => {
     if (!password) {
-      setErrorMessage("Por favor, completa todos los campos.");
+      setErrorMessage(i18n.t("logInFaceIdScreen.errorMessage.fillFields"));
     } else if (!isPasswordValid(password)) {
-      setErrorMessage(
-        "La contraseña debe tener al menos 6 caracteres y un carácter especial."
-      );
+      setErrorMessage(i18n.t("logInFaceIdScreen.errorMessage.invalidPassword"));
     } else {
       setErrorMessage("");
       dispatch(
@@ -60,7 +59,7 @@ const LogInFaceIdScreen: React.FC = () => {
           alignItems: "baseline",
         }}
       >
-        <HeaderText text="¡Hola" theme={theme} />
+        <HeaderText text={i18n.t("logInFaceIdScreen.header.hello")} theme={theme} />
         <Text
           style={{
             fontSize: 34,
@@ -68,31 +67,29 @@ const LogInFaceIdScreen: React.FC = () => {
             color: theme.colors.textPrimary,
           }}
         >
-          {" "}
-          {username}!
+          {" "}{username}!
         </Text>
       </View>
 
       {/* Input de Contraseña */}
       <InputField
-        label="Contraseña"
-        placeholder="**************"
+        label={i18n.t("logInFaceIdScreen.input.password.label")}
+        placeholder={i18n.t("logInFaceIdScreen.input.password.placeholder")}
         value={password}
         onChangeText={setPassword}
         secureTextEntry={true}
-        // error={!passwordRegex && !password}
         theme={theme}
         style={{ marginBottom: 10, marginTop: 10 }}
       />
 
       <LinkText
-        text="¿Olvidaste tu contraseña?"
+        text={i18n.t("logInFaceIdScreen.link.forgotPassword")}
         onPress={() => router.push("/RestorePssword1")}
         theme={theme}
       />
 
       <CustomButton
-        title="Iniciar sesión"
+        title={i18n.t("logInFaceIdScreen.button.login")}
         onPress={handleLogin}
         type="primary"
         theme={theme}
@@ -104,7 +101,7 @@ const LogInFaceIdScreen: React.FC = () => {
       />
 
       <LinkText
-        text="Cambiar de usuario"
+        text={i18n.t("logInFaceIdScreen.link.changeUser")}
         onPress={() => router.push("/LogIn")}
         theme={theme}
       />

@@ -24,6 +24,7 @@ import * as VideoThumbnails from "expo-video-thumbnails";
 import { router } from "expo-router";
 import NoPosts from "@/ui/components/NoPost";
 import { followUserThunk, unfollowUserThunk } from "@/redux/slices/searchSlice";
+import { useTranslation } from "react-i18next"; // Importa el hook de i18n
 
 type PostImage = {
   id: string;
@@ -34,6 +35,7 @@ type PostImage = {
 };
 
 const OtherProfile: React.FC = () => {
+  const { t, i18n } = useTranslation(); // Usar el hook de i18n
   const [postImages, setPostImages] = useState<PostImage[]>([]);
   const [Loading, setLoading] = useState(false);
   const theme = darkTheme;
@@ -45,8 +47,6 @@ const OtherProfile: React.FC = () => {
   );
   const { id, username, posts, loading } = otherProfileData;
   const [isFollowing, setIsFollowing] = useState(otherProfileData.following);
-  console.log("other profile following" + otherProfileData.following);
-  console.log(isFollowing);
 
   const screenWidth = Dimensions.get("window").width;
   const buttonWidth = screenWidth * 0.85;
@@ -58,17 +58,14 @@ const OtherProfile: React.FC = () => {
         await dispatch(
           unfollowUserThunk({ userId: Profile.id, userToUnfollow: id })
         ).unwrap();
-        console.log("Dejó de seguir con éxito");
       } else {
         await dispatch(
           followUserThunk({ userId: Profile.id, userToFollow: id })
         ).unwrap();
-        console.log("Siguió con éxito");
       }
-      // dispatch
       setIsFollowing(!isFollowing);
     } catch (error) {
-      console.error("Error al cambiar el estado de seguimiento:", error);
+      console.error(i18n.t('follow.error')); // Usando la traducción
     } finally {
       setLoading(false);
     }
@@ -164,7 +161,7 @@ const OtherProfile: React.FC = () => {
                   : { color: theme.colors.textPrimary },
               ]}
             >
-              {isFollowing ? "Dejar de Seguir" : "Seguir"}
+              {isFollowing ? i18n.t('follow.stop') : i18n.t('follow.start')}
             </Text>
           )}
         </TouchableOpacity>
@@ -173,7 +170,7 @@ const OtherProfile: React.FC = () => {
       {/* Tabs */}
       <View style={styles.tabsContainer2}>
         <View style={styles.tabButtonDisabled}>
-          <Text style={styles.tabButtonText}>POST</Text>
+          <Text style={styles.tabButtonText}>{i18n.t('tabs.post')}</Text>
         </View>
       </View>
 

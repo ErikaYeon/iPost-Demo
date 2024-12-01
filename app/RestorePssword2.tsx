@@ -10,27 +10,30 @@ import { router } from "expo-router";
 import { useDispatch, useSelector } from "react-redux";
 import { AppDispatch, RootState } from "@/redux/store";
 import { forgotPasswordAsync } from "@/redux/slices/authSlice";
+import { useTranslation } from "react-i18next";
 
 const RestorePassword2: React.FC = () => {
-  const theme = darkTheme; // Cambiar a lightTheme si deseas usar el tema claro
+  const { t, i18n } = useTranslation();
+  const theme = darkTheme;
   const sharedStyles = createSharedStyles(theme);
-  const styles = createLogInScreenStyles(theme); // Generar estilos dinámicos
+  const styles = createLogInScreenStyles(theme);
   const dispatch = useDispatch<AppDispatch>();
   const emialProfile = useSelector((state: RootState) => state.profile.email);
   const [successMessage, setSuccessMessage] = useState("");
 
   const handleSendEmail = async () => {
     await dispatch(forgotPasswordAsync(emialProfile));
-    setSuccessMessage("Email enviado con éxito");
+    setSuccessMessage(i18n.t('restorePassword2.successMessage'));
   };
+
   return (
     <SafeAreaView style={sharedStyles.screenContainer}>
       <Image
         source={require("../assets/images/icons/LogoiPost.png")}
-        style={styles.logo} // Usando estilo dinámico
+        style={styles.logo}
       />
       <View style={styles.headerContainer}>
-        <Text style={styles.headerTextContra}>Reestablecer Contraseña</Text>
+        <Text style={styles.headerTextContra}>{i18n.t('restorePassword2.header')}</Text>
       </View>
 
       <View
@@ -40,24 +43,22 @@ const RestorePassword2: React.FC = () => {
         }}
       >
         <MessageText
-          message="Se ha enviado un enlace de recuperación al correo asociado a su cuenta. Revisa también la carpeta de spam o correo no deseado si no lo encuentras"
-          boldText="enlace de recuperación"
+          message={i18n.t('restorePassword2.infoMessage')}
+          boldText={i18n.t('restorePassword2.boldText')}
           theme={theme}
         />
       </View>
 
-      {/* Botón "Reenviar enlace" */}
       <CustomButton
-        title="Reenviar enlace"
+        title={i18n.t('restorePassword2.buttonText')}
         onPress={handleSendEmail}
         type="primary"
         theme={theme}
         style={{ marginBottom: 35, width: "85%" }}
       />
 
-      {/* Enlace para "Volver a inicio de sesión" */}
       <LinkText
-        text="Volver a inicio de sesión"
+        text={i18n.t('restorePassword2.linkText')}
         onPress={() => router.push("/LogIn")}
         theme={theme}
       />

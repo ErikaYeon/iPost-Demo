@@ -12,13 +12,13 @@ import { AppDispatch, RootState } from '@/redux/store';
 import { resendEmailAsync } from "@/redux/slices/authSlice";
 import { EmailType } from "@/types/apiContracts";
 import { styles } from "../ui/styles/LogIn";
-
+import { useTranslation } from "react-i18next";
 
 const theme = darkTheme; 
 const sharedStyles = createSharedStyles(theme);
 
-
 const ActivateAccount: React.FC = () => {
+  const { t, i18n } = useTranslation("translations"); // Importando traducciones
   const dispatch = useDispatch<AppDispatch>();
   const userProfile = useSelector((state: RootState) => state.profile);
   const email = userProfile.email;
@@ -27,20 +27,18 @@ const ActivateAccount: React.FC = () => {
   const emailType = EmailType.CONFIRMATION;
 
   const handleReenvio = async () => {
-     console.log(email)
+    console.log(email);
     try {
-      const result = await dispatch(resendEmailAsync({email,emailType}));
-        setSuccessMessage("Email enviado con éxito");  
+      const result = await dispatch(resendEmailAsync({ email, emailType }));
+      setSuccessMessage(i18n.t("activateAccount.successMessage"));
     } catch (error) {
       console.error("Error from signup:", error);
-      setErrorMessage("Ocurrió un error, intentalo nuevamente");
+      setErrorMessage(i18n.t("activateAccount.errorMessage"));
     }
-  }
+  };
 
- 
   return (
     <SafeAreaView style={sharedStyles.screenContainer}>
-
       {/* Logo de iPost */}
       <Image 
         source={require('../assets/images/icons/LogoiPost.png')} 
@@ -49,21 +47,21 @@ const ActivateAccount: React.FC = () => {
 
       {/* Título "Activá tu iPost" */}
       <View style={{ flexDirection: 'row', justifyContent: 'center', alignItems: 'baseline' }}>
-        <HeaderText text="Activá tu" theme={theme} />
-        <Text style={{ fontSize: 34, fontWeight: 'bold', color: theme.colors.textPrimary, marginBottom:35 }}> iPost</Text>
+        <HeaderText text={i18n.t("activateAccount.titlePart1")} theme={theme} />
+        <Text style={{ fontSize: 34, fontWeight: 'bold', color: theme.colors.textPrimary, marginBottom: 35 }}> iPost</Text>
       </View>
 
       {/* Mensaje Informativo para enlace de acceso */}
       <MessageText
-        message="Se ha enviado un enlace de acceso a su correo. Por favor, verifique su bandeja de entrada."
-        boldText="enlace de acceso"
+        message={i18n.t("activateAccount.infoMessage")}
+        boldText={i18n.t("activateAccount.boldText")}
         theme={theme}
       />
 
       {/* Botón "Reenviar enlace" */}
       <CustomButton
-        title="Reenviar enlace"  //ToDo: decidir que hacer
-        onPress={handleReenvio} //ToDo: hacer un fetch especial para este
+        title={i18n.t("activateAccount.resendButton")} 
+        onPress={handleReenvio}
         type="primary"
         theme={theme}
         style={{ marginBottom: 35, marginTop: 15, width: '85%' }}
@@ -71,26 +69,26 @@ const ActivateAccount: React.FC = () => {
 
       {/* Enlace para "Volver a inicio de sesión" */}
       <LinkText
-        text="Volver a inicio de sesión"
-        onPress={()=>router.push('/LogIn')}
+        text={i18n.t("activateAccount.backToLogin")}
+        onPress={() => router.push('/LogIn')}
         theme={theme}
       />
+
       {/* Error message banner */}
       {errorMessage ? (
         <View style={styles.errorBanner}>
           <Text style={styles.errorText}>{errorMessage}</Text>
         </View>
       ) : null}
-      {/* Error message banner */}
+
+      {/* Success message banner */}
       {successMessage ? (
         <View style={styles.successBanner}>
           <Text style={styles.errorText}>{successMessage}</Text>
         </View>
       ) : null}
-
     </SafeAreaView>
   );
 };
-
 
 export default ActivateAccount;

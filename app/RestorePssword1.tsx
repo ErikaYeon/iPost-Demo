@@ -12,9 +12,11 @@ import { setProfileEmail } from "../redux/slices/profileSlice";
 import { isEmailValid } from "@/utils/RegexExpressions";
 import { AppDispatch } from "@/redux/store";
 import { forgotPasswordAsync } from "@/redux/slices/authSlice";
+import { useTranslation } from "react-i18next";
 
 const RestorePassword1: React.FC = () => {
-  const theme = darkTheme; // Para alternar entre light y dark mode
+  const { t, i18n } = useTranslation();
+  const theme = darkTheme;
   const sharedStyles = createSharedStyles(theme);
   const styles = createLogInScreenStyles(theme);
   const dispatch = useDispatch<AppDispatch>();
@@ -24,9 +26,9 @@ const RestorePassword1: React.FC = () => {
 
   const handleResetPass = () => {
     if (!email) {
-      setErrorMessage("Por favor, completa los campos.");
+      setErrorMessage(i18n.t('restorePassword.errorFields'));
     } else if (!isEmailValid(email)) {
-      setErrorMessage("Por favor, ingresa un correo electrónico válido.");
+      setErrorMessage(i18n.t('restorePassword.errorInvalidEmail'));
     } else {
       setErrorMessage("");
       dispatch(setProfileEmail({ email }));
@@ -40,15 +42,14 @@ const RestorePassword1: React.FC = () => {
     <SafeAreaView style={sharedStyles.screenContainer}>
       <Image
         source={require("../assets/images/icons/LogoiPost.png")}
-        style={styles.logo} // Usando estilo dinámico
+        style={styles.logo}
       />
       <View style={styles.headerContainer}>
-        <Text style={styles.headerTextContra}>Reestablecer Contraseña</Text>
+        <Text style={styles.headerTextContra}>{i18n.t('restorePassword.header')}</Text>
       </View>
 
       <Text style={styles.TextInfo}>
-        Ingresa tu correo electrónico y te enviaremos un enlace para que
-        recuperes el acceso a tu cuenta.
+        {i18n.t('restorePassword.info')}
       </Text>
 
       <InputField
@@ -61,7 +62,7 @@ const RestorePassword1: React.FC = () => {
       />
 
       <CustomButton
-        title="Enviar Enlace"
+        title={i18n.t('restorePassword.buttonText')}
         onPress={handleResetPass}
         type="primary"
         theme={theme}
@@ -73,7 +74,7 @@ const RestorePassword1: React.FC = () => {
       />
 
       <LinkText
-        text="Volver a inicio de sesión"
+        text={i18n.t('restorePassword.linkText')}
         onPress={() => router.push("/LogIn")}
         theme={theme}
       />

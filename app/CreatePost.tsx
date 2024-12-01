@@ -36,11 +36,12 @@ import {
   createPostAsync,
 } from "../redux/slices/createPostSlice";
 import { CreatePostRequest } from "@/types/apiContracts";
-import Placeholders from "@/constants/ProfilePlaceholders";
 import { addPost } from "@/redux/slices/timelineSlice";
 import { Video } from "expo-av";
+import { useTranslation } from "react-i18next";
 
 const CreatePost: React.FC = () => {
+  const { t, i18n } = useTranslation("translations");
   const theme = darkTheme; // Cambiar a `lightTheme` si es necesario
   const sharedStyles = createSharedStyles(theme);
   const styles = createEditProfilePhotoStyles(theme);
@@ -147,14 +148,14 @@ const CreatePost: React.FC = () => {
     const result = await dispatch(createPostAsync(request));
     if (createPostAsync.fulfilled.match(result)) {
       const post = result.payload;
-      dispatch(addPost(post)); // Despacha la acción para actualizar el timeline
-      console.log("Post creado y añadido al timeline");
+      dispatch(addPost(post));
       dispatch(clearPost());
       router.push("/(tabs)/home");
     } else {
-      console.log("Error al crear el Post");
+      console.log(i18n.t("createPost.error"));
     }
   };
+
   const handleCloseButton = () => {
     dispatch(clearPost());
     router.push("/(tabs)/home");
@@ -180,7 +181,7 @@ const CreatePost: React.FC = () => {
             <CloseIconLight width={15} height={15} />
           )
         }
-        title="Crear Post"
+        title={i18n.t("createPost.headerTitle")}
         onPress={handleCloseButton}
         theme={theme}
       />
@@ -198,7 +199,7 @@ const CreatePost: React.FC = () => {
         ]}
       >
         <PostTextInput
-          placeholder="¿Qué te gustaría publicar?"
+          placeholder={i18n.t("createPost.placeholder")}
           value={postContent}
           onChangeText={(text) => dispatch(setPostContent(text))}
           multiline={true}
@@ -223,7 +224,7 @@ const CreatePost: React.FC = () => {
               <PhotoIconLight width={20} height={20} />
             )
           }
-          text="Seleccionar fotos o videos"
+          text={i18n.t("createPost.selectMedia")}
           onPress={selectImages}
           theme={theme}
         />
@@ -236,14 +237,14 @@ const CreatePost: React.FC = () => {
               <LocationIconLight width={20} height={20} />
             )
           }
-          text={location ? location : "Agregar ubicación"}
+          text={location ? location : i18n.t("createPost.addLocation")}
           onPress={() => router.push("/AddLocation")}
           theme={theme}
         />
 
         <View style={{ width: "100%", alignItems: "center" }}>
           <CustomButton
-            title="Publicar"
+            title={i18n.t("createPost.publishButton")}
             onPress={handlePublish}
             type="secondary"
             theme={theme}
