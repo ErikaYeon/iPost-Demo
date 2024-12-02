@@ -16,6 +16,7 @@ import {
   ChangePassword,
   deleteAccount,
   forgotPassword,
+  magicLinkLogin,
 } from "@/networking/authService";
 
 interface AuthState {
@@ -180,6 +181,21 @@ export const autoLoginAsync = createAsyncThunk(
   }
 );
 
+export const magicLinkLoginAsync = createAsyncThunk(
+  "auth/magicLinkLogin",
+  async (token: string, { rejectWithValue }) => {
+    try {
+      const loginResponse: LoginResponse = await magicLinkLogin(token);
+      await AsyncStorage.setItem("access_token", loginResponse.access_token);
+      await AsyncStorage.setItem("refresh_token", loginResponse.refresh_token);
+      await AsyncStorage.setItem("user_id", loginResponse.id);
+      return loginResponse;
+    } catch (error: APIError | any) {
+      return rejectWithValue(error.message ?? "Error en magic link login");
+    }
+  }
+);
+
 const authSlice = createSlice({
   name: "auth",
   initialState,
@@ -292,6 +308,27 @@ const authSlice = createSlice({
         }
       )
       .addCase(autoLoginAsync.rejected, (state, action) => {
+        state.loading = false;
+        state.error = action.payload as string;
+        state.access_token = null;
+        state.refresh_token = null;
+        state.status = "notAuthenticated";
+      })
+      .addCase(magicLinkLoginAsync.pending, (state) => {
+        state.loading = true;
+        state.error = null;
+      })
+      .addCase(
+        magicLinkLoginAsync.fulfilled,
+        (state, action: PayloadAction<LoginResponse>) => {
+          state.loading = false;
+          state.access_token = action.payload.access_token;
+          state.refresh_token = action.payload.refresh_token;
+          state.userId = action.payload.id;
+          state.status = "authenticated";
+        }
+      )
+      .addCase(magicLinkLoginAsync.rejected, (state, action) => {
         state.loading = false;
         state.error = action.payload as string;
         state.access_token = null;

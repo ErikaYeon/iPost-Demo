@@ -115,3 +115,16 @@ export const forgotPassword = async (email: string): Promise<void> => {
     throw new APIError("Ocurrió un error");
   }
 };
+
+export const magicLinkLogin = async (token: string): Promise<LoginResponse> => {
+  try {
+    const response = await api.post("/accounts/magic-link", { token });
+    if (response.status !== 200) {
+      throw new APIError("Error en el inicio de sesión con magic link");
+    }
+    return response.data;
+  } catch (error: any) {
+    handleError(error);
+    throw new APIError("Error en el magic link");
+  }
+};
