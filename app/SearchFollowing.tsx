@@ -7,6 +7,7 @@ import {
   Text,
   TouchableOpacity,
   Image,
+  ActivityIndicator,
 } from "react-native";
 import HeaderWithIcon from "../ui/components/HeaderWithIcon";
 import SearchBar from "../ui/components/SearchBar";
@@ -19,17 +20,58 @@ import CrownGold from "../assets/images/icons/gamif_crown_3.svg";
 import { createSearchProfilesStyles } from "@/ui/styles/SearchProfileStyles";
 import { darkTheme } from "../ui/styles/Theme";
 import { router } from "expo-router";
-import { useSelector } from "react-redux";
-import { RootState } from "@/redux/store";
+import { useDispatch, useSelector } from "react-redux";
+import { AppDispatch, RootState } from "@/redux/store";
 import NoFollowings from "@/ui/components/NoFollowings";
+import { UserShort } from "@/types/apiContracts";
+import {
+  fetchFollowingsUser,
+  setOffset,
+  clearFollowingList,
+} from "@/redux/slices/searchSlice";
 
 const SearchFollowing: React.FC = () => {
   const theme = darkTheme;
   const styles = createSearchProfilesStyles(theme);
-
+  const [searchQuery, setSearchQuery] = useState("");
+  const [filteredList, setFilteredList] = useState<UserShort[]>([]);
   const followingList = useSelector(
     (state: RootState) => state.search.followingsList
   );
+  const Profile = useSelector((state: RootState) => state.profile);
+  const isLoading = useSelector(
+    (state: RootState) => state.search.status === "loading"
+  );
+  const { offset } = useSelector((state: RootState) => state.search);
+  const hasMoreFollowings = !(offset === Profile.followingCount);
+  // const hasMoreFollowings = !(offset === 18);
+  const dispatch = useDispatch<AppDispatch>();
+
+  const handleGoBack = () => {
+    dispatch(setOffset(0));
+    dispatch(clearFollowingList());
+    router.back();
+  };
+
+  const handleSearch = (query: string) => {
+    setSearchQuery(query);
+    if (query.trim() === "") {
+      setFilteredList([]); // Resetea la lista filtrada si no hay búsqueda
+    } else {
+      const results = followingList.filter(
+        (item) =>
+          item.name.toLowerCase().includes(query.toLowerCase()) ||
+          item.username.toLowerCase().includes(query.toLowerCase())
+      );
+      console.log(results);
+      setFilteredList(results);
+    }
+  };
+  const loadMoreFollowers = () => {
+    if (!isLoading && hasMoreFollowings) {
+      dispatch(fetchFollowingsUser(Profile.id));
+    }
+  };
 
   const renderCrownIcon = (level: number) => {
     switch (level) {
@@ -59,6 +101,8 @@ const SearchFollowing: React.FC = () => {
     </View>
   );
 
+  const listToDisplay = searchQuery ? filteredList : followingList;
+
   return (
     <SafeAreaView style={styles.container}>
       <StatusBar
@@ -84,19 +128,38 @@ const SearchFollowing: React.FC = () => {
             )
           }
           title="Seguidos"
-          onPress={() => router.back()}
+          onPress={handleGoBack}
           theme={theme}
         />
       </SafeAreaView>
+      {/* Barra de búsqueda */}
+      <View style={styles.searchBarContainer}>
+        <SearchBar
+          placeholder="Buscar"
+          onChangeText={handleSearch}
+          value={searchQuery}
+          theme={theme}
+        />
+      </View>
 
-      {followingList.length === 0 ? (
+      {listToDisplay.length === 0 ? (
         <NoFollowings theme={theme} />
       ) : (
         <FlatList
-          data={followingList}
+          data={listToDisplay}
           keyExtractor={(item) => item.id}
           renderItem={renderProfile}
           contentContainerStyle={styles.listContainer}
+          onEndReached={loadMoreFollowers}
+          onEndReachedThreshold={0.1}
+          ListFooterComponent={
+            isLoading ? (
+              <ActivityIndicator
+                size="small"
+                color={theme.colors.textPrimary}
+              />
+            ) : null
+          }
         />
       )}
     </SafeAreaView>
