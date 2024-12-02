@@ -54,7 +54,7 @@ const RestorePassword1: React.FC = () => {
 
       <InputField
         label=""
-        placeholder="micorreo@ejemplo.com"
+        placeholder={i18n.t("loginScreen.input.email.placeholder")}
         value={email}
         onChangeText={setEmail}
         error={!!errorMessage}

@@ -2,13 +2,14 @@ import { Stack } from "expo-router";
 import store from '../redux/store';
 import { Provider } from 'react-redux';
 import { GestureHandlerRootView } from 'react-native-gesture-handler';
-import {I18nextProvider} from "react-i18next";
+import {I18nextProvider, initReactI18next} from "react-i18next";
 import i18next from "i18next";
 
 import translation_es from "../utils/translations/es/translations.json";
 import translation_en from "../utils/translations/en/translations.json";
 
-i18next.init({
+i18next.use(initReactI18next)
+        .init({
   interpolation: { escapeValue: false},
   lng: "es", //Lenguaje Inicial
   resources: {

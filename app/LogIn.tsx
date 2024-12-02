@@ -72,10 +72,12 @@ const LogInScreen: React.FC = () => {
         style={styles.logo}
       />
 
-      <View style={styles.headerContainer}>
-        <HeaderText text={i18n.t("loginScreen.header.title")} theme={theme} />
-        <Text style={styles.headerText}>iPost</Text>
-      </View>
+        <View style={styles.headerContainer}>
+          <HeaderText text={i18n.t("loginScreen.header.title")} theme={theme} />
+          <Text style={styles.headerText}>iPost</Text>
+        </View>
+
+
 
       <InputField
         label={i18n.t("loginScreen.input.email.label")}
@@ -121,11 +123,12 @@ const LogInScreen: React.FC = () => {
       >
         <RegularText text={i18n.t("loginScreen.text.noAccount")} theme={theme} />
         <LinkText
-          text={i18n.t("loginScreen.link.signup")}
+          text={`${i18n.t("loginScreen.link.signup")}`}
           onPress={() => router.push("/SignUp")}
           theme={theme}
         />
       </View>
+
 
       {errorMessage ? (
         <View style={styles.errorBanner}>

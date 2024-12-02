@@ -116,7 +116,7 @@
   
     "loginScreen": {
         "header": {
-          "title": "Log in to"
+          "title": "Log in to "
         },
         "input": {
           "email": {
