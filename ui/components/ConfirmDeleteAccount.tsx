@@ -2,8 +2,11 @@ import React from "react";
 import { View, Text, StyleSheet, Modal } from "react-native";
 import CustomButton from "../../ui/components/CustomButton";
 import { darkTheme } from "../../ui/styles/Theme";
+import { useTranslation } from "react-i18next";
 
 const ConfirmDeleteAccount = ({ visible, onCancel, onConfirm, theme = darkTheme }) => {
+  const { t, i18n } = useTranslation("translations");
+
   return (
     <Modal
       visible={visible}
@@ -14,12 +17,12 @@ const ConfirmDeleteAccount = ({ visible, onCancel, onConfirm, theme = darkTheme 
       <View style={styles.overlay}>
         <View style={[styles.card, { backgroundColor: theme.colors.background }]}>
           <Text style={[styles.message, { color: theme.colors.textPrimary }]}>
-            ¿Está seguro de que desea{"\n"}celiminar su cuenta{"\n"}permanentemente?
+            {i18n.t("confirmDeleteAccount.message")}
           </Text>
           <View style={styles.buttonContainer}>
             {/* Botón Cancelar */}
             <CustomButton
-              title="Cancelar"
+              title={i18n.t("confirmDeleteAccount.cancel")}
               onPress={onCancel}
               type="secondary"
               theme={theme}
@@ -35,7 +38,7 @@ const ConfirmDeleteAccount = ({ visible, onCancel, onConfirm, theme = darkTheme 
 
             {/* Botón Eliminar Cuenta */}
             <CustomButton
-              title="Eliminar Cuenta"
+              title={i18n.t("confirmDeleteAccount.confirm")}
               onPress={onConfirm}
               type="error"
               theme={theme}
@@ -87,13 +90,13 @@ const styles = StyleSheet.create({
     marginRight: 10,
     backgroundColor: "transparent", // Fondo transparente
     borderWidth: 1, // Borde para el botón Cancelar
-    paddingHorizontal:-2,
+    paddingHorizontal: -2,
   },
   deleteButton: {
     flex: 1,
     marginLeft: 10,
     backgroundColor: "#E34C5E", // Rojo para el botón de confirmar
-    paddingHorizontal:6,
+    paddingHorizontal: 6,
   },
 });
 

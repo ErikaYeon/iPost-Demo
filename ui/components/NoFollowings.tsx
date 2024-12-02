@@ -1,26 +1,30 @@
 import React from "react";
 import { View, Text, Image, StyleSheet } from "react-native";
-import HeaderText from "./HeaderText";
+import { useTranslation } from "react-i18next";
 
 interface InitialMessageProps {
   theme: any;
 }
 
 const InitialMessage: React.FC<InitialMessageProps> = ({ theme }) => {
+  const { t, i18n } = useTranslation("translations");
+
   return (
     <View style={styles.container}>
+      {/* Logo */}
       <Image
         source={require("../../assets/images/icons/LogoiPost.png")}
         style={styles.logo}
       />
 
+      {/* Texto de seguidos */}
       <View style={styles.headerContainer}>
         <Text style={{ fontSize: 36, color: theme.colors.textPrimary }}>
-          {" "}
-          0 Seguidos
+          {i18n.t("initialMessage.following")}
         </Text>
       </View>
 
+      {/* Mensaje motivacional */}
       <Text
         style={{
           fontSize: theme.fonts.medium,
@@ -30,7 +34,7 @@ const InitialMessage: React.FC<InitialMessageProps> = ({ theme }) => {
           marginRight: 15,
         }}
       >
-        Comienza a seguir a tus amigos o a algún usuario de la app!
+        {i18n.t("initialMessage.followMessage")}
       </Text>
     </View>
   );
@@ -43,8 +47,8 @@ const styles = StyleSheet.create({
     flex: 1,
   },
   logo: {
-    width: 150, // adjust as needed
-    height: 150, // adjust as needed
+    width: 150,
+    height: 150,
   },
   headerContainer: {
     flexDirection: "row",

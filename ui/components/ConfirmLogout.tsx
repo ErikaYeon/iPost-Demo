@@ -2,8 +2,11 @@ import React from "react";
 import { View, Text, StyleSheet, Modal } from "react-native";
 import CustomButton from "../../ui/components/CustomButton";
 import { darkTheme } from "../../ui/styles/Theme";
+import { useTranslation } from "react-i18next";
 
 const ConfirmLogout = ({ visible, onCancel, onConfirm, theme = darkTheme }) => {
+  const { t, i18n } = useTranslation("translations");
+
   return (
     <Modal
       visible={visible}
@@ -14,12 +17,12 @@ const ConfirmLogout = ({ visible, onCancel, onConfirm, theme = darkTheme }) => {
       <View style={styles.overlay}>
         <View style={[styles.card, { backgroundColor: theme.colors.background }]}>
           <Text style={[styles.message, { color: theme.colors.textPrimary }]}>
-            ¿Está seguro de que desea {"\n"}cerrar sesión?
+            {i18n.t("confirmLogout.message")}
           </Text>
           <View style={styles.buttonContainer}>
             {/* Botón Cancelar */}
             <CustomButton
-              title="Cancelar"
+              title={i18n.t("confirmLogout.cancel")}
               onPress={onCancel}
               type="secondary"
               theme={theme}
@@ -35,7 +38,7 @@ const ConfirmLogout = ({ visible, onCancel, onConfirm, theme = darkTheme }) => {
 
             {/* Botón Cerrar sesión */}
             <CustomButton
-              title="Cerrar sesión"
+              title={i18n.t("confirmLogout.confirm")}
               onPress={onConfirm}
               type="error"
               theme={theme}

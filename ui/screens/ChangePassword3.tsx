@@ -10,7 +10,9 @@ import { darkTheme, lightTheme } from "../ui/styles/Theme";
 import { useDispatch } from "react-redux";
 import { AppDispatch } from "@/redux/store";
 import { useRouter } from "expo-router";
-// import changePasswordAsync from "@/redux/slices/authSlice";
+import { useTranslation } from "react-i18next";
+
+const { t, i18n } = useTranslation("translations");
 
 const ChangePassword3: React.FC = () => {
   const theme = darkTheme; // Cambia a lightTheme si prefieres el modo claro
@@ -24,9 +26,9 @@ const ChangePassword3: React.FC = () => {
 
   const handleChangePassword = async () => {
     if (!password) {
-      setErrorMessage("Por favor, ingresa tu nueva contraseña.");
+      setErrorMessage(i18n.t("changePassword.noPassword"));
     } else if (password.length < 6) {
-      setErrorMessage("La contraseña debe tener al menos 6 caracteres.");
+      setErrorMessage(i18n.t("changePassword.shortPassword"));
     } else {
       // try {
       //   setErrorMessage("");
@@ -36,12 +38,12 @@ const ChangePassword3: React.FC = () => {
       //     router.push("/(tabs)/home"); // Redirigir al home después del cambio de contraseña
       //   } else {
       //     setErrorMessage(
-      //       "Error al cambiar la contraseña, inténtalo nuevamente."
+      //       i18n.t("changePassword.changeError")
       //     );
       //   }
       // } catch (error) {
       //   console.error("Error from change password:", error);
-      //   setErrorMessage("Ocurrió un error, inténtalo nuevamente.");
+      //   setErrorMessage(i18n.t("changePassword.generalError"));
       // }
     }
   };
@@ -69,7 +71,7 @@ const ChangePassword3: React.FC = () => {
               />
             )
           }
-          title="Cambiar contraseña"
+          title={i18n.t("changePassword.title")}  
           onPress={() => router.back()}
           theme={theme}
         />
@@ -77,8 +79,8 @@ const ChangePassword3: React.FC = () => {
 
       <View style={styles.contentContainer}>
         <InputField
-          label="Contraseña nueva"
-          placeholder="**************"
+          label={i18n.t("changePassword.newPasswordLabel")}  
+          placeholder={i18n.t("changePassword.placeholderPassword")} 
           value={password}
           onChangeText={setPassword}
           secureTextEntry
@@ -87,7 +89,7 @@ const ChangePassword3: React.FC = () => {
         />
 
         <CustomButton
-          title="Aceptar"
+          title={i18n.t("changePassword.acceptButton")}  
           onPress={handleChangePassword}
           type="primary"
           theme={theme}

@@ -1,4 +1,3 @@
-// Post.tsx
 import React, { useState, useEffect, useRef } from "react";
 import {
   View,
@@ -49,6 +48,7 @@ import {
   favoritePostAsync,
   unfavoritePostAsync,
 } from "@/redux/slices/postSlice";
+import { useTranslation } from "react-i18next";
 
 type PostProps = {
   profilePictureUrl: string;
@@ -131,6 +131,7 @@ const Post: React.FC<PostProps> = ({
   const { isLoading } = useSelector((state: RootState) => state.comments);
   const [isImageModalVisible, setImageModalVisible] = useState(false);
   const [selectedImageUri, setSelectedImageUri] = useState<string | null>(null);
+  const { t, i18n } = useTranslation("translations");
 
   const openImageModal = (uri: string) => {
     setSelectedImageUri(uri);
@@ -266,9 +267,10 @@ const Post: React.FC<PostProps> = ({
       });
       return result;
     } catch (error) {
-      Alert.alert("Error al compartir");
+      Alert.alert(i18n.t("error.share"));
     }
   };
+
 
   // Alternar el estado de un video específico
   const togglePlayPause = async (videoId: string) => {
@@ -305,11 +307,10 @@ const Post: React.FC<PostProps> = ({
                 {name}
               </Text>
             </View>
-            <Text
-              style={[styles.username, { color: theme.colors.textSecondary }]}
-            >
-              {isAd ? "Patrocinado" : username}
+            <Text style={[styles.username, { color: theme.colors.textSecondary }]}>
+                    {isAd ? i18n.t("post.sponsored") : username}
             </Text>
+
           </View>
         </View>
         {isAd && (
@@ -320,16 +321,17 @@ const Post: React.FC<PostProps> = ({
       </View>
 
       <Text style={[styles.description, { color: theme.colors.textPrimary }]}>
-        {isAd ? (
-          <Text
+      {isAd ? (
+        <Text
             style={styles.link}
-            onPress={() => Linking.openURL(description)} // Abre el enlace en el navegador
-          >
-            visitar sitio
-          </Text>
+                onPress={() => Linking.openURL(description)} // Abre el enlace en el navegador
+        >     
+          {i18n.t("post.visitSite")}
+        </Text>
         ) : (
-          description
-        )}
+        description
+      )}
+
       </Text>
 
       <View style={styles.locationDateContainer}>
@@ -440,7 +442,8 @@ const Post: React.FC<PostProps> = ({
               onPress={closeImageModal}
               style={modalStyles.modalCloseButtonContainer}
             >
-              <Text style={modalStyles.modalCloseButtonText}>Cerrar</Text>
+              <Text style={modalStyles.modalCloseButtonText}>{i18n.t("modal.close")}</Text>
+
             </TouchableOpacity>
             <Image
               source={{ uri: selectedImageUri }}
@@ -532,13 +535,14 @@ const Post: React.FC<PostProps> = ({
             )}
 
             <View style={styles.inputContainer}>
-              <TextInput
+            <TextInput
                 style={[styles.input, { color: theme.colors.textPrimary }]}
-                placeholder="Agrega un comentario..."
+                placeholder={i18n.t("comment.addComment")}
                 placeholderTextColor={theme.colors.textSecondary}
                 value={newComment}
                 onChangeText={setNewComment}
               />
+
               <TouchableOpacity
                 style={styles.sendButton}
                 onPress={handleAddComment}

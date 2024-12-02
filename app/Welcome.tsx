@@ -17,6 +17,7 @@ import { useDispatch, useSelector } from "react-redux";
 import { AppDispatch, RootState } from "@/redux/store";
 import { autoLoginAsync } from "@/redux/slices/authSlice";
 import { setProfileUserId } from "@/redux/slices/profileSlice";
+import { useTranslation } from "react-i18next";
 
 const FirstScreen: React.FC = () => {
   const theme = darkTheme; // Puedes cambiar manualmente entre lightTheme y darkTheme
@@ -26,6 +27,7 @@ const FirstScreen: React.FC = () => {
   const dispatch = useDispatch<AppDispatch>();
 
   const { status, loading } = useSelector((state: RootState) => state.auth);
+  const { t, i18n } = useTranslation("translations");
 
   useEffect(() => {
     const performAutoLogin = async () => {
@@ -48,6 +50,7 @@ const FirstScreen: React.FC = () => {
       </SafeAreaView>
     );
   }
+
   return (
     <SafeAreaView style={sharedStyles.screenContainer}>
       {/* Logo como imagen PNG */}
@@ -64,7 +67,7 @@ const FirstScreen: React.FC = () => {
           alignItems: "baseline",
         }}
       >
-        <HeaderText text={"Bienvenido a"} theme={theme} />
+        <HeaderText text={i18n.t("firstScreen.welcome")} theme={theme} />
         <Text
           style={{
             fontSize: 32,
@@ -81,7 +84,7 @@ const FirstScreen: React.FC = () => {
       <View style={{ width: "100%", alignItems: "center" }}>
         {/* Botón de Iniciar sesión */}
         <CustomButton
-          title={"Iniciar sesión"}
+          title={i18n.t("firstScreen.login")}
           onPress={() => router.push("/LogIn")}
           type="primary"
           theme={theme}
@@ -90,7 +93,7 @@ const FirstScreen: React.FC = () => {
 
         {/* Botón de Registrarse */}
         <CustomButton
-          title={"Registrarse"}
+          title={i18n.t("firstScreen.register")}
           onPress={() => router.push("/SignUp")}
           type="secondary"
           theme={theme}
@@ -102,8 +105,8 @@ const FirstScreen: React.FC = () => {
         />
       </View>
 
-      {/* Texto "o continua con" */}
-      <RegularTextLine text={"continuar con"} theme={theme} />
+      {/* Texto "o continuar con" */}
+      <RegularTextLine text={i18n.t("firstScreen.orContinueWith")} theme={theme} />
 
       {/* Botón de Google con imagen PNG */}
       <TouchableOpacity
@@ -117,7 +120,7 @@ const FirstScreen: React.FC = () => {
           source={require("../assets/images/icons/Google.png")}
           style={{ width: 24, height: 24 }}
         />
-        <Text style={sharedStyles.googleText}>Google</Text>
+        <Text style={sharedStyles.googleText}>{i18n.t("firstScreen.google")}</Text>
       </TouchableOpacity>
     </SafeAreaView>
   );

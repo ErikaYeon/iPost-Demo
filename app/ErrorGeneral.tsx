@@ -7,7 +7,7 @@ import { Router, useRouter } from 'expo-router';
 import { useTranslation } from 'react-i18next';
 
 const ErrorGeneral = ({ theme = darkTheme }) => {
-  const { t, i18n } = useTranslation(); // Hook de i18n para traducir
+  const { t, i18n } = useTranslation("translations");
   const router = useRouter();
   const onRetry  = () => {
     router.back();

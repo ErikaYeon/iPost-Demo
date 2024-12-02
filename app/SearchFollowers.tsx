@@ -25,7 +25,7 @@ import NoFollowers from "@/ui/components/NoFollowers";
 import { useTranslation } from "react-i18next";
 
 const SearchFollowers: React.FC = () => {
-  const { t, i18n } = useTranslation();
+  const { t, i18n } = useTranslation("translations");
   const theme = darkTheme;
   const styles = createSearchProfilesStyles(theme);
 

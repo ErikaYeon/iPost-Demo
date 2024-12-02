@@ -24,7 +24,7 @@ import { ProfileImageRequest } from "@/types/apiContracts";
 import { useTranslation } from "react-i18next";  
 
 const EditProfileCover: React.FC = () => {
-  const { t, i18n } = useTranslation(); 
+  const { t, i18n } = useTranslation("translations");
   const Profile = useSelector((state: RootState) => state.profile);
   const ProfileCover = Profile.coverImage;
   const userId = Profile.id;

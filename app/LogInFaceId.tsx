@@ -17,7 +17,7 @@ import { useTranslation } from "react-i18next"; // Hook de i18n
 const LogInFaceIdScreen: React.FC = () => {
   const theme = darkTheme; // Para alternar entre light y dark mode
   const sharedStyles = createSharedStyles(theme);
-  const { t, i18n } = useTranslation(); // Hook de i18n para traducir
+  const { t, i18n } = useTranslation("translations");
 
   const [password, setPassword] = useState("");
   const dispatch = useDispatch();

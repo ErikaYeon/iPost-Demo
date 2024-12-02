@@ -20,9 +20,10 @@ import { router } from "expo-router";
 import Placeholders from "@/constants/ProfilePlaceholders";
 import { isEmpty } from "@/utils/RegexExpressions";
 import { levelToCrown } from "@/types/mappers";
-import postStyles from "@/ui/styles/PostStyles"; // Importar estilos de Post
+import postStyles from "@/ui/styles/PostStyles";
 import { useLocalSearchParams } from "expo-router";
 import { Post as POST } from "@/types/apiContracts";
+import { useTranslation } from "react-i18next";
 
 const Timeline: React.FC = () => {
   const { profileId, listPost, postId } = useLocalSearchParams();
@@ -30,7 +31,7 @@ const Timeline: React.FC = () => {
   const theme = darkTheme;
   const styles = createTimelineStyles(theme);
   const posts: POST[] = listPost ? JSON.parse(listPost as string) : [];
-
+  const { t, i18n } = useTranslation("translations");
   const { loading, error } = useSelector((state: RootState) => state.profile);
   const flatListRef = React.useRef<FlatList>(null);
 
@@ -66,7 +67,7 @@ const Timeline: React.FC = () => {
               />
             )
           }
-          title="Posts"
+          title={i18n.t("timeline.header.title")}
           onPress={() => router.back()}
           theme={theme}
           lineMarginBottom={0}
@@ -98,9 +99,9 @@ const Timeline: React.FC = () => {
             userId={userId as string}
             crownType={levelToCrown(item.author.level)}
             theme={theme}
-            onLike={() => console.log("Liked post " + item.id)}
-            onComment={() => console.log("Commented on post " + item.id)}
-            onSave={() => console.log("Saved post " + item.id)}
+            onLike={() => console.log(i18n.t("timeline.actions.like") + item.id)}
+            onComment={() => console.log(i18n.t("timeline.actions.comment") + item.id)}
+            onSave={() => console.log(i18n.t("timeline.actions.save") + item.id)}
             isAd={item.isAd}
             isSavedByUser={item.favorite}
           />

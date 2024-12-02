@@ -15,7 +15,7 @@ import { forgotPasswordAsync } from "@/redux/slices/authSlice";
 import { useTranslation } from "react-i18next";
 
 const RestorePassword1: React.FC = () => {
-  const { t, i18n } = useTranslation();
+  const { t, i18n } = useTranslation("translations");
   const theme = darkTheme;
   const sharedStyles = createSharedStyles(theme);
   const styles = createLogInScreenStyles(theme);

@@ -1,52 +1,59 @@
-import React from 'react';
-import { View, Text, Image, StyleSheet } from 'react-native';
-import HeaderText from './HeaderText';
-
+import React from "react";
+import { View, Text, Image, StyleSheet } from "react-native";
+import { useTranslation } from "react-i18next";
 
 interface InitialMessageProps {
-    theme: any;
-  }
+  theme: any;
+}
 
-const InitialMessage: React.FC<InitialMessageProps> = ({ theme}) => {
-  
-  
+const InitialMessage: React.FC<InitialMessageProps> = ({ theme }) => {
+  const { t, i18n } = useTranslation("translations");
+
   return (
     <View style={styles.container}>
-      <Image source={require('../../assets/images/icons/LogoiPost.png')} style={styles.logo} />
+      {/* Logo */}
+      <Image
+        source={require("../../assets/images/icons/LogoiPost.png")}
+        style={styles.logo}
+      />
 
+      {/* Texto de bienvenida */}
       <View style={styles.headerContainer}>
-        <Text style={{fontSize: 36, color: theme.colors.textPrimary}}> Bienvenidos a IPost</Text>
-        
-      </View> 
+        <Text style={{ fontSize: 36, color: theme.colors.textPrimary }}>
+          {i18n.t("initialMessage.welcome")}
+        </Text>
+      </View>
 
-      <Text style={ {fontSize: theme.fonts.medium, color: theme.colors.textPrimary, textAlign: 'center' }}>
-        Crea tu primer post o sigue a algún usuario para ver su contenido</Text>
-
+      {/* Mensaje informativo */}
+      <Text
+        style={{
+          fontSize: theme.fonts.medium,
+          color: theme.colors.textPrimary,
+          textAlign: "center",
+        }}
+      >
+        {i18n.t("initialMessage.prompt")}
+      </Text>
     </View>
   );
 };
 
 const styles = StyleSheet.create({
-    container: {
-        alignItems: 'center',
-        justifyContent: 'center',
-        flex: 1,
-      },
+  container: {
+    alignItems: "center",
+    justifyContent: "center",
+    flex: 1,
+  },
   logo: {
-    width: 200, // adjust as needed
-    height: 200, // adjust as needed
+    width: 200, // ajustar según sea necesario
+    height: 200, // ajustar según sea necesario
   },
   headerContainer: {
-    flexDirection: 'row',
-    justifyContent: 'center',
-    alignItems: 'baseline',
+    flexDirection: "row",
+    justifyContent: "center",
+    alignItems: "baseline",
     padding: 7,
   },
-//   headerText: {
-//     fontSize: 34,
-//     fontWeight: 'bold',
-//     color: theme.colors.textPrimary,
-//   },
 });
 
 export default InitialMessage;

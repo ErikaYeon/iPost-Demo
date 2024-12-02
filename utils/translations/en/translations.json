@@ -41,7 +41,14 @@
           "invalidPassword": "The password must be at least 6 characters long and contain a special character.",
           "shortPassword": "The new password must be at least 8 characters long.",
           "unexpected": "Unexpected error"
-        }
+        },
+        "title": "Change Password",
+        "noPassword": "Please enter your new password.",
+        "shortPassword": "Password must be at least 6 characters long.",
+        "changeError": "Error changing password, please try again.",
+        "generalError": "An error occurred, please try again.",
+        "placeholderPassword": "**************",
+        "acceptButton": "Accept"
     },
     
     "changePassword2": {
@@ -198,9 +205,124 @@
     
     "searchFollowing": {
         "title": "Followings"
-    }
+    },
     
+    "signUp": {
+        "header": {
+          "prefix": "Sign up for",
+          "appName": "iPost"
+      },
+      "fields": {
+          "email": {
+            "label": "Email",
+            "placeholder": "myemail@example.com"
+          },
+          "username": {
+            "label": "Username",
+            "placeholder": "example_user"
+          },
+          "password": {
+            "label": "Password",
+            "placeholder": "**************"
+          }
+        },
+        "actions": {
+          "register": "Register"
+        },
+        "links": {
+          "login": {
+            "prefix": "Already have an account?",
+            "action": "Log in"
+          }
+        },
+        "errors": {
+          "missingFields": "Please fill in all fields.",
+          "invalidEmail": "Please enter a valid email.",
+          "invalidPassword": "Password must be at least 6 characters and include a special character.",
+          "invalidUsername": "Username cannot contain spaces.",
+          "emailTaken": "Error. The email is already registered.",
+          "genericError": "An error occurred. Please try again."
+        }
+      },
+      
+      "timeline": {
+          "header": {
+            "title": "Posts"
+          },
+          "actions": {
+            "like": "Liked post ",
+            "comment": "Commented on post ",
+            "save": "Saved post "
+          }
+      },
+      
+      "firstScreen": {
+          "welcome": "Welcome to",
+          "login": "Log In",
+          "register": "Sign Up",
+          "orContinueWith": "or continue with",
+          "google": "Google"
+      },
+      
+      "confirmDeleteAccount": {
+          "message": "Are you sure you want to\ndelete your account\npermanently?",
+          "cancel": "Cancel",
+          "confirm": "Delete Account"
+      },
+      
+      "confirmLogout": {
+          "message": "Are you sure you want to\nlog out?",
+          "cancel": "Cancel",
+          "confirm": "Log Out"
+      },
+      
+      "initialMessage": {
+          "welcome": "Welcome to IPost",
+          "prompt": "Create your first post or follow someone to see their content",
+          "followers": "0 Followers",
+          "motivation": "The more you use the app, the more followers you'll gain!",
+          "following": "0 Following",
+          "followMessage": "Start following your friends or any user on the app!"
+      },
+      
+      "noPosts": {
+          "noPostMessage": "There are no posts"
+      },
+      
+      "error": {
+        "share": "Error sharing"
+      },
+      
+      "post": {
+          "sponsored": "Sponsored",
+          "visitSite": "visit site"
+        },
+        "modal": {
+          "close": "Close"
+        },
+        "comment": {
+          "addComment": "Add a comment..."
+      },
+      
+      "profile": {
+          "followers": "followers",
+          "following": "following"
+      },
+      
+      "searchBar": {
+          "placeholder": "Search for a location"
+      },
     
+      "suggestionsList": {
+          "noResults": "No results found"
+      }
+  
+      
+        
+      
+      
+      
+      
 
     
 

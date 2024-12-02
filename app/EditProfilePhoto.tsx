@@ -26,7 +26,7 @@ import { isEmpty } from "@/utils/RegexExpressions";
 import { useTranslation } from "react-i18next"; // Importar i18n
 
 const EditProfilePhoto: React.FC = () => {
-  const { t, i18n } = useTranslation(); // Usar hook de i18n
+  const { t, i18n } = useTranslation("translations");
   const Profile = useSelector((state: RootState) => state.profile);
   const ProfilePhoto = Profile.profileImage;
   const userId = Profile.id;

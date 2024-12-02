@@ -1,5 +1,8 @@
 import React from 'react';
 import { FlatList, TouchableOpacity, Text, StyleSheet } from 'react-native';
+import { useTranslation } from "react-i18next";
+
+const { t, i18n } = useTranslation("translations");
 
 interface SuggestionsListProps {
   suggestions: Array<{ display_name: string; place_id?: string; osm_id: string | number }>;
@@ -17,7 +20,7 @@ const SuggestionsList: React.FC<SuggestionsListProps> = ({ suggestions, onSugges
           <Text style={styles(theme).suggestionText}>{item.display_name}</Text>
         </TouchableOpacity>
       )}
-      ListEmptyComponent={<Text style={styles(theme).emptyText}>No se encontraron resultados</Text>}
+      ListEmptyComponent={<Text style={styles(theme).emptyText}>{i18n.t('suggestionsList.noResults')}</Text>}
     />
   );
 };

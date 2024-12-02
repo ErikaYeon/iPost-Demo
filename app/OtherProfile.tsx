@@ -35,7 +35,7 @@ type PostImage = {
 };
 
 const OtherProfile: React.FC = () => {
-  const { t, i18n } = useTranslation(); // Usar el hook de i18n
+  const { t, i18n } = useTranslation("translations"); // Usar el hook de i18n
   const [postImages, setPostImages] = useState<PostImage[]>([]);
   const [Loading, setLoading] = useState(false);
   const theme = darkTheme;

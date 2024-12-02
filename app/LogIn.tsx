@@ -31,7 +31,7 @@ const LogInScreen: React.FC = () => {
   const sharedStyles = createSharedStyles(theme);
   const styles = createLogInScreenStyles(theme);
 
-  const { t, i18n } = useTranslation(); 
+  const { t, i18n } = useTranslation("translations");
 
   const dispatch = useDispatch<AppDispatch>();
   const [email, setEmail] = useState("");

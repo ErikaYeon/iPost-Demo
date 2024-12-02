@@ -28,7 +28,7 @@ import { resetPosts } from "@/redux/slices/timelineSlice";
 import { languageToLevel, themeToLevel } from "../types/mappers";
 import { UserSettingsResponse } from "@/types/apiContracts";
 import { useTranslation } from "react-i18next";
-import i18next from "i18next"; // Asegúrate de importar i18next
+import i18next from "i18next"; 
 
 const SettingsScreen: React.FC = () => {
   const { t, i18n } = useTranslation("translations"); // Usando i18next para la traducción
