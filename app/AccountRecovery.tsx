@@ -16,7 +16,7 @@ import {
 import * as Linking from "expo-linking";
 import { setProfileUserId } from "@/redux/slices/profileSlice";
 
-const RestorePassword2: React.FC = () => {
+const AccountRecovery: React.FC = () => {
   const theme = darkTheme; // Cambiar a lightTheme si deseas usar el tema claro
   const sharedStyles = createSharedStyles(theme);
   const styles = createLogInScreenStyles(theme); // Generar estilos dinámicos
@@ -130,4 +130,4 @@ const RestorePassword2: React.FC = () => {
   );
 };
 
-export default RestorePassword2;
+export default AccountRecovery;
