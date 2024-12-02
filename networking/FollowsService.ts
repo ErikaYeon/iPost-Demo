@@ -3,11 +3,15 @@ import { APIError, UserShort } from "@/types/apiContracts";
 import { handleError } from "./utils";
 
 export const getFollowingsUser = async (
-  userId: string
+  userId: string,
+  offset: number = 0,
+  limit: number = 10
 ): Promise<UserShort[]> => {
   try {
-    const response = await api.get(`users/${userId}/followings`);
-    console.log("get folloowings succesful", response.data);
+    const response = await api.get(`users/${userId}/followings`, {
+      params: { offset, limit },
+    });
+    // console.log("get folloowings succesful", response.data);
     return response.data;
   } catch (error: any) {
     handleError(error);
@@ -15,11 +19,15 @@ export const getFollowingsUser = async (
   }
 };
 export const getFollowersUser = async (
-  userId: string
+  userId: string,
+  offset: number = 0,
+  limit: number = 10
 ): Promise<UserShort[]> => {
   try {
-    const response = await api.get(`users/${userId}/followers`);
-    console.log("get folloowings succesful", response.data);
+    const response = await api.get(`users/${userId}/followers`, {
+      params: { offset, limit },
+    });
+    // console.log("get folloowings succesful", response.data);
     return response.data;
   } catch (error: any) {
     handleError(error);
