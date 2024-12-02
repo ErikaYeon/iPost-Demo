@@ -295,7 +295,7 @@
       
       "post": {
           "sponsored": "Sponsored",
-          "visitSite": "visit site"
+          "visitSite": "Visit Site"
         },
         "modal": {
           "close": "Close"
@@ -315,16 +315,37 @@
     
       "suggestionsList": {
           "noResults": "No results found"
+      },
+      
+      "ads": {
+          "locationValidUntil": "Promotion valid until:"
+      },
+      
+      "auth": {
+          "signupError": "An error occurred during signup",
+          "emailNotFound": "Email not found",
+          "emailSent": "Verification email sent",
+          "signupErrorUnknown": "Unknown signup error",
+          "emailAlreadyExists": "This email is already registered",
+          "loginError": "Login failed",
+          "changePasswordError": "Error changing password",
+          "requestError": "Request error",
+          "deleteAccountSuccess": "Account deleted successfully",
+          "deleteAccountError": "Error deleting account",
+          "forgotPasswordSuccess": "Password reset email sent",
+          "forgotPasswordError": "Error sending reset email",
+          "noTokensError": "No tokens found, please login again",
+          "autoLoginError": "Auto-login failed"
+       },
+      
+      "profileScreen": {
+          "tabPosts": "POST",
+          "tabSaved": "SAVED",
+          "errorProfileId": "Profile ID not defined",
+          "errorThumbnail": "Error generating the thumbnail"
       }
-  
-      
-        
-      
-      
-      
       
 
-    
 
 }
   

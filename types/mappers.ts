@@ -30,14 +30,18 @@ export function themeToLevel(level: string): string {
 }
 export function languageToLevel(level: string): string {
   switch (level) {
-    case "Español": {
+    case "es": {
       return "SPANISH";
+    }
+    case "en":{
+      return "ENGLISH";
     }
     default: {
       return "ENGLISH";
     }
   }
 }
+
 export function genderToString(gender: string): string {
   switch (gender) {
     case "MEN": {

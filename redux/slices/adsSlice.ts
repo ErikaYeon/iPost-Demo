@@ -2,6 +2,7 @@ import { createSlice, createAsyncThunk, PayloadAction } from "@reduxjs/toolkit";
 import { Post, Ads, UserShort } from "@/types/apiContracts";
 import { getAdvertising } from "@/networking/postService";
 import Placeholders from "@/constants/ProfilePlaceholders";
+import i18n from "i18next";
 
 // Thunk asincrónico para obtener los anuncios
 export const fetchAds = createAsyncThunk("posts/getAdvertising", async () => {
@@ -9,12 +10,16 @@ export const fetchAds = createAsyncThunk("posts/getAdvertising", async () => {
   return ads;
 });
 
+
 interface AdsState {
   ads: Ads[];
   postsFromAds: Post[];
   status: "idle" | "loading" | "succeeded" | "failed";
 }
 const convertAdToPost = (ad: Ads, generateId: () => string): Post => ({
+
+
+  
   id: generateId(),
   author: {
     id: generateId(),
@@ -27,7 +32,7 @@ const convertAdToPost = (ad: Ads, generateId: () => string): Post => ({
     active: true,
   },
   createdAt: new Date(ad.dateEnd).toISOString(),
-  location: "Promoción valida hasta:",
+  location: i18n.t("ads.locationValidUntil"), // Traducción para "Promoción válida hasta"
   title: ad.siteUrl,
   likesCount: 0,
   commentsCount: 0,

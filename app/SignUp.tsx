@@ -129,7 +129,7 @@ const SignUpScreen: React.FC = () => {
         <View style={{ flexDirection: "row", justifyContent: "center", marginTop: 7, marginBottom: 10 }}>
           <RegularText text={i18n.t("signUp.links.login.prefix")} theme={theme} />
           <LinkText
-            text={` ${i18n.t("signUp.links.login.action")}`} // Agregado un espacio al principio del texto
+            text={` ${i18n.t("signUp.links.login.action")}`}
             onPress={() => router.push("/LogIn")}
             theme={theme}
           />

@@ -294,7 +294,7 @@
     
     "post": {
         "sponsored": "Patrocinado",
-        "visitSite": "visitar sitio"
+        "visitSite": "Visitar Sitio"
       },
       "modal": {
         "close": "Cerrar"
@@ -314,16 +314,36 @@
 
     "suggestionsList": {
         "noResults": "No se encontraron resultados"
+    },
+    
+    "ads": {
+        "locationValidUntil": "Promoción válida hasta:"
+    },
+    
+    "auth": {
+        "signupError": "Ocurrió un error durante el registro",
+        "emailNotFound": "Correo electrónico no encontrado",
+        "emailSent": "Correo de verificación enviado",
+        "signupErrorUnknown": "Error desconocido en el registro",
+        "emailAlreadyExists": "Este correo electrónico ya está registrado",
+        "loginError": "Error al iniciar sesión",
+        "changePasswordError": "Error al cambiar la contraseña",
+        "requestError": "Error en la solicitud",
+        "deleteAccountSuccess": "Cuenta eliminada con éxito",
+        "deleteAccountError": "Error al eliminar la cuenta",
+        "forgotPasswordSuccess": "Correo para restablecer la contraseña enviado",
+        "forgotPasswordError": "Error al enviar el correo de restablecimiento",
+        "noTokensError": "No se encontraron tokens, por favor inicia sesión nuevamente",
+        "autoLoginError": "Error en el auto-login"
+    },
+    
+    "profileScreen": {
+        "tabPosts": "PUBLICACIONES",
+        "tabSaved": "GUARDADOS",
+        "errorProfileId": "ID de perfil no definido",
+        "errorThumbnail": "Error al generar el thumbnail"
     }
-    
-    
-    
-    
-    
-    
-    
-
-
+  
 
 }
   

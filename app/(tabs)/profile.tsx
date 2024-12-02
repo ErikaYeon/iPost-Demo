@@ -16,6 +16,7 @@ import { darkTheme, lightTheme } from "@/ui/styles/Theme";
 import * as VideoThumbnails from "expo-video-thumbnails";
 import NoPosts from "@/ui/components/NoPost";
 import { router } from "expo-router";
+import i18n from "i18next";
 
 type PostImage = {
   id: string;
@@ -112,13 +113,13 @@ const ProfileScreen: React.FC = () => {
       {/* Tabs */}
       <View style={styles.tabsContainer}>
         <TabButton
-          text="POST"
+          text={i18n.t("profileScreen.tabPosts")}
           isActive={activeTab === "post"}
           onPress={() => setActiveTab("post")}
           theme={theme}
         />
         <TabButton
-          text="GUARDADOS"
+          text={i18n.t("profileScreen.tabSaved")}
           isActive={activeTab === "saved"}
           onPress={() => setActiveTab("saved")}
           theme={theme}
@@ -146,7 +147,7 @@ const ProfileScreen: React.FC = () => {
                     },
                   });
                 } else {
-                  console.error("ID de perfil no definido");
+                  console.error(i18n.t("profileScreen.errorProfileId"));
                 }
               }}
             />
@@ -170,7 +171,7 @@ const ProfileScreen: React.FC = () => {
                     },
                   });
                 } else {
-                  console.error("ID de perfil no definido");
+                  console.error(i18n.t("profileScreen.errorProfileId"));
                 }
               }}
             />
@@ -187,7 +188,7 @@ const generateVideoThumbnail = async (uri: string): Promise<string | null> => {
     });
     return thumbnailUri;
   } catch (error) {
-    console.error("Error al generar el thumbnail:", error);
+    console.error(i18n.t("profileScreen.errorThumbnail"), error);
     return null;
   }
 };

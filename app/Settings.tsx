@@ -80,14 +80,24 @@ const SettingsScreen: React.FC = () => {
     }
   };
 
-  const handleGoBack = () => {
-    const userSettings: UserSettingsResponse = {
-      language: languageToLevel(Profile.language),
-      theme: themeToLevel(Profile.theme),
-    };
-    dispatch(setUserSettingsAsync({ userSettings, userId }));
-    router.back();
+  const handleGoBack = async () => {
+    try {
+      const storedLanguage = await AsyncStorage.getItem("language"); // Obtén el idioma almacenado
+      const mappedLanguage = languageToLevel(storedLanguage || i18n.language); // Mapea el idioma al formato esperado por el backend
+  
+      const userSettings: UserSettingsResponse = {
+        language: mappedLanguage, // Usa el idioma mapeado
+        theme: themeToLevel(Profile.theme), // Mapea el tema
+      };
+  
+      await dispatch(setUserSettingsAsync({ userSettings, userId }));
+      router.back();
+    } catch (error) {
+      console.error("Error al actualizar configuración:", error);
+    }
   };
+  
+  
 
   // Función para cambiar el idioma
   const handleChangeLanguage = (lang: string) => {
