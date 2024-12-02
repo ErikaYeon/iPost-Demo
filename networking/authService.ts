@@ -118,7 +118,9 @@ export const forgotPassword = async (email: string): Promise<void> => {
 
 export const magicLinkLogin = async (token: string): Promise<LoginResponse> => {
   try {
-    const response = await api.post("/accounts/magic-link", { token });
+    const response = await api.get("/accounts/magic-link", {
+      params: { token },
+    });
     if (response.status !== 200) {
       throw new APIError("Error en el inicio de sesión con magic link");
     }
