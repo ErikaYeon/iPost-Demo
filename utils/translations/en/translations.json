@@ -343,6 +343,10 @@
           "tabSaved": "SAVED",
           "errorProfileId": "Profile ID not defined",
           "errorThumbnail": "Error generating the thumbnail"
+      },
+      "searchScreen":{
+        "search": "Search",
+        "searchProfiles" :"Search Profiles"
       }
       
 

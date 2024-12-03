@@ -24,6 +24,8 @@ import {
   getUserSettingsAsync,
 } from "../../redux/slices/profileSlice";
 import { isEmpty } from "@/utils/RegexExpressions";
+import { I18nextProvider } from "react-i18next";
+import i18next from "i18next";
 
 const home = () => {
   const theme = darkTheme;
@@ -57,6 +59,7 @@ const home = () => {
       setHasFetched(true);
       dispatch(fetchUserInfo(userProfile.id));
       dispatch(getUserSettingsAsync(userProfile.id));
+      i18next.changeLanguage(userProfile.language);
     }
   }, [userProfile.id, dispatch, hasFetched]);
 

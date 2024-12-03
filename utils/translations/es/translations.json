@@ -342,7 +342,11 @@
         "tabSaved": "GUARDADOS",
         "errorProfileId": "ID de perfil no definido",
         "errorThumbnail": "Error al generar el thumbnail"
-    }
+    },
+    "searchScreen":{
+        "search": "Buscar",
+        "searchProfiles" :"Buscar Perfiles"
+      }
   
 
 }

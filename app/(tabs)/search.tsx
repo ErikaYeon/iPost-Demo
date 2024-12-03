@@ -27,6 +27,8 @@ import {
 import { fetchOtherProfile } from "@/redux/slices/otherProfileSlice";
 import { Crown } from "@/types/models";
 import { router } from "expo-router";
+import i18n from "i18next";
+import { useTranslation } from "react-i18next";
 
 const SearchProfiles: React.FC = () => {
   const theme = darkTheme; // Cambia manualmente entre `darkTheme` y `lightTheme`
@@ -37,6 +39,7 @@ const SearchProfiles: React.FC = () => {
   const { results: profiles, status } = useSelector(
     (state: RootState) => state.search
   );
+  const { t, i18n } = useTranslation("translations");
 
   const handleSearch = (text: string) => {
     setSearchQuery(text);
@@ -102,13 +105,16 @@ const SearchProfiles: React.FC = () => {
             Platform.OS === "android" ? StatusBar.currentHeight + 10 : 30,
         }}
       >
-        <HeaderNoIcon title="Buscar perfiles" theme={theme} />
+        <HeaderNoIcon
+          title={i18n.t("searchScreen.searchProfiles")}
+          theme={theme}
+        />
       </SafeAreaView>
 
       {/* Barra de búsqueda */}
       <View style={styles.searchBarContainer}>
         <SearchBar
-          placeholder="Buscar"
+          placeholder={i18n.t("searchScreen.search")}
           onChangeText={handleSearch}
           value={searchQuery}
           theme={theme}

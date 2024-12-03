@@ -23,13 +23,24 @@ import {
   setProfileData,
   updateProfileDataAsync,
 } from "@/redux/slices/profileSlice";
-import { genderToString, stringToGender } from "@/types/mappers";
+import {
+  genderToString,
+  genderToStringEN,
+  stringToGender,
+  stringToGenderEN,
+} from "@/types/mappers";
 import { ProfileUpdateRequest } from "@/types/apiContracts";
 import { useTranslation } from "react-i18next";
 
 const theme = darkTheme; // Cambia manualmente entre `darkTheme` y `lightTheme`
 
 const GENDER_OPTIONS = ["Mujer", "Hombre", "No binario", "Prefiero no decirlo"];
+const GENDER_OPTIONS_EN = [
+  "Women",
+  "Men",
+  "Non binary",
+  "Prefer not to answer",
+];
 
 const EditProfile: React.FC = () => {
   const { t, i18n } = useTranslation("translations");
@@ -46,7 +57,9 @@ const EditProfile: React.FC = () => {
   const [username, setUsername] = useState(Profile.username);
   const [description, setDescription] = useState(Profile.description);
   const [gender, setGender] = useState(
-    genderToString(Profile.gender.toString())
+    Profile.language === "es"
+      ? genderToString(Profile.gender.toString()) // Función para español
+      : genderToStringEN(Profile.gender.toString())
   );
   const userId = Profile.id;
 
@@ -70,7 +83,10 @@ const EditProfile: React.FC = () => {
       lastname: lastName,
       username: username,
       description: description,
-      gender: stringToGender(gender),
+      gender:
+        Profile.language === "es"
+          ? stringToGender(gender)
+          : stringToGenderEN(gender),
     };
     dispatch(setProfileData(ProfileData));
     dispatch(updateProfileDataAsync({ userId, profileData: ProfileData }));
@@ -165,7 +181,9 @@ const EditProfile: React.FC = () => {
 
       {genderDropdownVisible && (
         <Dropdown
-          options={GENDER_OPTIONS}
+          options={
+            Profile.language === "es" ? GENDER_OPTIONS : GENDER_OPTIONS_EN
+          }
           position={dropdownPosition}
           onSelect={(option) => {
             setGender(option);

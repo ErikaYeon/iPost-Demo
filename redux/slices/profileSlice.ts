@@ -64,7 +64,7 @@ const initialState: ProfileState = {
   loading: false,
   error: null,
   theme: "dark",
-  language: "Español",
+  language: "es",
   posts: [],
   favorites: [],
 };
@@ -217,7 +217,7 @@ const profileSlice = createSlice({
       state.gender = 0;
       state.active = false;
       state.theme = "dark";
-      state.language = "Español";
+      state.language = "es";
     },
     updateTheme: (state, action: PayloadAction<string>) => {
       state.theme = action.payload;
@@ -285,8 +285,7 @@ const profileSlice = createSlice({
         (state, action: PayloadAction<UserSettingsResponse>) => {
           console.log(action.payload.theme);
           state.theme = action.payload.theme === "DARK" ? "dark" : "light";
-          state.language =
-            action.payload.language === "SPANISH" ? "Español" : "Inglés";
+          state.language = action.payload.language === "SPANISH" ? "es" : "en";
         }
       )
       .addCase(setUserSettingsAsync.pending, (state) => {
