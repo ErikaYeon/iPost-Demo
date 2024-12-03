@@ -17,7 +17,8 @@ import * as Linking from "expo-linking";
 import { setProfileUserId } from "@/redux/slices/profileSlice";
 
 const AccountRecovery: React.FC = () => {
-  const theme = darkTheme; // Cambiar a lightTheme si deseas usar el tema claro
+  const themeMode = useSelector((state: RootState) => state.profile.theme); // Selecciona el tema desde Redux
+  const theme = themeMode === "dark" ? darkTheme : lightTheme; // Selecciona el tema correcto
   const sharedStyles = createSharedStyles(theme);
   const styles = createLogInScreenStyles(theme); // Generar estilos dinámicos
   const dispatch = useDispatch<AppDispatch>();

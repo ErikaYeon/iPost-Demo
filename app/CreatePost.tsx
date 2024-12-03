@@ -41,7 +41,8 @@ import { addPost } from "@/redux/slices/timelineSlice";
 import { Video } from "expo-av";
 
 const CreatePost: React.FC = () => {
-  const theme = darkTheme; // Cambiar a `lightTheme` si es necesario
+  const themeMode = useSelector((state: RootState) => state.profile.theme); // Selecciona el tema desde Redux
+  const theme = themeMode === "dark" ? darkTheme : lightTheme; // Selecciona el tema correcto
   const sharedStyles = createSharedStyles(theme);
   const styles = createEditProfilePhotoStyles(theme);
 

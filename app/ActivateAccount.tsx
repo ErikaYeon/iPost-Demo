@@ -14,11 +14,11 @@ import { EmailType } from "@/types/apiContracts";
 import { styles } from "../ui/styles/LogIn";
 
 
-const theme = darkTheme; 
-const sharedStyles = createSharedStyles(theme);
-
-
 const ActivateAccount: React.FC = () => {
+  const themeMode = useSelector((state: RootState) => state.profile.theme); // Selecciona el tema desde Redux
+  const theme = themeMode === "dark" ? darkTheme : lightTheme; // Selecciona el tema correcto
+
+  const sharedStyles = createSharedStyles(theme);
   const dispatch = useDispatch<AppDispatch>();
   const userProfile = useSelector((state: RootState) => state.profile);
   const email = userProfile.email;

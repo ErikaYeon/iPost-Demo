@@ -25,6 +25,9 @@ import { ProfileImageRequest } from "@/types/apiContracts";
 import { isEmpty } from "@/utils/RegexExpressions";
 
 const EditProfilePhoto: React.FC = () => {
+  const themeMode = useSelector((state: RootState) => state.profile.theme); // Selecciona el tema desde Redux
+  const theme = themeMode === "dark" ? darkTheme : lightTheme; // Selecciona el tema correcto
+
   const Profile = useSelector((state: RootState) => state.profile);
   const ProfilePhoto = Profile.profileImage;
   const userId = Profile.id;
@@ -33,7 +36,6 @@ const EditProfilePhoto: React.FC = () => {
   );
   const [base64Image, setBase64Image] = useState<string | null>(null); // Nueva variable para almacenar la imagen en Base64
   const router = useRouter();
-  const theme = darkTheme; // Cambiar a `lightTheme` si es necesario
   const styles = createEditProfilePhotoStyles(theme);
   const dispatch = useDispatch<AppDispatch>();
 

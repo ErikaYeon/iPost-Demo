@@ -15,10 +15,10 @@ import createSharedStyles from "../ui/styles/SharedStyles";
 import { darkTheme, lightTheme } from "../ui/styles/Theme";
 import createLogInScreenStyles from "@/ui/styles/LogIn";
 import { useRouter } from "expo-router";
-import { useDispatch } from "react-redux";
+import { useSelector, useDispatch } from "react-redux";
 import RegularTextLine from "@/ui/components/RegularTextLine";
 import { isEmailValid } from "@/utils/RegexExpressions";
-import { AppDispatch } from "@/redux/store";
+import { AppDispatch, RootState } from "@/redux/store";
 import { loginAsync } from "@/redux/slices/authSlice";
 import {
   setProfileExtraData,
@@ -26,7 +26,9 @@ import {
 } from "@/redux/slices/profileSlice";
 
 const LogInScreen: React.FC = () => {
-  const theme = darkTheme; // Cambiar manualmente a lightTheme si es necesario
+  const themeMode = useSelector((state: RootState) => state.profile.theme); // Selecciona el tema desde Redux
+  const theme = themeMode === "dark" ? darkTheme : lightTheme; // Selecciona el tema correcto
+
   const sharedStyles = createSharedStyles(theme);
   const styles = createLogInScreenStyles(theme);
 

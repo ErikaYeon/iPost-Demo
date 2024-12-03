@@ -29,7 +29,9 @@ import { Crown } from "@/types/models";
 import { router } from "expo-router";
 
 const SearchProfiles: React.FC = () => {
-  const theme = darkTheme; // Cambia manualmente entre `darkTheme` y `lightTheme`
+  const themeMode = useSelector((state: RootState) => state.profile.theme); // Selecciona el tema desde Redux
+  const theme = themeMode === "dark" ? darkTheme : lightTheme; // Selecciona el tema correcto
+
   const styles = createSearchProfilesStyles(theme);
 
   const [searchQuery, setSearchQuery] = useState("");

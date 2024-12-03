@@ -32,7 +32,8 @@ import {
 } from "@/redux/slices/profileSlice";
 
 const SignUpScreen: React.FC = () => {
-  const theme = darkTheme; // Para alternar entre darkTheme y lightTheme manualmente
+  const themeMode = useSelector((state: RootState) => state.profile.theme); // Selecciona el tema desde Redux
+  const theme = themeMode === "dark" ? darkTheme : lightTheme; // Selecciona el tema correcto
   const sharedStyles = createSharedStyles(theme);
   const styles = createLogInScreenStyles(theme);
 
