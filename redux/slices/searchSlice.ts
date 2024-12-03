@@ -9,22 +9,26 @@ import {
   unfollowUser,
 } from "@/networking/FollowsService";
 import { isEmpty } from "@/utils/RegexExpressions";
+import APIConstants from "@/constants/APIConstants";
+import { RootState } from "../store";
 
-// Thunk asincrónico para realizar la búsqueda de usuarios
 export const fetchSearchResults = createAsyncThunk(
   "search/fetchSearchResults",
   async (query: string) => {
     const results = await searchProfiles(query);
     return results.map((user: UserShort) => ({
       ...user,
-      profileImage: user.profileImage || Placeholders.DEFAULT_PROFILE_PHOTO, // Usa el placeholder si no hay imagen
+      profileImage: user.profileImage || Placeholders.DEFAULT_PROFILE_PHOTO,
     }));
   }
 );
+
 export const fetchFollowingsUser = createAsyncThunk(
   "follows/getFollowingsUser",
-  async (userId: string) => {
-    const results = await getFollowingsUser(userId);
+  async (userId: string, { getState }) => {
+    const state = getState() as RootState;
+    const { offset, limit } = state.search;
+    const results = await getFollowingsUser(userId, offset, limit);
     return results.map((user: UserShort) => ({
       ...user,
       profileImage: isEmpty(user.profileImage)
@@ -35,8 +39,10 @@ export const fetchFollowingsUser = createAsyncThunk(
 );
 export const fetchFollowersUser = createAsyncThunk(
   "follows/getFollowersUser",
-  async (userId: string) => {
-    const results = await getFollowersUser(userId);
+  async (userId: string, { getState }) => {
+    const state = getState() as RootState;
+    const { offset, limit } = state.search;
+    const results = await getFollowersUser(userId, offset, limit);
     return results.map((user: UserShort) => ({
       ...user,
       profileImage: isEmpty(user.profileImage)
@@ -45,6 +51,7 @@ export const fetchFollowersUser = createAsyncThunk(
     }));
   }
 );
+
 export const followUserThunk = createAsyncThunk<
   void,
   { userId: string; userToFollow: string },
@@ -82,6 +89,10 @@ interface SearchState {
   followingsList: UserShort[];
   followersList: UserShort[];
   status: "idle" | "loading" | "succeeded" | "failed";
+  offset: number;
+  limit: number;
+  hasMoreFollowings: boolean;
+  hasMoreFollowers: boolean;
 }
 
 const initialState: SearchState = {
@@ -89,6 +100,10 @@ const initialState: SearchState = {
   followingsList: [],
   followersList: [],
   status: "idle",
+  offset: 0,
+  limit: 13,
+  hasMoreFollowings: true,
+  hasMoreFollowers: true,
 };
 
 const searchSlice = createSlice({
@@ -97,6 +112,15 @@ const searchSlice = createSlice({
   reducers: {
     clearSearchResults: (state) => {
       state.results = [];
+    },
+    setOffset: (state, action) => {
+      state.offset = action.payload;
+    },
+    clearFollowingList: (state) => {
+      state.followingsList = [];
+    },
+    clearFollowersList: (state) => {
+      state.followersList = [];
     },
   },
   extraReducers: (builder) => {
@@ -121,7 +145,9 @@ const searchSlice = createSlice({
         fetchFollowingsUser.fulfilled,
         (state, action: PayloadAction<UserShort[]>) => {
           state.status = "succeeded";
-          state.followingsList = action.payload;
+          state.followingsList.unshift(...action.payload);
+          state.hasMoreFollowings = action.payload.length === state.limit;
+          state.offset += action.payload.length;
         }
       )
       .addCase(fetchFollowingsUser.rejected, (state) => {
@@ -135,6 +161,8 @@ const searchSlice = createSlice({
         (state, action: PayloadAction<UserShort[]>) => {
           state.status = "succeeded";
           state.followersList = action.payload;
+          state.hasMoreFollowers = action.payload.length === state.limit;
+          state.offset += action.payload.length;
         }
       )
       .addCase(fetchFollowersUser.rejected, (state) => {
@@ -162,4 +190,9 @@ const searchSlice = createSlice({
 });
 
 export default searchSlice.reducer;
-export const { clearSearchResults } = searchSlice.actions;
+export const {
+  clearSearchResults,
+  setOffset,
+  clearFollowingList,
+  clearFollowersList,
+} = searchSlice.actions;
