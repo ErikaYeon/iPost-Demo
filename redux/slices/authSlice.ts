@@ -16,6 +16,7 @@ import {
   ChangePassword,
   deleteAccount,
   forgotPassword,
+  magicLinkLogin,
 } from "@/networking/authService";
 import i18n from "i18next";
 
@@ -43,40 +44,51 @@ export interface AutologinResponse {
   userId: string;
 }
 
-export const signupAsync = createAsyncThunk<{
-  message: string;
-  status: number;
-}, SignupRequest, { rejectValue: RejectedPayload }>(
-  "auth/signup",
-  async (userData: SignupRequest, { rejectWithValue }) => {
-    try {
-      const { status, message } = await signup(userData); // Desestructuración de la respuesta
-      if (status === 409 || status === 404) {
-        return rejectWithValue({ message, status }); // Manejo del error 409 (email ya registrado)
-      }
-      if (status !== 201) {
-        return rejectWithValue({ message, status }); // Manejo de otros errores
-      }
-      return { message, status }; // Caso de éxito
-    } catch (error: any) {
-      return rejectWithValue({
-        message: error.message || i18n.t("auth.signupError"),
-        status: 500,
-      }); // Error en la solicitud
+export const signupAsync = createAsyncThunk<
+  {
+    message: string;
+    status: number;
+  },
+  SignupRequest,
+  { rejectValue: RejectedPayload }
+>("auth/signup", async (userData: SignupRequest, { rejectWithValue }) => {
+  try {
+    const { status, message } = await signup(userData); // Desestructuración de la respuesta
+    if (status === 409 || status === 404) {
+      return rejectWithValue({ message, status }); // Manejo del error 409 (email ya registrado)
     }
+    if (status !== 201) {
+      return rejectWithValue({ message, status }); // Manejo de otros errores
+    }
+    return { message, status }; // Caso de éxito
+  } catch (error: any) {
+    return rejectWithValue({
+      message: error.message || i18n.t("auth.signupError"),
+      status: 500,
+    }); // Error en la solicitud
   }
-);
+});
 
-export const resendEmailAsync = createAsyncThunk<{
-  message: string;
-  status: number;
-}, { email: string; emailType: EmailType }, { rejectValue: RejectedPayload }>(
+export const resendEmailAsync = createAsyncThunk<
+  {
+    message: string;
+    status: number;
+  },
+  { email: string; emailType: EmailType },
+  { rejectValue: RejectedPayload }
+>(
   "auth/resendEmail",
-  async (userData: { email: string; emailType: EmailType }, { rejectWithValue }) => {
+  async (
+    userData: { email: string; emailType: EmailType },
+    { rejectWithValue }
+  ) => {
     try {
       const responseStatus = await resendEmail(userData);
       if (responseStatus === 404) {
-        return rejectWithValue({ message: i18n.t("auth.emailNotFound"), status: 404 });
+        return rejectWithValue({
+          message: i18n.t("auth.emailNotFound"),
+          status: 404,
+        });
       }
       if (responseStatus === 201) {
         return { message: i18n.t("auth.emailSent"), status: 201 };
@@ -103,10 +115,14 @@ export const loginAsync = createAsyncThunk(
   }
 );
 
-export const changePasswordAsync = createAsyncThunk<{
-  message: string;
-  status: number;
-}, ChangePasswordRequest, { rejectValue: RejectedPayload }>(
+export const changePasswordAsync = createAsyncThunk<
+  {
+    message: string;
+    status: number;
+  },
+  ChangePasswordRequest,
+  { rejectValue: RejectedPayload }
+>(
   "auth/changePassword",
   async (data: ChangePasswordRequest, { rejectWithValue }) => {
     try {
@@ -139,7 +155,9 @@ export const deleteAccountAsync = createAsyncThunk(
       await deleteAccount(userId);
       console.log(i18n.t("auth.deleteAccountSuccess"));
     } catch (error: any) {
-      return rejectWithValue(error.message ?? i18n.t("auth.deleteAccountError"));
+      return rejectWithValue(
+        error.message ?? i18n.t("auth.deleteAccountError")
+      );
     }
   }
 );
@@ -151,7 +169,9 @@ export const forgotPasswordAsync = createAsyncThunk(
       await forgotPassword(email);
       console.log(i18n.t("auth.forgotPasswordSuccess"));
     } catch (error: any) {
-      return rejectWithValue(error.message ?? i18n.t("auth.forgotPasswordError"));
+      return rejectWithValue(
+        error.message ?? i18n.t("auth.forgotPasswordError")
+      );
     }
   }
 );
@@ -179,6 +199,21 @@ export const autoLoginAsync = createAsyncThunk(
   }
 );
 
+export const magicLinkLoginAsync = createAsyncThunk(
+  "auth/magicLinkLogin",
+  async (token: string, { rejectWithValue }) => {
+    try {
+      const loginResponse: LoginResponse = await magicLinkLogin(token);
+      await AsyncStorage.setItem("access_token", loginResponse.access_token);
+      await AsyncStorage.setItem("refresh_token", loginResponse.refresh_token);
+      await AsyncStorage.setItem("user_id", loginResponse.id);
+      return loginResponse;
+    } catch (error: APIError | any) {
+      return rejectWithValue(error.message ?? "Error en magic link login");
+    }
+  }
+);
+
 const authSlice = createSlice({
   name: "auth",
   initialState,
@@ -200,7 +235,8 @@ const authSlice = createSlice({
       })
       .addCase(signupAsync.rejected, (state, action) => {
         state.loading = false;
-        state.error = action.payload?.message ?? i18n.t("auth.signupErrorUnknown");
+        state.error =
+          action.payload?.message ?? i18n.t("auth.signupErrorUnknown");
         if (action.payload?.status === 409) {
           console.log(i18n.t("auth.emailAlreadyExists"));
         }
@@ -282,9 +318,34 @@ const authSlice = createSlice({
         state.refresh_token = action.payload?.refresh_token!;
         state.userId = action.payload?.userId!;
       })
-      .addCase(autoLoginAsync.rejected, (state) => {
+      .addCase(autoLoginAsync.rejected, (state, action) => {
         state.loading = false;
         state.error = i18n.t("auth.autoLoginError");
+        state.error = action.payload as string;
+        state.access_token = null;
+        state.refresh_token = null;
+        state.status = "notAuthenticated";
+      })
+      .addCase(magicLinkLoginAsync.pending, (state) => {
+        state.loading = true;
+        state.error = null;
+      })
+      .addCase(
+        magicLinkLoginAsync.fulfilled,
+        (state, action: PayloadAction<LoginResponse>) => {
+          state.loading = false;
+          state.access_token = action.payload.access_token;
+          state.refresh_token = action.payload.refresh_token;
+          state.userId = action.payload.id;
+          state.status = "authenticated";
+        }
+      )
+      .addCase(magicLinkLoginAsync.rejected, (state, action) => {
+        state.loading = false;
+        state.error = action.payload as string;
+        state.access_token = null;
+        state.refresh_token = null;
+        state.status = "notAuthenticated";
       });
   },
 });

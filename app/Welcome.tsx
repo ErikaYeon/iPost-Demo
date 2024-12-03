@@ -106,22 +106,10 @@ const FirstScreen: React.FC = () => {
       </View>
 
       {/* Texto "o continuar con" */}
-      <RegularTextLine text={i18n.t("firstScreen.orContinueWith")} theme={theme} />
-
-      {/* Botón de Google con imagen PNG */}
-      <TouchableOpacity
-        style={[
-          sharedStyles.googleButton,
-          { marginTop: theme.spacing.medium, width: "85%" },
-        ]}
-        onPress={() => router.push("/LogInFaceId")}
-      >
-        <Image
-          source={require("../assets/images/icons/Google.png")}
-          style={{ width: 24, height: 24 }}
-        />
-        <Text style={sharedStyles.googleText}>{i18n.t("firstScreen.google")}</Text>
-      </TouchableOpacity>
+      <RegularTextLine
+        text={i18n.t("firstScreen.orContinueWith")}
+        theme={theme}
+      />
     </SafeAreaView>
   );
 };

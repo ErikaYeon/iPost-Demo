@@ -5,7 +5,7 @@
     "version": "1.0.0",
     "orientation": "portrait",
     "icon": "./assets/images/icons/LogoiPost.png",
-    "scheme": "myapp",
+    "scheme": "ipost",
     "userInterfaceStyle": "automatic",
     "splash": {
       "image": "./assets/images/icons/ic_launcher_foreground.png",
@@ -19,18 +19,25 @@
       "adaptiveIcon": {
         "foregroundImage": "./assets/images/icons/ic_launcher_foreground.png",
         "backgroundColor": "#ffffff"
-      }
+      },
+      "package": "com.ipost.iPost"
     },
     "web": {
       "bundler": "metro",
       "output": "static",
       "favicon": "./assets/images/icons/LogoiPost.png"
     },
-    "plugins": [
-      "expo-router"
-    ],
+    "plugins": ["expo-router"],
     "experiments": {
       "typedRoutes": true
+    },
+    "extra": {
+      "router": {
+        "origin": false
+      },
+      "eas": {
+        "projectId": "eaf79ae7-5e48-4743-9472-c25fb37df7d0"
+      }
     }
   }
 }

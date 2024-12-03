@@ -8,6 +8,7 @@
 !*.tsx
 !*.js
 !*.jsx
+!*.json
 
 # Check subdirectories too
 !*/
