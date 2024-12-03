@@ -106,7 +106,7 @@ const FirstScreen: React.FC = () => {
       <RegularTextLine text={"continuar con"} theme={theme} />
 
       {/* Botón de Google con imagen PNG */}
-      <TouchableOpacity
+      {/* <TouchableOpacity
         style={[
           sharedStyles.googleButton,
           { marginTop: theme.spacing.medium, width: "85%" },
@@ -118,7 +118,7 @@ const FirstScreen: React.FC = () => {
           style={{ width: 24, height: 24 }}
         />
         <Text style={sharedStyles.googleText}>Google</Text>
-      </TouchableOpacity>
+      </TouchableOpacity> */}
     </SafeAreaView>
   );
 };

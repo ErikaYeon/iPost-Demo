@@ -32,7 +32,7 @@ const RestorePassword1: React.FC = () => {
       dispatch(setProfileEmail({ email }));
       dispatch(forgotPasswordAsync(email));
       setEmail("");
-      router.push("/RestorePssword2");
+      router.push("/AccountRecovery");
     }
   };
 
