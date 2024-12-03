@@ -21,10 +21,13 @@ import {
   updateProfileImageAsync,
 } from "@/redux/slices/profileSlice";
 import { ProfileImageRequest } from "@/types/apiContracts";
-import { useTranslation } from "react-i18next";  
+import { useTranslation } from "react-i18next";
 
 const EditProfileCover: React.FC = () => {
   const { t, i18n } = useTranslation("translations");
+  const themeMode = useSelector((state: RootState) => state.profile.theme); // Selecciona el tema desde Redux
+  const theme = themeMode === "dark" ? darkTheme : lightTheme; // Selecciona el tema correcto
+
   const Profile = useSelector((state: RootState) => state.profile);
   const ProfileCover = Profile.coverImage;
   const userId = Profile.id;
@@ -33,7 +36,6 @@ const EditProfileCover: React.FC = () => {
   );
   const [base64Image, setBase64Image] = useState<string | null>(null);
   const router = useRouter();
-  const theme = darkTheme; // Cambiar a `darkTheme` si es necesario
   const styles = createEditProfilePhotoStyles(theme);
   const dispatch = useDispatch<AppDispatch>();
 

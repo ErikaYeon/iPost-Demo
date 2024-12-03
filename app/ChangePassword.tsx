@@ -18,7 +18,8 @@ import { useTranslation } from "react-i18next";
 
 const ChangePasswordScreen: React.FC = () => {
   const { t, i18n } = useTranslation("translations"); // Inicializa i18n
-  const theme = darkTheme;
+  const themeMode = useSelector((state: RootState) => state.profile.theme); // Selecciona el tema desde Redux
+  const theme = themeMode === "dark" ? darkTheme : lightTheme; // Selecciona el tema correcto
 
   const dispatch = useDispatch<AppDispatch>();
   const [currentPassword, setCurrentPassword] = useState("");

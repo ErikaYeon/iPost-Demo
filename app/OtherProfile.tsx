@@ -17,7 +17,7 @@ import ProfileHeader from "@/ui/components/ProfileHeader";
 import ProfileAdditionalInfo from "@/ui/components/ProfileAdditionalInfo";
 import PostImageGrid from "@/ui/components/PostImageGrid";
 import { createProfileScreenStyles } from "@/ui/styles/ProfileStyles";
-import { darkTheme } from "@/ui/styles/Theme";
+import { darkTheme, lightTheme } from "@/ui/styles/Theme";
 import BackIconDark from "../assets/images/icons/navigate_before.svg";
 import BackIconLight from "../assets/images/icons/navigate_before_lightMode.svg";
 import * as VideoThumbnails from "expo-video-thumbnails";
@@ -36,9 +36,11 @@ type PostImage = {
 
 const OtherProfile: React.FC = () => {
   const { t, i18n } = useTranslation("translations"); // Usar el hook de i18n
+  const themeMode = useSelector((state: RootState) => state.profile.theme); // Selecciona el tema desde Redux
+  const theme = themeMode === "dark" ? darkTheme : lightTheme; // Selecciona el tema correcto
+
   const [postImages, setPostImages] = useState<PostImage[]>([]);
   const [Loading, setLoading] = useState(false);
-  const theme = darkTheme;
   const styles = createProfileScreenStyles(theme);
   const dispatch = useDispatch<AppDispatch>();
   const Profile = useSelector((state: RootState) => state.profile);
@@ -65,7 +67,7 @@ const OtherProfile: React.FC = () => {
       }
       setIsFollowing(!isFollowing);
     } catch (error) {
-      console.error(i18n.t('follow.error')); // Usando la traducción
+      console.error(i18n.t("follow.error")); // Usando la traducción
     } finally {
       setLoading(false);
     }
@@ -161,7 +163,7 @@ const OtherProfile: React.FC = () => {
                   : { color: theme.colors.textPrimary },
               ]}
             >
-              {isFollowing ? i18n.t('follow.stop') : i18n.t('follow.start')}
+              {isFollowing ? i18n.t("follow.stop") : i18n.t("follow.start")}
             </Text>
           )}
         </TouchableOpacity>
@@ -170,7 +172,7 @@ const OtherProfile: React.FC = () => {
       {/* Tabs */}
       <View style={styles.tabsContainer2}>
         <View style={styles.tabButtonDisabled}>
-          <Text style={styles.tabButtonText}>{i18n.t('tabs.post')}</Text>
+          <Text style={styles.tabButtonText}>{i18n.t("tabs.post")}</Text>
         </View>
       </View>
 

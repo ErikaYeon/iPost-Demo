@@ -10,13 +10,14 @@ import { router } from "expo-router";
 import { useDispatch, useSelector } from "react-redux";
 import { setProfileEmail } from "../redux/slices/profileSlice";
 import { isEmailValid } from "@/utils/RegexExpressions";
-import { AppDispatch } from "@/redux/store";
+import { AppDispatch, RootState } from "@/redux/store";
 import { forgotPasswordAsync } from "@/redux/slices/authSlice";
 import { useTranslation } from "react-i18next";
 
 const RestorePassword1: React.FC = () => {
   const { t, i18n } = useTranslation("translations");
-  const theme = darkTheme;
+  const themeMode = useSelector((state: RootState) => state.profile.theme); // Selecciona el tema desde Redux
+  const theme = themeMode === "dark" ? darkTheme : lightTheme; // Selecciona el tema correcto
   const sharedStyles = createSharedStyles(theme);
   const styles = createLogInScreenStyles(theme);
   const dispatch = useDispatch<AppDispatch>();
@@ -26,9 +27,9 @@ const RestorePassword1: React.FC = () => {
 
   const handleResetPass = () => {
     if (!email) {
-      setErrorMessage(i18n.t('restorePassword.errorFields'));
+      setErrorMessage(i18n.t("restorePassword.errorFields"));
     } else if (!isEmailValid(email)) {
-      setErrorMessage(i18n.t('restorePassword.errorInvalidEmail'));
+      setErrorMessage(i18n.t("restorePassword.errorInvalidEmail"));
     } else {
       setErrorMessage("");
       dispatch(setProfileEmail({ email }));
@@ -45,12 +46,12 @@ const RestorePassword1: React.FC = () => {
         style={styles.logo}
       />
       <View style={styles.headerContainer}>
-        <Text style={styles.headerTextContra}>{i18n.t('restorePassword.header')}</Text>
+        <Text style={styles.headerTextContra}>
+          {i18n.t("restorePassword.header")}
+        </Text>
       </View>
 
-      <Text style={styles.TextInfo}>
-        {i18n.t('restorePassword.info')}
-      </Text>
+      <Text style={styles.TextInfo}>{i18n.t("restorePassword.info")}</Text>
 
       <InputField
         label=""
@@ -62,7 +63,7 @@ const RestorePassword1: React.FC = () => {
       />
 
       <CustomButton
-        title={i18n.t('restorePassword.buttonText')}
+        title={i18n.t("restorePassword.buttonText")}
         onPress={handleResetPass}
         type="primary"
         theme={theme}
@@ -74,7 +75,7 @@ const RestorePassword1: React.FC = () => {
       />
 
       <LinkText
-        text={i18n.t('restorePassword.linkText')}
+        text={i18n.t("restorePassword.linkText")}
         onPress={() => router.push("/LogIn")}
         theme={theme}
       />

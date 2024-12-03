@@ -1,30 +1,32 @@
-import React, { useState } from 'react';
-import { SafeAreaView, View, Image, Text } from 'react-native';
-import CustomButton from '../ui/components/CustomButton';
-import MessageText from '../ui/components/MessageText'; 
-import LinkText from '../ui/components/LinkText'; 
-import HeaderText from '../ui/components/HeaderText'; 
-import createSharedStyles from '../ui/styles/SharedStyles';
-import { lightTheme, darkTheme } from '../ui/styles/Theme';
-import { router } from 'expo-router';
-import { useDispatch, useSelector } from 'react-redux';
-import { AppDispatch, RootState } from '@/redux/store';
+import React, { useState } from "react";
+import { SafeAreaView, View, Image, Text } from "react-native";
+import CustomButton from "../ui/components/CustomButton";
+import MessageText from "../ui/components/MessageText";
+import LinkText from "../ui/components/LinkText";
+import HeaderText from "../ui/components/HeaderText";
+import createSharedStyles from "../ui/styles/SharedStyles";
+import { lightTheme, darkTheme } from "../ui/styles/Theme";
+import { router } from "expo-router";
+import { useDispatch, useSelector } from "react-redux";
+import { AppDispatch, RootState } from "@/redux/store";
 import { resendEmailAsync } from "@/redux/slices/authSlice";
 import { EmailType } from "@/types/apiContracts";
-import { styles } from "../ui/styles/LogIn";
 import { useTranslation } from "react-i18next";
-
-const theme = darkTheme; 
-const sharedStyles = createSharedStyles(theme);
+import createLogInScreenStyles from "@/ui/styles/LogIn";
 
 const ActivateAccount: React.FC = () => {
-  const { t, i18n } = useTranslation("translations"); // Importando traducciones
+  const { t, i18n } = useTranslation("translations");
+  const themeMode = useSelector((state: RootState) => state.profile.theme); // Selecciona el tema desde Redux
+  const theme = themeMode === "dark" ? darkTheme : lightTheme; // Selecciona el tema correcto
+
+  const sharedStyles = createSharedStyles(theme);
   const dispatch = useDispatch<AppDispatch>();
   const userProfile = useSelector((state: RootState) => state.profile);
   const email = userProfile.email;
   const [errorMessage, setErrorMessage] = useState("");
   const [successMessage, setSuccessMessage] = useState("");
   const emailType = EmailType.CONFIRMATION;
+  const styles = createLogInScreenStyles(theme);
 
   const handleReenvio = async () => {
     console.log(email);
@@ -40,15 +42,31 @@ const ActivateAccount: React.FC = () => {
   return (
     <SafeAreaView style={sharedStyles.screenContainer}>
       {/* Logo de iPost */}
-      <Image 
-        source={require('../assets/images/icons/LogoiPost.png')} 
-        style={{ width: 150, height: 150, marginBottom: 20 }} 
+      <Image
+        source={require("../assets/images/icons/LogoiPost.png")}
+        style={{ width: 150, height: 150, marginBottom: 20 }}
       />
 
       {/* Título "Activá tu iPost" */}
-      <View style={{ flexDirection: 'row', justifyContent: 'center', alignItems: 'baseline' }}>
+      <View
+        style={{
+          flexDirection: "row",
+          justifyContent: "center",
+          alignItems: "baseline",
+        }}
+      >
         <HeaderText text={i18n.t("activateAccount.titlePart1")} theme={theme} />
-        <Text style={{ fontSize: 34, fontWeight: 'bold', color: theme.colors.textPrimary, marginBottom: 35 }}> iPost</Text>
+        <Text
+          style={{
+            fontSize: 34,
+            fontWeight: "bold",
+            color: theme.colors.textPrimary,
+            marginBottom: 35,
+          }}
+        >
+          {" "}
+          iPost
+        </Text>
       </View>
 
       {/* Mensaje Informativo para enlace de acceso */}
@@ -60,17 +78,17 @@ const ActivateAccount: React.FC = () => {
 
       {/* Botón "Reenviar enlace" */}
       <CustomButton
-        title={i18n.t("activateAccount.resendButton")} 
+        title={i18n.t("activateAccount.resendButton")}
         onPress={handleReenvio}
         type="primary"
         theme={theme}
-        style={{ marginBottom: 35, marginTop: 15, width: '85%' }}
+        style={{ marginBottom: 35, marginTop: 15, width: "85%" }}
       />
 
       {/* Enlace para "Volver a inicio de sesión" */}
       <LinkText
         text={i18n.t("activateAccount.backToLogin")}
-        onPress={() => router.push('/LogIn')}
+        onPress={() => router.push("/LogIn")}
         theme={theme}
       />
 

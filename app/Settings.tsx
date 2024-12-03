@@ -157,14 +157,14 @@ const SettingsScreen: React.FC = () => {
           iconComponent={() =>
             themeMode === "light" ? (
               <BackIconLightMode
-                width={15}
-                height={15}
+                width={16}
+                height={16}
                 fill={theme.colors.textPrimary}
               />
             ) : (
               <BackIcon
-                width={18}
-                height={18}
+                width={16}
+                height={16}
                 fill={theme.colors.textPrimary}
               />
             )

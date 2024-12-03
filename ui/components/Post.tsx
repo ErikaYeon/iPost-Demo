@@ -15,23 +15,29 @@ import {
   Linking,
 } from "react-native";
 import Modal from "react-native-modal";
+import { darkTheme, lightTheme } from "@/ui/styles/Theme";
 import { Modal as NativeModal } from "react-native"; // Usa Modal nativo para el modal de imagen completa
 import AsyncStorage from "@react-native-async-storage/async-storage";
-import LikeIcon from "../../assets/images/icons/like.svg";
+import LikeIconDark from "../../assets/images/icons/like.svg";
+import LikeIconLight from "../../assets/images/icons/like_darkMode.svg";
 import LikeColoredIcon from "../../assets/images/icons/like_colored.svg";
-import CommentIcon from "../../assets/images/icons/comment.svg";
-import ShareIcon from "../../assets/images/icons/share.svg";
-import SaveIcon from "../../assets/images/icons/save.svg";
-import SaveColoredIcon from "../../assets/images/icons/saved.svg";
-import SendCommentIcon from "../../assets/images/icons/send_comment.svg";
+import CommentIconDark from "../../assets/images/icons/comment.svg";
+import CommentIconLight from "../../assets/images/icons/comment_darkMode.svg";
+import ShareIconDark from "../../assets/images/icons/share.svg";
+import ShareIconLight from "../../assets/images/icons/share_darkMode.svg";
+import SaveIconDark from "../../assets/images/icons/save.svg";
+import SaveIconLight from "../../assets/images/icons/save_darkMode.svg";
+import SaveColoredIconDark from "../../assets/images/icons/saved.svg";
+import SaveColoredIconLight from "../../assets/images/icons/saved_darkMode.svg";
+import SendCommentIconDark from "../../assets/images/icons/send_comment.svg";
+import SendCommentIconLight from "../../assets/images/icons/send_comment_darkMode.svg";
 import CrownGrey from "../../assets/images/icons/gamif_crown_0_1.svg";
 import CrownBronze from "../../assets/images/icons/gamif_crown_1.svg";
 import CrownSilver from "../../assets/images/icons/gamif_crown_2.svg";
 import CrownGold from "../../assets/images/icons/gamif_crown_3.svg";
 import { likePost, unlikePost } from "@/networking/postService";
-import styles from "../../ui/styles/PostStyles";
+import createPostStyles from "../../ui/styles/PostStyles";
 import { Crown } from "@/types/models";
-// import Clipboard from '@react-native-clipboard/clipboard';
 import * as Clipboard from "expo-clipboard";
 import { Video, ResizeMode } from "expo-av";
 import Placeholders from "@/constants/ProfilePlaceholders";
@@ -113,7 +119,6 @@ const Post: React.FC<PostProps> = ({
   isSavedByUser,
   postId,
   userId,
-  theme,
   isAd,
 }) => {
   const [isLiked, setIsLiked] = useState(isLikedByUser);
@@ -132,6 +137,10 @@ const Post: React.FC<PostProps> = ({
   const [isImageModalVisible, setImageModalVisible] = useState(false);
   const [selectedImageUri, setSelectedImageUri] = useState<string | null>(null);
   const { t, i18n } = useTranslation("translations");
+
+  const themeMode = useSelector((state: RootState) => state.profile.theme);
+  const theme = themeMode === "dark" ? darkTheme : lightTheme;
+  const styles = createPostStyles(theme);
 
   const openImageModal = (uri: string) => {
     setSelectedImageUri(uri);
@@ -315,7 +324,7 @@ const Post: React.FC<PostProps> = ({
         </View>
         {isAd && (
           <TouchableOpacity onPress={handleShare} style={styles.iconButton}>
-            <ShareIcon width={20} height={20} />
+            <ShareIconDark width={20} height={20} />
           </TouchableOpacity>
         )}
       </View>
@@ -458,18 +467,27 @@ const Post: React.FC<PostProps> = ({
           <View style={styles.leftInteraction}>
             <TouchableOpacity onPress={toggleLike} style={styles.iconButton}>
               {isLiked ? (
-                <LikeColoredIcon width={20} height={20} />
+                themeMode === "dark" ? (
+                  <LikeColoredIcon width={20} height={20} />
+                ) : (
+                  <LikeColoredIcon width={20} height={20} />
+                )
+              ) : themeMode === "dark" ? (
+                <LikeIconDark width={20} height={20} />
               ) : (
-                <LikeIcon width={20} height={20} />
+                <LikeIconLight width={20} height={20} />
               )}
-              <Text
-                style={[styles.counter, { color: theme.colors.textPrimary }]}
-              >
+              <Text style={[styles.counter, { color: theme.colors.textPrimary }]}>
                 {likeCount}
               </Text>
             </TouchableOpacity>
+            
             <TouchableOpacity onPress={openModal} style={styles.iconButton}>
-              <CommentIcon width={20} height={20} />
+              {themeMode === "dark" ? (
+                <CommentIconDark width={20} height={20} />
+              ) : (
+                <CommentIconLight width={20} height={20} />
+              )}
               <Text
                 style={[styles.counter, { color: theme.colors.textPrimary }]}
               >
@@ -477,11 +495,18 @@ const Post: React.FC<PostProps> = ({
               </Text>
             </TouchableOpacity>
           </View>
+
           <TouchableOpacity onPress={toggleSave} style={styles.iconButton}>
             {isSaved ? (
-              <SaveColoredIcon width={19} height={19} />
+              themeMode === "dark" ? (
+                <SaveColoredIconDark width={20} height={20} />
+              ) : (
+                <SaveColoredIconLight width={20} height={20} />
+              )
+            ) : themeMode === "dark" ? (
+              <SaveIconDark width={20} height={20} />
             ) : (
-              <SaveIcon width={20} height={20} />
+              <SaveIconLight width={20} height={20} />
             )}
           </TouchableOpacity>
         </View>
@@ -547,11 +572,11 @@ const Post: React.FC<PostProps> = ({
                 style={styles.sendButton}
                 onPress={handleAddComment}
               >
-                <SendCommentIcon
-                  width={24}
-                  height={24}
-                  fill={theme.colors.primary}
-                />
+              {themeMode === "dark" ? (
+                <SendCommentIconDark width={24} height={24} fill={theme.colors.primary} />
+              ) : (
+                <SendCommentIconLight width={24} height={24} fill={theme.colors.primary} />
+              )}
               </TouchableOpacity>
             </View>
           </KeyboardAvoidingView>

@@ -22,6 +22,7 @@ import {
 import { Crown } from "@/types/models";
 import { levelToCrown } from "@/types/mappers";
 import { RootState } from "../store";
+import AsyncStorage from "@react-native-async-storage/async-storage";
 
 interface ProfileState {
   id: string;
@@ -44,6 +45,7 @@ interface ProfileState {
   language: string;
   posts: Post[];
   favorites: Post[];
+  themeLoaded: boolean; 
 }
 
 const initialState: ProfileState = {
@@ -67,6 +69,7 @@ const initialState: ProfileState = {
   language: "es",
   posts: [],
   favorites: [],
+  themeLoaded: false, // Nuevo estado
 };
 
 export const fetchUserInfo = createAsyncThunk(
@@ -174,6 +177,18 @@ export const fetchUserFavorites = createAsyncThunk(
   }
 );
 
+export const loadThemeFromStorage = createAsyncThunk(
+  "profile/loadThemeFromStorage",
+  async (_, { dispatch }) => {
+    const theme = await AsyncStorage.getItem("theme");
+    if (theme) {
+      dispatch(updateTheme(theme));
+    }
+    // Indica que el tema se ha cargado
+    dispatch(setThemeLoaded(true));
+  }
+);
+
 const profileSlice = createSlice({
   name: "user",
   initialState,
@@ -221,6 +236,7 @@ const profileSlice = createSlice({
     },
     updateTheme: (state, action: PayloadAction<string>) => {
       state.theme = action.payload;
+      AsyncStorage.setItem("theme", action.payload); // Guardar tema en AsyncStorage
     },
     updateLanguage: (state, action: PayloadAction<string>) => {
       state.language = action.payload;
@@ -238,6 +254,9 @@ const profileSlice = createSlice({
     },
     setProifilePhoto: (state, action: PayloadAction<string>) => {
       state.profileImage = action.payload;
+    },
+    setThemeLoaded: (state, action: PayloadAction<boolean>) => {
+      state.themeLoaded = action.payload;
     },
   },
 
@@ -387,6 +406,7 @@ export const {
   setProifilePhoto,
   setProfileData,
   setProfileUserId,
+  setThemeLoaded,
 } = profileSlice.actions;
 
 export const selectProfile = (state: RootState) => state;

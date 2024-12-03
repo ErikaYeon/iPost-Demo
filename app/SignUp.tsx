@@ -1,9 +1,5 @@
 import React, { useState } from "react";
-import {
-  SafeAreaView,
-  View,
-  Text,
-} from "react-native";
+import { SafeAreaView, View, Text } from "react-native";
 import CustomButton from "../ui/components/CustomButton";
 import HeaderText from "../ui/components/HeaderText";
 import RegularText from "../ui/components/RegularText";
@@ -31,7 +27,8 @@ import { useTranslation } from "react-i18next";
 
 const SignUpScreen: React.FC = () => {
   const { t, i18n } = useTranslation("translations");
-  const theme = darkTheme; // Para alternar entre darkTheme y lightTheme manualmente
+  const themeMode = useSelector((state: RootState) => state.profile.theme); // Selecciona el tema desde Redux
+  const theme = themeMode === "dark" ? darkTheme : lightTheme; // Selecciona el tema correcto
   const sharedStyles = createSharedStyles(theme);
   const styles = createLogInScreenStyles(theme);
 
@@ -83,9 +80,22 @@ const SignUpScreen: React.FC = () => {
 
   return (
     <SafeAreaView style={sharedStyles.screenContainer}>
-      <View style={{ flexDirection: "row", justifyContent: "center", alignItems: "baseline" }}>
+      <View
+        style={{
+          flexDirection: "row",
+          justifyContent: "center",
+          alignItems: "baseline",
+        }}
+      >
         <HeaderText text={i18n.t("signUp.header.prefix")} theme={theme} />
-        <Text style={{ fontSize: 32, fontWeight: "bold", color: theme.colors.textPrimary, marginLeft: 5 }}>
+        <Text
+          style={{
+            fontSize: 32,
+            fontWeight: "bold",
+            color: theme.colors.textPrimary,
+            marginLeft: 5,
+          }}
+        >
           {i18n.t("signUp.header.appName")}
         </Text>
       </View>
@@ -126,15 +136,21 @@ const SignUpScreen: React.FC = () => {
         style={{ marginTop: 30, width: "85%" }}
       />
 
-        <View style={{ flexDirection: "row", justifyContent: "center", marginTop: 7, marginBottom: 10 }}>
-          <RegularText text={i18n.t("signUp.links.login.prefix")} theme={theme} />
-          <LinkText
-            text={` ${i18n.t("signUp.links.login.action")}`}
-            onPress={() => router.push("/LogIn")}
-            theme={theme}
-          />
-        </View>
-
+      <View
+        style={{
+          flexDirection: "row",
+          justifyContent: "center",
+          marginTop: 7,
+          marginBottom: 10,
+        }}
+      >
+        <RegularText text={i18n.t("signUp.links.login.prefix")} theme={theme} />
+        <LinkText
+          text={` ${i18n.t("signUp.links.login.action")}`}
+          onPress={() => router.push("/LogIn")}
+          theme={theme}
+        />
+      </View>
 
       {errorMessage ? (
         <View style={styles.errorBanner}>

@@ -34,8 +34,11 @@ const ProfileScreen: React.FC = () => {
   const userProfile = useSelector((state: RootState) => state.profile);
   const { id, posts, loading, favorites } = userProfile;
 
-  const theme = darkTheme;
-  const styles = createProfileScreenStyles(theme);
+  const themeMode = useSelector((state: RootState) => state.profile.theme); // Selecciona el tema desde Redux
+  const theme = themeMode === "dark" ? darkTheme : lightTheme; // Selecciona el tema correcto
+
+  const styles = createProfileScreenStyles(theme); // Usa el tema en los estilos
+
 
   // Genera thumbnails y construye los datos para la grilla
   useEffect(() => {

@@ -1,13 +1,14 @@
-import React, { useState } from 'react';
-import { SafeAreaView, View, StatusBar, Platform } from 'react-native';
-import HeaderNoIcon from '../ui/components/HeaderNoIcon';
-import SearchBar from '../ui/components/SearchBar';
-import SuggestionsList from '../ui/components/SuggestionsList'; 
-import { darkTheme, lightTheme } from '../ui/styles/Theme';
-import { useRouter } from 'expo-router'; 
-import { useDispatch } from 'react-redux';
-import { setLocation } from '../redux/slices/createPostSlice'; 
+import React, { useState } from "react";
+import { SafeAreaView, View, StatusBar, Platform } from "react-native";
+import HeaderNoIcon from "../ui/components/HeaderNoIcon";
+import SearchBar from "../ui/components/SearchBar";
+import SuggestionsList from "../ui/components/SuggestionsList";
+import { darkTheme, lightTheme } from "../ui/styles/Theme";
+import { useRouter } from "expo-router";
+import { useDispatch, useSelector } from "react-redux";
+import { setLocation } from "../redux/slices/createPostSlice";
 import { useTranslation } from "react-i18next";
+import { RootState } from "@/redux/store";
 
 const theme = darkTheme;
 
@@ -17,8 +18,8 @@ const getPlacesSuggestions = async (query: string) => {
       `https://nominatim.openstreetmap.org/search?q=${query}&format=json&addressdetails=1&limit=5`,
       {
         headers: {
-          'User-Agent': 'MyApp (your-email@example.com)', // Coloca tu email aquí
-          'Accept-Language': 'es',
+          "User-Agent": "MyApp (your-email@example.com)", // Coloca tu email aquí
+          "Accept-Language": "es",
         },
       }
     );
@@ -31,16 +32,19 @@ const getPlacesSuggestions = async (query: string) => {
 };
 
 const AddLocation: React.FC = () => {
-  const { t, i18n } = useTranslation("translations"); // Inicializa las traducciones
-  const router = useRouter(); 
-  const [searchQuery, setSearchQuery] = useState('');
+  const { t, i18n } = useTranslation("translations");
+  const themeMode = useSelector((state: RootState) => state.profile.theme); // Selecciona el tema desde Redux
+  const theme = themeMode === "dark" ? darkTheme : lightTheme; // Selecciona el tema correcto
+
+  const router = useRouter(); // Inicializa el router
+  const [searchQuery, setSearchQuery] = useState("");
   const [suggestions, setSuggestions] = useState([]);
   const dispatch = useDispatch();
 
   const handleSearch = async (query: string) => {
     setSearchQuery(query);
     if (query.length > 2) {
-      const places = await getPlacesSuggestions(query);  
+      const places = await getPlacesSuggestions(query);
       setSuggestions(places);
     } else {
       setSuggestions([]);
@@ -48,22 +52,34 @@ const AddLocation: React.FC = () => {
   };
 
   const handleSearchPress = () => {
-    console.log(i18n.t("addLocation.searching"), `${i18n.t("addLocation.searching")}: ${searchQuery}`);
+    console.log(
+      i18n.t("addLocation.searching"),
+      `${i18n.t("addLocation.searching")}: ${searchQuery}`
+    );
   };
 
   const handleSuggestionPress = (displayName: string) => {
     dispatch(setLocation(displayName));
     router.push({
-      pathname: '/CreatePost',
-      params: { location: displayName }, 
+      pathname: "/CreatePost",
+      params: { location: displayName },
     });
   };
 
   return (
     <View style={{ flex: 1, backgroundColor: theme.colors.background }}>
-      <StatusBar backgroundColor={theme.colors.background} barStyle="light-content" />
+      <StatusBar
+        backgroundColor={theme.colors.background}
+        barStyle="light-content"
+      />
 
-      <SafeAreaView style={{ backgroundColor: theme.colors.background, paddingTop: Platform.OS === 'android' ? StatusBar.currentHeight + 10 : 30 }}>
+      <SafeAreaView
+        style={{
+          backgroundColor: theme.colors.background,
+          paddingTop:
+            Platform.OS === "android" ? StatusBar.currentHeight + 10 : 30,
+        }}
+      >
         <HeaderNoIcon title={i18n.t("addLocation.headerTitle")} theme={theme} />
       </SafeAreaView>
 

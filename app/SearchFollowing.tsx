@@ -18,7 +18,7 @@ import CrownBronze from "../assets/images/icons/gamif_crown_1.svg";
 import CrownSilver from "../assets/images/icons/gamif_crown_2.svg";
 import CrownGold from "../assets/images/icons/gamif_crown_3.svg";
 import { createSearchProfilesStyles } from "@/ui/styles/SearchProfileStyles";
-import { darkTheme } from "../ui/styles/Theme";
+import { darkTheme, lightTheme } from "../ui/styles/Theme";
 import { router } from "expo-router";
 import { useDispatch, useSelector } from "react-redux";
 import { AppDispatch, RootState } from "@/redux/store";
@@ -33,7 +33,9 @@ import {
 
 const SearchFollowing: React.FC = () => {
   const { t, i18n } = useTranslation("translations");
-  const theme = darkTheme;
+  const themeMode = useSelector((state: RootState) => state.profile.theme); // Selecciona el tema desde Redux
+  const theme = themeMode === "dark" ? darkTheme : lightTheme; // Selecciona el tema correcto
+
   const styles = createSearchProfilesStyles(theme);
   const [searchQuery, setSearchQuery] = useState("");
   const [filteredList, setFilteredList] = useState<UserShort[]>([]);

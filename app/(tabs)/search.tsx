@@ -31,7 +31,9 @@ import i18n from "i18next";
 import { useTranslation } from "react-i18next";
 
 const SearchProfiles: React.FC = () => {
-  const theme = darkTheme; // Cambia manualmente entre `darkTheme` y `lightTheme`
+  const themeMode = useSelector((state: RootState) => state.profile.theme); // Selecciona el tema desde Redux
+  const theme = themeMode === "dark" ? darkTheme : lightTheme; // Selecciona el tema correcto
+
   const styles = createSearchProfilesStyles(theme);
 
   const [searchQuery, setSearchQuery] = useState("");

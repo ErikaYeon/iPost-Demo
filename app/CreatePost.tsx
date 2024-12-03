@@ -42,7 +42,8 @@ import { useTranslation } from "react-i18next";
 
 const CreatePost: React.FC = () => {
   const { t, i18n } = useTranslation("translations");
-  const theme = darkTheme; // Cambiar a `lightTheme` si es necesario
+  const themeMode = useSelector((state: RootState) => state.profile.theme); // Selecciona el tema desde Redux
+  const theme = themeMode === "dark" ? darkTheme : lightTheme; // Selecciona el tema correcto
   const sharedStyles = createSharedStyles(theme);
   const styles = createEditProfilePhotoStyles(theme);
 

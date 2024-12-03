@@ -32,8 +32,6 @@ import {
 import { ProfileUpdateRequest } from "@/types/apiContracts";
 import { useTranslation } from "react-i18next";
 
-const theme = darkTheme; // Cambia manualmente entre `darkTheme` y `lightTheme`
-
 const GENDER_OPTIONS = ["Mujer", "Hombre", "No binario", "Prefiero no decirlo"];
 const GENDER_OPTIONS_EN = [
   "Women",
@@ -44,6 +42,9 @@ const GENDER_OPTIONS_EN = [
 
 const EditProfile: React.FC = () => {
   const { t, i18n } = useTranslation("translations");
+  const themeMode = useSelector((state: RootState) => state.profile.theme); // Selecciona el tema desde Redux
+  const theme = themeMode === "dark" ? darkTheme : lightTheme; // Selecciona el tema correcto
+
   const dispatch = useDispatch<AppDispatch>();
   const Profile = useSelector((state: RootState) => state.profile);
   const [genderDropdownVisible, setGenderDropdownVisible] = useState(false);
@@ -106,14 +107,14 @@ const EditProfile: React.FC = () => {
           iconComponent={() =>
             theme.isDark ? (
               <BackIcon
-                width={15}
-                height={15}
+                width={16}
+                height={16}
                 fill={theme.colors.textPrimary}
               />
             ) : (
               <BackIconLightMode
-                width={15}
-                height={15}
+                width={16}
+                height={16}
                 fill={theme.colors.textPrimary}
               />
             )
