@@ -17,7 +17,8 @@ import { isPasswordValid } from "@/utils/RegexExpressions";
 
 const ChangePasswordScreen: React.FC = () => {
   // Establecer manualmente el tema aquí (elige entre darkTheme o lightTheme)
-  const theme = darkTheme; // Cambia esto a lightTheme si prefieres el modo claro
+  const themeMode = useSelector((state: RootState) => state.profile.theme); // Selecciona el tema desde Redux
+  const theme = themeMode === "dark" ? darkTheme : lightTheme; // Selecciona el tema correcto
 
   const dispatch = useDispatch<AppDispatch>();
   const [currentPassword, setCurrentPassword] = useState("");

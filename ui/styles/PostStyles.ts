@@ -1,7 +1,10 @@
 // PostStyles.ts
 import { StyleSheet, Dimensions } from "react-native";
+import { Theme } from "@/ui/styles/Theme";
 
-const styles = StyleSheet.create({
+
+export const createPostStyles = (theme: Theme) =>
+  StyleSheet.create({
   postContainer: {
     marginBottom: 15,
     padding: 10,
@@ -60,7 +63,7 @@ const styles = StyleSheet.create({
     width: Dimensions.get("window").width - 50,
     height: Dimensions.get("window").width - 50,
     borderRadius: 8,
-    margin: 15,
+    marginRight: 6,
     marginLeft: 0,
     padding: 10,
   },
@@ -155,7 +158,7 @@ const styles = StyleSheet.create({
   },
   input: {
     flex: 1,
-    borderColor: "#ddd",
+    borderColor: theme.colors.textPrimary,
     borderWidth: 1,
     borderRadius: 5,
     padding: 8,
@@ -163,7 +166,8 @@ const styles = StyleSheet.create({
   },
   sendButton: {
     paddingVertical: 8,
-    paddingHorizontal: 15,
+    paddingHorizontal: 5,
+    marginRight:-7,
     borderRadius: 5,
   },
   singleImage: {
@@ -211,4 +215,4 @@ const styles = StyleSheet.create({
   },
 });
 
-export default styles;
+export default createPostStyles;

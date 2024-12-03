@@ -2,25 +2,28 @@ import React from "react";
 import { View, Image, Text, TouchableOpacity, StyleSheet } from "react-native";
 import { useSelector } from "react-redux";
 import { RootState } from "@/redux/store";
+import { darkTheme, lightTheme } from "@/ui/styles/Theme";
 import CrownGrey from "@/assets/images/icons/gamif_crown_0_1.svg";
 import CrownBronze from "@/assets/images/icons/gamif_crown_1.svg";
 import CrownSilver from "@/assets/images/icons/gamif_crown_2.svg";
 import CrownGold from "@/assets/images/icons/gamif_crown_3.svg";
-import EditIcon from "../../assets/images/icons/edit.svg";
-import SettingsIcon from "../../assets/images/icons/settings.svg";
+import EditIconDark from "../../assets/images/icons/edit.svg";
+import EditIconLight from "../../assets/images/icons/edit_darkMode.svg";
+import SettingsIconDark from "../../assets/images/icons/settings.svg";
+import SettingsIconLight from "../../assets/images/icons/settings_darkMode.svg";
 import Placeholders from "@/constants/ProfilePlaceholders";
 import { Crown } from "@/types/models";
 import { isEmpty } from "@/utils/RegexExpressions";
 import { router } from "expo-router";
 
-const ProfileHeader: React.FC<{ theme: any; isOtherProfile?: boolean }> = ({
-  theme,
+const ProfileHeader: React.FC<{ isOtherProfile?: boolean }> = ({
   isOtherProfile = false,
 }) => {
   const profileData = useSelector((state: RootState) =>
     isOtherProfile ? state.otherProfile : state.profile
   );
-
+  const themeMode = useSelector((state: RootState) => state.profile.theme); // Selecciona el tema desde Redux
+  const theme = themeMode === "dark" ? darkTheme : lightTheme; // Selecciona el tema correcto
   const styles = createStyles(theme);
 
   // Renderiza la corona correspondiente usando el enum Crown
@@ -83,13 +86,21 @@ const ProfileHeader: React.FC<{ theme: any; isOtherProfile?: boolean }> = ({
                 style={styles.icon}
                 onPress={() => router.push("/EditProfile")}
               >
-                <EditIcon width={20} height={20} />
+                {themeMode === "dark" ? (
+                  <EditIconDark width={20} height={20} />
+                ) : (
+                  <EditIconLight width={17} height={17} />
+                )}
               </TouchableOpacity>
               <TouchableOpacity
                 style={styles.icon}
                 onPress={() => router.push("/Settings")}
               >
-                <SettingsIcon width={20} height={20} />
+                {themeMode === "dark" ? (
+                  <SettingsIconDark width={20} height={20} />
+                ) : (
+                  <SettingsIconLight width={17} height={17} />
+                )}
               </TouchableOpacity>
             </View>
           )}
