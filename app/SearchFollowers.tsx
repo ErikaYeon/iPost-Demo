@@ -137,7 +137,7 @@ const SearchFollowers: React.FC = () => {
       {/* Barra de búsqueda */}
       <View style={styles.searchBarContainer}>
         <SearchBar
-          placeholder="Buscar"
+          placeholder={i18n.t("searchScreen.search")}
           onChangeText={handleSearch}
           value={searchQuery}
           theme={theme}
