@@ -53,7 +53,10 @@ const AccountRecovery: React.FC = () => {
             router.replace("/Welcome");
           }
         } else {
-          console.log(`Else: Path ${result.path} and token ${token}`);
+          console.log(
+            `No token found in deep link. Redirecting to Welcome page.`
+          );
+          router.replace("/Welcome");
         }
       } catch (error) {
         console.error("Error en manejo de deep link:", error);
