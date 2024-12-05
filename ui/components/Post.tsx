@@ -36,6 +36,7 @@ import CrownGrey from "../../assets/images/icons/gamif_crown_0_1.svg";
 import CrownBronze from "../../assets/images/icons/gamif_crown_1.svg";
 import CrownSilver from "../../assets/images/icons/gamif_crown_2.svg";
 import CrownGold from "../../assets/images/icons/gamif_crown_3.svg";
+import MultiPhotosIcon from "../../assets/images/icons/multi_photos.svg";
 import { likePost, unlikePost } from "@/networking/postService";
 import createPostStyles from "../../ui/styles/PostStyles";
 import { Crown } from "@/types/models";
@@ -136,13 +137,16 @@ const Post: React.FC<PostProps> = ({
   const { isLoading } = useSelector((state: RootState) => state.comments);
   const [isImageModalVisible, setImageModalVisible] = useState(false);
   const [selectedImageUri, setSelectedImageUri] = useState<string | null>(null);
+  const [selectedImageIndex, setSelectedImageIndex] = useState<number>(0); 
+  const flatListRef = useRef<FlatList>(null);
 
   const themeMode = useSelector((state: RootState) => state.profile.theme);
   const theme = themeMode === "dark" ? darkTheme : lightTheme;
   const styles = createPostStyles(theme);
 
-  const openImageModal = (uri: string) => {
+  const openImageModal = (uri: string, index: number) => {
     setSelectedImageUri(uri);
+    setSelectedImageIndex(index); // Establece el índice inicial
     setImageModalVisible(true);
   };
 
@@ -356,72 +360,81 @@ const Post: React.FC<PostProps> = ({
 
       {images.length === 1 ? (
         <TouchableOpacity onPress={() => openImageModal(images[0].uri)}>
-        {images[0].type === "image" ? (
-          <Image
-            source={{ uri: images[0].uri }}
-            style={styles.singlePostImage}
-          />
-        ) : (
-          <View style={{ position: "relative" }}>
-            <Video
-              ref={videoRef}
+          {images[0].type === "image" ? (
+            <Image
               source={{ uri: images[0].uri }}
               style={styles.singlePostImage}
-              resizeMode={ResizeMode.COVER}
-              isLooping
-              shouldPlay={false} // El video estará pausado al cargar
             />
-            <TouchableOpacity
-              style={styles.playPauseButton}
-              onPress={() => togglePlayPause(images[0].uri)}
-            >
-              {playingVideos[images[0].uri] ? (
-                <View style={styles.pauseIcon}>
-                  <View style={styles.pauseBar} />
-                  <View style={styles.pauseBar} />
-                </View>
-              ) : (
-                <View style={styles.playIcon} />
-              )}
-            </TouchableOpacity>
-          </View>
-        )}
-      </TouchableOpacity>
+          ) : (
+            <View style={{ position: "relative" }}>
+              <Video
+                ref={videoRef}
+                source={{ uri: images[0].uri }}
+                style={styles.singlePostImage}
+                resizeMode={ResizeMode.COVER}
+                isLooping
+                shouldPlay={false} // El video estará pausado al cargar
+              />
+              <TouchableOpacity
+                style={styles.playPauseButton}
+                onPress={() => togglePlayPause(images[0].uri)}
+              >
+                {playingVideos[images[0].uri] ? (
+                  <View style={styles.pauseIcon}>
+                    <View style={styles.pauseBar} />
+                    <View style={styles.pauseBar} />
+                  </View>
+                ) : (
+                  <View style={styles.playIcon} />
+                )}
+              </TouchableOpacity>
+            </View>
+          )}
+        </TouchableOpacity>
       ) : (
         <FlatList
-        data={images}
-        horizontal
-        keyExtractor={(item, index) => index.toString()}
-        renderItem={({ item }) => (
-          <TouchableOpacity onPress={() => openImageModal(item.uri)}>
-            {item.type === "image" ? (
-              <Image source={{ uri: item.uri }} style={styles.postImage} />
-            ) : (
+          data={images}
+          horizontal
+          keyExtractor={(item, index) => index.toString()}
+          renderItem={({ item }) => (
+            <TouchableOpacity onPress={() => openImageModal(item.uri)}>
               <View style={{ position: "relative" }}>
-                <Video
-                  ref={videoRef}
-                  source={{ uri: item.uri }}
-                  style={styles.postImage}
-                  resizeMode={ResizeMode.COVER}
-                  isLooping
-                />
-                <TouchableOpacity
-                  style={styles.playPauseButton}
-                  onPress={() => togglePlayPause(item.uri)}
-                >
-                  {playingVideos[item.uri] ? (
-                    <View style={styles.pauseIcon}>
-                      <View style={styles.pauseBar} />
-                      <View style={styles.pauseBar} />
-                    </View>
-                  ) : (
-                    <View style={styles.playIcon} />
-                  )}
-                </TouchableOpacity>
+                {item.type === "image" ? (
+                  <Image source={{ uri: item.uri }} style={styles.postImage} />
+                ) : (
+                  <>
+                    <Video
+                      ref={videoRef}
+                      source={{ uri: item.uri }}
+                      style={styles.postImage}
+                      resizeMode={ResizeMode.COVER}
+                      isLooping
+                    />
+                    {/* Botón para alternar reproducción/pausa SOLO para videos */}
+                    <TouchableOpacity
+                      style={styles.playPauseButton}
+                      onPress={() => togglePlayPause(item.uri)}
+                    >
+                      {playingVideos[item.uri] ? (
+                        <View style={styles.pauseIcon}>
+                          <View style={styles.pauseBar} />
+                          <View style={styles.pauseBar} />
+                        </View>
+                      ) : (
+                        <View style={styles.playIcon} />
+                      )}
+                    </TouchableOpacity>
+                  </>
+                )}
+                {/* Mostrar el ícono de múltiples fotos */}
+                {images.length > 1 && (
+                  <View style={modalStyles.multiPhotosIconContainer}>
+                    <MultiPhotosIcon width={20} height={20} />
+                  </View>
+                )}
               </View>
-            )}
-          </TouchableOpacity>
-        )}
+            </TouchableOpacity>
+          )}
           showsHorizontalScrollIndicator={false}
           pagingEnabled
           snapToAlignment="start"
@@ -437,26 +450,67 @@ const Post: React.FC<PostProps> = ({
           onRequestClose={closeImageModal}
         >
           <View style={modalStyles.modalBackground}>
+            {images.length > 1 ? (
+              <FlatList
+                data={images}
+                horizontal
+                keyExtractor={(item, index) => index.toString()}
+                initialScrollIndex={images.findIndex(
+                  (item) => item.uri === selectedImageUri
+                )} 
+                renderItem={({ item }) =>
+                  item.type === "image" ? (
+                    <Image
+                      source={{ uri: item.uri }}
+                      style={modalStyles.fullscreenImage}
+                    />
+                  ) : (
+                    <Video
+                      source={{ uri: item.uri }}
+                      style={modalStyles.fullscreenVideo}
+                      resizeMode={ResizeMode.CONTAIN}
+                      shouldPlay={selectedImageUri === item.uri} // Reproduce solo el video visible
+                      isLooping
+                    />
+                  )
+                }
+                pagingEnabled
+                showsHorizontalScrollIndicator={false}
+                getItemLayout={(data, index) => ({
+                  length: Dimensions.get("window").width,
+                  offset: Dimensions.get("window").width * index,
+                  index,
+                })}
+                onScrollToIndexFailed={(info) => {
+                  console.warn("Scroll failed: ", info);
+                  // Fallback al primer índice si falla el scroll
+                  setTimeout(() => {
+                    flatListRef.current?.scrollToIndex({ index: info.index, animated: true });
+                  }, 100);
+                }}
+              />
+            ) : (
+              selectedImageUri.endsWith(".mp4") || selectedImageUri.includes("video") ? (
+                <Video
+                  source={{ uri: selectedImageUri }}
+                  style={modalStyles.fullscreenVideo}
+                  resizeMode={ResizeMode.CONTAIN}
+                  shouldPlay
+                  isLooping
+                />
+              ) : (
+                <Image
+                  source={{ uri: selectedImageUri }}
+                  style={modalStyles.fullscreenImage}
+                />
+              )
+            )}
             <TouchableOpacity
               onPress={closeImageModal}
               style={modalStyles.modalCloseButtonContainer}
             >
               <Text style={modalStyles.modalCloseButtonText}>Cerrar</Text>
             </TouchableOpacity>
-            {selectedImageUri.endsWith(".mp4") || selectedImageUri.includes("video") ? ( // Verifica si es un video
-              <Video
-                source={{ uri: selectedImageUri }}
-                style={modalStyles.fullscreenVideo}
-                resizeMode={ResizeMode.CONTAIN}
-                shouldPlay
-                isLooping
-              />
-            ) : (
-              <Image
-                source={{ uri: selectedImageUri }}
-                style={modalStyles.fullscreenImage}
-              />
-            )}
           </View>
         </NativeModal>
       )}
@@ -599,15 +653,15 @@ const modalStyles = StyleSheet.create({
     alignItems: "center",
   },
   fullscreenImage: {
-    width: "100%",
-    height: "100%",
+    width: Dimensions.get("window").width,
+    height: Dimensions.get("window").height,
     resizeMode: "contain",
   },
-fullscreenVideo: {
-  width: "100%",
-  height: "100%",
-  backgroundColor: "black",
-},
+  fullscreenVideo: {
+    width: Dimensions.get("window").width,
+    height: Dimensions.get("window").height,
+    backgroundColor: "black",
+  },
   modalCloseButtonContainer: {
     position: "absolute",
     top: 20,
@@ -621,6 +675,15 @@ fullscreenVideo: {
     paddingVertical: 8,
     paddingHorizontal: 12,
     borderRadius: 8,
+  },
+  multiPhotosIconContainer: {
+    position: "absolute",
+    top: 8,
+    right: 12,
+    backgroundColor: "rgba(0, 0, 0, 0.5)", // Fondo semitransparente
+    borderRadius: 10,
+    padding: 4,
+    zIndex: 10,
   },
 });
 
