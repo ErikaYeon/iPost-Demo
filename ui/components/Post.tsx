@@ -457,23 +457,43 @@ const Post: React.FC<PostProps> = ({
                 keyExtractor={(item, index) => index.toString()}
                 initialScrollIndex={images.findIndex(
                   (item) => item.uri === selectedImageUri
-                )} 
-                renderItem={({ item }) =>
-                  item.type === "image" ? (
-                    <Image
-                      source={{ uri: item.uri }}
-                      style={modalStyles.fullscreenImage}
-                    />
-                  ) : (
-                    <Video
-                      source={{ uri: item.uri }}
-                      style={modalStyles.fullscreenVideo}
-                      resizeMode={ResizeMode.CONTAIN}
-                      shouldPlay={selectedImageUri === item.uri} // Reproduce solo el video visible
-                      isLooping
-                    />
-                  )
-                }
+                )}
+                renderItem={({ item }) => (
+                  <View style={{ position: "relative" }}>
+                    {item.type === "image" ? (
+                      <Image
+                        source={{ uri: item.uri }}
+                        style={modalStyles.fullscreenImage}
+                      />
+                    ) : (
+                      <>
+                        <Video
+                          ref={videoRef}
+                          source={{ uri: item.uri }}
+
+                                                style={modalStyles.fullscreenVideo}
+                          resizeMode={ResizeMode.CONTAIN}
+                          shouldPlay={selectedImageUri === item.uri} // Reproduce solo el video visible
+                          isLooping
+                        />
+                        {/* Botón de reproducción/pausa solo para videos */}
+                        <TouchableOpacity
+                          style={styles.playPauseButton}
+                          onPress={() => togglePlayPause(item.uri)}
+                        >
+                          {playingVideos[item.uri] ? (
+                            <View style={styles.pauseIcon}>
+                              <View style={styles.pauseBar} />
+                              <View style={styles.pauseBar} />
+                            </View>
+                          ) : (
+                            <View style={styles.playIcon} />
+                          )}
+                        </TouchableOpacity>
+                      </>
+                    )}
+                  </View>
+                )}
                 pagingEnabled
                 showsHorizontalScrollIndicator={false}
                 getItemLayout={(data, index) => ({
@@ -483,7 +503,6 @@ const Post: React.FC<PostProps> = ({
                 })}
                 onScrollToIndexFailed={(info) => {
                   console.warn("Scroll failed: ", info);
-                  // Fallback al primer índice si falla el scroll
                   setTimeout(() => {
                     flatListRef.current?.scrollToIndex({ index: info.index, animated: true });
                   }, 100);
@@ -491,13 +510,28 @@ const Post: React.FC<PostProps> = ({
               />
             ) : (
               selectedImageUri.endsWith(".mp4") || selectedImageUri.includes("video") ? (
-                <Video
-                  source={{ uri: selectedImageUri }}
-                  style={modalStyles.fullscreenVideo}
-                  resizeMode={ResizeMode.CONTAIN}
-                  shouldPlay
-                  isLooping
-                />
+                <>
+                  <Video
+                    source={{ uri: selectedImageUri }}
+                    style={modalStyles.fullscreenVideo}
+                    resizeMode={ResizeMode.CONTAIN}
+                    shouldPlay
+                    isLooping
+                  />
+                  <TouchableOpacity
+                    style={styles.playPauseButton}
+                    onPress={() => togglePlayPause(selectedImageUri)}
+                  >
+                    {playingVideos[selectedImageUri] ? (
+                      <View style={styles.pauseIcon}>
+                        <View style={styles.pauseBar} />
+                        <View style={styles.pauseBar} />
+                      </View>
+                    ) : (
+                      <View style={styles.playIcon} />
+                    )}
+                  </TouchableOpacity>
+                </>
               ) : (
                 <Image
                   source={{ uri: selectedImageUri }}
@@ -514,7 +548,6 @@ const Post: React.FC<PostProps> = ({
           </View>
         </NativeModal>
       )}
-
       {!isAd && (
         <View style={styles.interactionContainer}>
           <View style={styles.leftInteraction}>
