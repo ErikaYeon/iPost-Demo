@@ -60,10 +60,19 @@ const home = () => {
       dispatch(fillPostsFromAds());
       setHasFetched(true);
       dispatch(fetchUserInfo(userProfile.id));
-      dispatch(getUserSettingsAsync(userProfile.id));
-      i18next.changeLanguage(userProfile.language);
+      ChangeInitialLanguage();
     }
   }, [userProfile.id, dispatch, hasFetched]);
+
+  const ChangeInitialLanguage = async () => {
+    try {
+      await dispatch(getUserSettingsAsync(userProfile.id));
+      console.log(userProfile.language);
+      i18next.changeLanguage(userProfile.language);
+    } catch {
+      console.log("error al cambiar el lenguage");
+    }
+  };
 
   useEffect(() => {
     if (hasFetched) {
@@ -180,29 +189,29 @@ export default home;
 
 const createHomeStyles = (theme: any) =>
   StyleSheet.create({
-  screenContainer: {
-    flex: 1,
-    backgroundColor: theme.colors.background,
-  },
-  safeArea: {
-    flex: 1,
-    backgroundColor: theme.colors.background,
-  },
-  container: {
-    flex: 1,
-    paddingHorizontal: 15,
-  },
-  listContainer: {
-    paddingBottom: 20,
-  },
-  errorText: {
-    color: "red",
-    textAlign: "center",
-    marginVertical: 10,
-  },
-  loadingContainer: {
-    flex: 1,
-    justifyContent: "center",
-    alignItems: "center",
-  },
-});
+    screenContainer: {
+      flex: 1,
+      backgroundColor: theme.colors.background,
+    },
+    safeArea: {
+      flex: 1,
+      backgroundColor: theme.colors.background,
+    },
+    container: {
+      flex: 1,
+      paddingHorizontal: 15,
+    },
+    listContainer: {
+      paddingBottom: 20,
+    },
+    errorText: {
+      color: "red",
+      textAlign: "center",
+      marginVertical: 10,
+    },
+    loadingContainer: {
+      flex: 1,
+      justifyContent: "center",
+      alignItems: "center",
+    },
+  });

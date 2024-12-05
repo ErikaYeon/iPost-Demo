@@ -24,15 +24,15 @@ i18next.use(initReactI18next).init({
 
 const StackLayout = () => {
   return (
-    <I18nextProvider i18n={i18next}>
-      <Provider store={store}>
+    <Provider store={store}>
+      <I18nextProvider i18n={i18next}>
         <GestureHandlerRootView style={{ flex: 1 }}>
           <Stack screenOptions={{ headerShown: false }}>
             <Stack.Screen name="index" />
           </Stack>
         </GestureHandlerRootView>
-      </Provider>
-    </I18nextProvider>
+      </I18nextProvider>
+    </Provider>
   );
 };
 

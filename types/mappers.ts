@@ -41,6 +41,15 @@ export function languageToLevel(level: string): string {
     }
   }
 }
+export function LevelToLanguage(level: string): string {
+  if (level === "SPANISH") {
+    console.log("entra al if");
+    return "es";
+  }
+  console.log("entra al mapper");
+
+  return "en";
+}
 
 export function genderToString(gender: string): string {
   switch (gender) {
