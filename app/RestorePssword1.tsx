@@ -10,11 +10,12 @@ import { router } from "expo-router";
 import { useDispatch, useSelector } from "react-redux";
 import { setProfileEmail } from "../redux/slices/profileSlice";
 import { isEmailValid } from "@/utils/RegexExpressions";
-import { AppDispatch } from "@/redux/store";
+import { AppDispatch, RootState } from "@/redux/store";
 import { forgotPasswordAsync } from "@/redux/slices/authSlice";
 
 const RestorePassword1: React.FC = () => {
-  const theme = darkTheme; // Para alternar entre light y dark mode
+  const themeMode = useSelector((state: RootState) => state.profile.theme); // Selecciona el tema desde Redux
+  const theme = themeMode === "dark" ? darkTheme : lightTheme; // Selecciona el tema correcto
   const sharedStyles = createSharedStyles(theme);
   const styles = createLogInScreenStyles(theme);
   const dispatch = useDispatch<AppDispatch>();
@@ -32,7 +33,7 @@ const RestorePassword1: React.FC = () => {
       dispatch(setProfileEmail({ email }));
       dispatch(forgotPasswordAsync(email));
       setEmail("");
-      router.push("/RestorePssword2");
+      router.push("/AccountRecovery");
     }
   };
 

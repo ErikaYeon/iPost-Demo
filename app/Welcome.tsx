@@ -10,7 +10,7 @@ import {
 import CustomButton from "../ui/components/CustomButton";
 import HeaderText from "../ui/components/HeaderText";
 import createSharedStyles from "../ui/styles/SharedStyles";
-import { darkTheme } from "../ui/styles/Theme";
+import { darkTheme, lightTheme } from "../ui/styles/Theme";
 import { useRouter } from "expo-router";
 import RegularTextLine from "@/ui/components/RegularTextLine";
 import { useDispatch, useSelector } from "react-redux";
@@ -19,7 +19,9 @@ import { autoLoginAsync } from "@/redux/slices/authSlice";
 import { setProfileUserId } from "@/redux/slices/profileSlice";
 
 const FirstScreen: React.FC = () => {
-  const theme = darkTheme; // Puedes cambiar manualmente entre lightTheme y darkTheme
+  const themeMode = useSelector((state: RootState) => state.profile.theme); // Selecciona el tema desde Redux
+  const theme = themeMode === "dark" ? darkTheme : lightTheme; // Selecciona el tema correcto
+
   const sharedStyles = createSharedStyles(theme);
 
   const router = useRouter();
@@ -106,7 +108,7 @@ const FirstScreen: React.FC = () => {
       <RegularTextLine text={"continuar con"} theme={theme} />
 
       {/* Botón de Google con imagen PNG */}
-      <TouchableOpacity
+      {/* <TouchableOpacity
         style={[
           sharedStyles.googleButton,
           { marginTop: theme.spacing.medium, width: "85%" },
@@ -118,7 +120,7 @@ const FirstScreen: React.FC = () => {
           style={{ width: 24, height: 24 }}
         />
         <Text style={sharedStyles.googleText}>Google</Text>
-      </TouchableOpacity>
+      </TouchableOpacity> */}
     </SafeAreaView>
   );
 };

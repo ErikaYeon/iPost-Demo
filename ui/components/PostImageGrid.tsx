@@ -14,12 +14,13 @@ type PostImageGridProps = {
 
 const PostImageGrid: React.FC<PostImageGridProps> = ({ posts, onPressImage  }) => {
   const screenWidth = Dimensions.get("window").width; // Obtener el ancho de la pantalla
-  const imageWidth = screenWidth / 3; // Dividir la pantalla en 3 columnas
+  const spacing = 2; // Espaciado entre las imágenes
+  const imageWidth = (screenWidth - spacing * 2) / 3; // Dividir la pantalla en 3 columnas
 
   const renderPostItem = ({ item }: { item: PostImageGridProps["posts"][0] }) => (
     <TouchableOpacity
       key={item.id}
-      style={{ width: imageWidth, height: imageWidth }}
+      style={{ width: imageWidth, height: imageWidth, margin: spacing / 2,}}
       onPress={() => onPressImage(item.id)} // Llamada a la función con el ID del post
     >
       <Image source={{ uri: item.uri }} style={styles.image} />
@@ -40,11 +41,15 @@ const PostImageGrid: React.FC<PostImageGridProps> = ({ posts, onPressImage  }) =
       keyExtractor={(item) => item.id}
       numColumns={3} // Tres columnas
       showsVerticalScrollIndicator={false} // Esconde el indicador de scroll
+      contentContainerStyle={styles.gridContainer}
     />
   );
 };
 
 const styles = StyleSheet.create({
+  gridContainer: {
+    padding: 2, // Espaciado externo para el contenedor del grid
+  },
   image: {
     width: "100%",
     height: "100%",

@@ -10,7 +10,7 @@ import {
   RefreshControl,
 } from "react-native";
 import Post from "@/ui/components/Post";
-import { darkTheme } from "../../ui/styles/Theme";
+import { darkTheme, lightTheme } from "../../ui/styles/Theme";
 import InitialMessage from "../../ui/components/InitialMessage";
 import { useSelector, useDispatch } from "react-redux";
 import { AppDispatch, RootState } from "../../redux/store";
@@ -28,7 +28,9 @@ import moment from "moment";
 moment().format();
 
 const home = () => {
-  const theme = darkTheme;
+  const themeMode = useSelector((state: RootState) => state.profile.theme); // Selecciona el tema desde Redux
+  const theme = themeMode === "dark" ? darkTheme : lightTheme; // Selecciona el tema correcto
+  const styles = createHomeStyles(theme);
   const userProfile = useSelector((state: RootState) => state.profile);
   const localPosts = useSelector(
     (state: RootState) => state.timeline.LocalListPosts
@@ -115,7 +117,7 @@ const home = () => {
   return (
     <SafeAreaView
       style={[
-        stylesLocal.screenContainer,
+        styles.screenContainer,
         {
           paddingTop: StatusBar.currentHeight || 0,
           backgroundColor: theme.colors.background,
@@ -123,16 +125,16 @@ const home = () => {
       ]}
     >
       {loading && localPosts.length === 0 ? (
-        <View style={stylesLocal.loadingContainer}>
+        <View style={styles.loadingContainer}>
           <ActivityIndicator size="large" color="#ffffff" />
         </View>
       ) : !loading && localPosts.length === 0 ? (
         <InitialMessage theme={theme} /> // Mensaje inicial si no hay posts
       ) : (
-        <View style={stylesLocal.container}>
-          {error && <Text style={stylesLocal.errorText}>{error}</Text>}
+        <View style={styles.container}>
+          {error && <Text style={styles.errorText}>{error}</Text>}
           <FlatList
-            contentContainerStyle={stylesLocal.listContainer}
+            contentContainerStyle={styles.listContainer}
             data={localPosts}
             renderItem={({ item }) => (
               <Post
@@ -192,14 +194,15 @@ const home = () => {
 };
 export default home;
 
-const stylesLocal = StyleSheet.create({
+const createHomeStyles = (theme: any) =>
+  StyleSheet.create({
   screenContainer: {
     flex: 1,
-    backgroundColor: darkTheme.colors.background,
+    backgroundColor: theme.colors.background,
   },
   safeArea: {
     flex: 1,
-    backgroundColor: darkTheme.colors.background,
+    backgroundColor: theme.colors.background,
   },
   container: {
     flex: 1,

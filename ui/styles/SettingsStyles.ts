@@ -6,10 +6,6 @@ const SettingsStyles = StyleSheet.create({
     flex: 1,
     paddingTop: Platform.OS === "android" ? StatusBar.currentHeight + 10 : 30,
   },
-  headerContainer: {
-    paddingHorizontal: 16,
-    paddingBottom: 10,
-  },
   container: {
     paddingHorizontal: 16,
   },

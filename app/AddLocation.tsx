@@ -7,6 +7,7 @@ import { darkTheme, lightTheme } from '../ui/styles/Theme';
 import { useRouter } from 'expo-router'; 
 import { useDispatch, useSelector} from 'react-redux';
 import { setLocation } from '../redux/slices/createPostSlice'; 
+import { RootState } from "@/redux/store";
 
 const theme = darkTheme;
 
@@ -30,6 +31,9 @@ const getPlacesSuggestions = async (query: string) => {
 };
 
 const AddLocation: React.FC = () => {
+  const themeMode = useSelector((state: RootState) => state.profile.theme); // Selecciona el tema desde Redux
+  const theme = themeMode === "dark" ? darkTheme : lightTheme; // Selecciona el tema correcto
+
   const router = useRouter(); // Inicializa el router
   const [searchQuery, setSearchQuery] = useState('');
   const [suggestions, setSuggestions] = useState([]);
