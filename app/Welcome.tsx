@@ -108,10 +108,10 @@ const FirstScreen: React.FC = () => {
       </View>
 
       {/* Texto "o continuar con" */}
-      <RegularTextLine
+      {/* <RegularTextLine
         text={i18n.t("firstScreen.orContinueWith")}
         theme={theme}
-      />
+      /> */}
     </SafeAreaView>
   );
 };

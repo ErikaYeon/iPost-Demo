@@ -247,7 +247,7 @@ const Post: React.FC<PostProps> = ({
         createAt: new Date().toISOString(),
         author: {
           name: userProfile.name ?? "@your_username",
-          nickname: userProfile.username ?? "",
+          nickname: userProfile.username ? "@" + userProfile.username : "",
           lastname: userProfile.lastname ?? "",
           id: userProfile.id,
           profileImage:
@@ -348,7 +348,7 @@ const Post: React.FC<PostProps> = ({
             <Text
               style={[styles.username, { color: theme.colors.textSecondary }]}
             >
-              {isAd ? i18n.t("post.sponsored") : username}
+              {isAd ? i18n.t("post.sponsored") : "@" + username}
             </Text>
           </View>
         </View>
