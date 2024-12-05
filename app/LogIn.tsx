@@ -53,7 +53,7 @@ const LogInScreen: React.FC = () => {
           setEmail("");
           setPassword("");
           dispatch(setProfileExtraData(resultAction.payload));
-          router.push("/(tabs)/home");
+          router.replace("/(tabs)/home");
         } else {
           setErrorMessage("credenciales invalidas, intente nuevamente");
         }

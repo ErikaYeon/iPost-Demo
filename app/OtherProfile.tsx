@@ -27,6 +27,7 @@ import * as VideoThumbnails from "expo-video-thumbnails";
 import { router } from "expo-router";
 import NoPosts from "@/ui/components/NoPost";
 import { followUserThunk, unfollowUserThunk } from "@/redux/slices/searchSlice";
+import { fetchUserInfo } from "@/redux/slices/profileSlice";
 
 type PostImage = {
   id: string;
@@ -67,15 +68,17 @@ const OtherProfile: React.FC = () => {
           unfollowUserThunk({ userId: Profile.id, userToUnfollow: id })
         ).unwrap();
         dispatch(setFollowing(false));
+        setIsFollowing(false);
         console.log("Dejó de seguir con éxito");
       } else {
         await dispatch(
           followUserThunk({ userId: Profile.id, userToFollow: id })
         ).unwrap();
         dispatch(setFollowing(true));
+        setIsFollowing(true);
         console.log("Siguió con éxito");
       }
-      setIsFollowing(!isFollowing); // Actualiza el estado local
+      dispatch(fetchUserInfo(Profile.id));
     } catch (error) {
       console.error("Error al cambiar el estado de seguimiento:", error);
     } finally {

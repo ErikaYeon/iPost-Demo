@@ -36,7 +36,7 @@ const FirstScreen: React.FC = () => {
       if (autoLoginAsync.fulfilled.match(resultAction)) {
         const { userId } = resultAction.payload;
         dispatch(setProfileUserId(userId));
-        router.push("/(tabs)/home");
+        router.replace("/(tabs)/home");
       }
     };
 
@@ -105,7 +105,7 @@ const FirstScreen: React.FC = () => {
       </View>
 
       {/* Texto "o continua con" */}
-      <RegularTextLine text={"continuar con"} theme={theme} />
+      {/* <RegularTextLine text={"continuar con"} theme={theme} /> */}
 
       {/* Botón de Google con imagen PNG */}
       {/* <TouchableOpacity
