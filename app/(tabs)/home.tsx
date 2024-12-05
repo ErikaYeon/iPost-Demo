@@ -16,8 +16,8 @@ import { useSelector, useDispatch } from "react-redux";
 import { AppDispatch, RootState } from "../../redux/store";
 import Placeholders from "@/constants/ProfilePlaceholders";
 import { levelToCrown } from "@/types/mappers";
-import { fetchPosts } from "@/redux/slices/postSlice";
-import { addPost, addPosts } from "@/redux/slices/timelineSlice";
+import { fetchPosts, UpdateTime } from "@/redux/slices/postSlice";
+import { addPosts, addPostsReload } from "@/redux/slices/timelineSlice";
 import { fetchAds, fillPostsFromAds } from "@/redux/slices/adsSlice";
 import {
   fetchUserInfo,
@@ -26,6 +26,8 @@ import {
 import { isEmpty } from "@/utils/RegexExpressions";
 import { I18nextProvider } from "react-i18next";
 import i18next from "i18next";
+import moment from "moment";
+moment().format();
 
 const home = () => {
   const themeMode = useSelector((state: RootState) => state.profile.theme); // Selecciona el tema desde Redux
@@ -45,8 +47,14 @@ const home = () => {
 
   // Función para cargar los posts (llama al thunk fetchPosts)
   const loadPosts = (userId: string, isRefreshing: boolean) => {
+    // dispatch(TimePostsList(localPosts[(localPosts.length -1)].createdAt))
     if (isRefreshing) {
+      const time1 = moment(localPosts[0].createdAt).format(
+        "YYYY-MM-DDTHH:mm:ss.SSS[Z]"
+      );
+      dispatch(UpdateTime(time1));
       dispatch(fetchPosts({ userId, isRefreshing }));
+      dispatch(addPostsReload({ newPosts: posts, postsFromAds: ListAdsPost }));
     } else {
       dispatch(fetchPosts({ userId, isRefreshing: false }));
     }
