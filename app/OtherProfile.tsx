@@ -11,7 +11,10 @@ import {
 } from "react-native";
 import { useSelector, useDispatch } from "react-redux";
 import { RootState, AppDispatch } from "@/redux/store";
-import { fetchOtherProfilePosts } from "@/redux/slices/otherProfileSlice";
+import {
+  fetchOtherProfilePosts,
+  setFollowing,
+} from "@/redux/slices/otherProfileSlice";
 import HeaderWithIcon from "@/ui/components/HeaderWithIcon";
 import ProfileHeader from "@/ui/components/ProfileHeader";
 import ProfileAdditionalInfo from "@/ui/components/ProfileAdditionalInfo";
@@ -45,8 +48,11 @@ const OtherProfile: React.FC = () => {
   );
   const { id, username, posts, loading } = otherProfileData;
   const [isFollowing, setIsFollowing] = useState(otherProfileData.following);
-  console.log("other profile following" + otherProfileData.following);
-  console.log(isFollowing);
+
+  // Sincronizar el estado de seguimiento con el estado global
+  useEffect(() => {
+    setIsFollowing(otherProfileData.following);
+  }, [otherProfileData.following]);
 
   const screenWidth = Dimensions.get("window").width;
   const buttonWidth = screenWidth * 0.85;
@@ -58,15 +64,16 @@ const OtherProfile: React.FC = () => {
         await dispatch(
           unfollowUserThunk({ userId: Profile.id, userToUnfollow: id })
         ).unwrap();
+        dispatch(setFollowing(false));
         console.log("Dejó de seguir con éxito");
       } else {
         await dispatch(
           followUserThunk({ userId: Profile.id, userToFollow: id })
         ).unwrap();
+        dispatch(setFollowing(true));
         console.log("Siguió con éxito");
       }
-      // dispatch
-      setIsFollowing(!isFollowing);
+      setIsFollowing(!isFollowing); // Actualiza el estado local
     } catch (error) {
       console.error("Error al cambiar el estado de seguimiento:", error);
     } finally {
