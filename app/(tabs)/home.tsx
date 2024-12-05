@@ -17,7 +17,7 @@ import { AppDispatch, RootState } from "../../redux/store";
 import Placeholders from "@/constants/ProfilePlaceholders";
 import { levelToCrown } from "@/types/mappers";
 import { fetchPosts, UpdateTime } from "@/redux/slices/postSlice";
-import { addPost, addPosts } from "@/redux/slices/timelineSlice";
+import { addPosts } from "@/redux/slices/timelineSlice";
 import { fetchAds, fillPostsFromAds } from "@/redux/slices/adsSlice";
 import {
   fetchUserInfo,

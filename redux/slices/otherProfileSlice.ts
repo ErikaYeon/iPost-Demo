@@ -71,6 +71,14 @@ const otherProfileSlice = createSlice({
   name: "otherProfile",
   initialState,
   reducers: {
+    setFollowing: (state, action: PayloadAction<boolean>) => {
+      state.following = action.payload;
+      if (action.payload) {
+        state.followersCount = state.followersCount + 1;
+      } else {
+        state.followersCount = state.followersCount - 1;
+      }
+    },
     clearOtherProfile: (state) => {
       Object.assign(state, initialState);
     },
@@ -123,5 +131,5 @@ const otherProfileSlice = createSlice({
   },
 });
 
-export const { clearOtherProfile } = otherProfileSlice.actions;
+export const { clearOtherProfile, setFollowing } = otherProfileSlice.actions;
 export default otherProfileSlice.reducer;
