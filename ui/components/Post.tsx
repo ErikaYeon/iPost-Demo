@@ -355,81 +355,73 @@ const Post: React.FC<PostProps> = ({
       </View>
 
       {images.length === 1 ? (
-        <View
-          style={{
-            alignItems: "center",
-            justifyContent: "center",
-            width: "100%",
-          }}
-        >
-          {images[0].type === "image" ? (
-            <Image
+        <TouchableOpacity onPress={() => openImageModal(images[0].uri)}>
+        {images[0].type === "image" ? (
+          <Image
+            source={{ uri: images[0].uri }}
+            style={styles.singlePostImage}
+          />
+        ) : (
+          <View style={{ position: "relative" }}>
+            <Video
+              ref={videoRef}
               source={{ uri: images[0].uri }}
               style={styles.singlePostImage}
+              resizeMode={ResizeMode.COVER}
+              isLooping
+              shouldPlay={false} // El video estará pausado al cargar
             />
-          ) : (
-            <View style={{ position: "relative" }}>
-              <Video
-                ref={videoRef}
-                source={{ uri: images[0].uri }}
-                style={styles.singlePostImage}
-                resizeMode={ResizeMode.COVER}
-                isLooping
-                shouldPlay={false} // El video estará pausado al cargar
-              />
-              <TouchableOpacity
-                style={styles.playPauseButton}
-                onPress={() => togglePlayPause(images[0].uri)}
-              >
-                {playingVideos[images[0].uri] ? (
-                  <View style={styles.pauseIcon}>
-                    <View style={styles.pauseBar} />
-                    <View style={styles.pauseBar} />
-                  </View>
-                ) : (
-                  <View style={styles.playIcon} />
-                )}
-              </TouchableOpacity>
-            </View>
-          )}
-        </View>
+            <TouchableOpacity
+              style={styles.playPauseButton}
+              onPress={() => togglePlayPause(images[0].uri)}
+            >
+              {playingVideos[images[0].uri] ? (
+                <View style={styles.pauseIcon}>
+                  <View style={styles.pauseBar} />
+                  <View style={styles.pauseBar} />
+                </View>
+              ) : (
+                <View style={styles.playIcon} />
+              )}
+            </TouchableOpacity>
+          </View>
+        )}
+      </TouchableOpacity>
       ) : (
         <FlatList
-          data={images}
-          horizontal
-          keyExtractor={(item, index) => index.toString()}
-          renderItem={({ item }) => (
-            <View>
-              {item.type === "image" ? (
-                <TouchableOpacity onPress={() => openImageModal(item.uri)}>
-                  <Image source={{ uri: item.uri }} style={styles.postImage} />
+        data={images}
+        horizontal
+        keyExtractor={(item, index) => index.toString()}
+        renderItem={({ item }) => (
+          <TouchableOpacity onPress={() => openImageModal(item.uri)}>
+            {item.type === "image" ? (
+              <Image source={{ uri: item.uri }} style={styles.postImage} />
+            ) : (
+              <View style={{ position: "relative" }}>
+                <Video
+                  ref={videoRef}
+                  source={{ uri: item.uri }}
+                  style={styles.postImage}
+                  resizeMode={ResizeMode.COVER}
+                  isLooping
+                />
+                <TouchableOpacity
+                  style={styles.playPauseButton}
+                  onPress={() => togglePlayPause(item.uri)}
+                >
+                  {playingVideos[item.uri] ? (
+                    <View style={styles.pauseIcon}>
+                      <View style={styles.pauseBar} />
+                      <View style={styles.pauseBar} />
+                    </View>
+                  ) : (
+                    <View style={styles.playIcon} />
+                  )}
                 </TouchableOpacity>
-              ) : (
-                <View style={{ position: "relative" }}>
-                  <Video
-                    ref={videoRef}
-                    source={{ uri: item.uri }}
-                    style={styles.postImage}
-                    resizeMode={ResizeMode.COVER}
-                    isLooping
-                  />
-                  <TouchableOpacity
-                    style={styles.playPauseButton}
-                    onPress={() => togglePlayPause(item.uri)}
-                  >
-                    {playingVideos[item.uri] ? (
-                      <View style={styles.pauseIcon}>
-                        <View style={styles.pauseBar} />
-                        <View style={styles.pauseBar} />
-                      </View>
-                    ) : (
-                      <View style={styles.playIcon} />
-                    )}
-                  </TouchableOpacity>
-                </View>
-              )}
-            </View>
-          )}
+              </View>
+            )}
+          </TouchableOpacity>
+        )}
           showsHorizontalScrollIndicator={false}
           pagingEnabled
           snapToAlignment="start"
@@ -451,10 +443,20 @@ const Post: React.FC<PostProps> = ({
             >
               <Text style={modalStyles.modalCloseButtonText}>Cerrar</Text>
             </TouchableOpacity>
-            <Image
-              source={{ uri: selectedImageUri }}
-              style={modalStyles.fullscreenImage}
-            />
+            {selectedImageUri.endsWith(".mp4") || selectedImageUri.includes("video") ? ( // Verifica si es un video
+              <Video
+                source={{ uri: selectedImageUri }}
+                style={modalStyles.fullscreenVideo}
+                resizeMode={ResizeMode.CONTAIN}
+                shouldPlay
+                isLooping
+              />
+            ) : (
+              <Image
+                source={{ uri: selectedImageUri }}
+                style={modalStyles.fullscreenImage}
+              />
+            )}
           </View>
         </NativeModal>
       )}
@@ -601,6 +603,11 @@ const modalStyles = StyleSheet.create({
     height: "100%",
     resizeMode: "contain",
   },
+fullscreenVideo: {
+  width: "100%",
+  height: "100%",
+  backgroundColor: "black",
+},
   modalCloseButtonContainer: {
     position: "absolute",
     top: 20,
