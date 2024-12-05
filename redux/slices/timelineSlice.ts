@@ -1,5 +1,6 @@
 import { createSlice, PayloadAction } from "@reduxjs/toolkit";
 import { Post as Structure } from "@/types/apiContracts";
+import APIConstants from "@/constants/APIConstants";
 
 interface TimelineState {
   LocalListPosts: Structure[];
@@ -25,7 +26,7 @@ const timelineSlice = createSlice({
     ) {
       const { newPosts, postsFromAds } = action.payload;
 
-      const cantAds: number = newPosts.length % 5;
+      const cantAds: number = newPosts.length % APIConstants.ADS_BETWEEN_COUNT;
       const postsWithAds = [];
 
       if (cantAds > 0) {
@@ -33,7 +34,10 @@ const timelineSlice = createSlice({
 
         for (let i = 0; i < newPosts.length; i++) {
           postsWithAds.push(newPosts[i]);
-          if ((i + 1) % 5 === 0 && postsFromAds.length > 0) {
+          if (
+            (i + 1) % APIConstants.ADS_BETWEEN_COUNT === 0 &&
+            postsFromAds.length > 0
+          ) {
             postsWithAds.push(postsFromAds[randomIndex]);
           }
         }
@@ -58,7 +62,10 @@ const timelineSlice = createSlice({
         state.LocalListPosts.push(post); // Agregar el post local
 
         // Cada vez que agregas 5 posts locales, agrega uno de la lista de Ads
-        if (state.LocalListPosts.length % 5 === 0 && postsFromAds.length > 0) {
+        if (
+          state.LocalListPosts.length % APIConstants.ADS_BETWEEN_COUNT === 0 &&
+          postsFromAds.length > 0
+        ) {
           const randomIndex = Math.floor(Math.random() * postsFromAds.length); // Seleccionar un índice aleatorio
           state.LocalListPosts.push(postsFromAds[randomIndex]); // Insertar el post aleatorio
         }
