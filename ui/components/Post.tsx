@@ -144,22 +144,21 @@ const Post: React.FC<PostProps> = ({
   const theme = themeMode === "dark" ? darkTheme : lightTheme;
   const styles = createPostStyles(theme);
 
-  const openImageModal = (uri: string, index: number) => {
-    setSelectedImageUri(uri);
-    setSelectedImageIndex(index); // Establece el índice inicial
-    setImageModalVisible(true);
-  };
-
-  const closeImageModal = () => {
-    setSelectedImageUri(null);
-    setImageModalVisible(false);
-  };
-
+  const videoRefs = useRef<{ [key: string]: Video | null }>({});
+  const fullscreenVideoRef = useRef<Video | null>(null);
+  
+  useEffect(() => {
+    return () => {
+      videoRefs.current = {}; // Limpia todas las referencias de videos en la vista normal
+      fullscreenVideoRef.current = null; // Limpia la referencia del video en pantalla completa
+    };
+  }, []);
+  
   const [playingVideos, setPlayingVideos] = useState<{
     [key: string]: boolean;
   }>({});
-  const videoRef = useRef<Video>(null); // Referencia al componente de video
-
+  
+  
   useEffect(() => {
     const checkIfLiked = async () => {
       try {
@@ -284,18 +283,46 @@ const Post: React.FC<PostProps> = ({
   };
 
   // Alternar el estado de un video específico
-  const togglePlayPause = async (videoId: string) => {
-    if (videoRef.current) {
-      if (playingVideos[videoId]) {
-        await videoRef.current.pauseAsync();
+  const togglePlayPause = async (videoId: string, isFullscreen = false) => {
+    try {
+      const ref = isFullscreen
+        ? fullscreenVideoRef.current // Video en pantalla completa
+        : videoRefs.current[videoId]; // Video en la vista normal
+  
+      if (ref) {
+        if (playingVideos[videoId]) {
+          await ref.pauseAsync();
+        } else {
+          await ref.playAsync();
+        }
+        setPlayingVideos((prev) => ({
+          ...prev,
+          [videoId]: !prev[videoId],
+        }));
       } else {
-        await videoRef.current.playAsync();
+        console.error("Referencia del video no encontrada para:", videoId);
       }
-      setPlayingVideos((prev) => ({
-        ...prev,
-        [videoId]: !prev[videoId],
-      }));
+    } catch (error) {
+      console.error("Error al alternar el estado de reproducción:", error);
     }
+  };
+  
+  const openImageModal = (uri: string, index: number) => {
+    setSelectedImageUri(uri);
+    setSelectedImageIndex(index);
+    if (videoRefs.current[uri]) {
+      fullscreenVideoRef.current = videoRefs.current[uri];
+    }
+    setImageModalVisible(true);
+  };
+
+  const closeImageModal = async () => {
+    if (fullscreenVideoRef.current) {
+      await fullscreenVideoRef.current.pauseAsync();
+    }
+    fullscreenVideoRef.current = null;
+    setSelectedImageUri(null);
+    setImageModalVisible(false);
   };
 
   return (
@@ -368,7 +395,11 @@ const Post: React.FC<PostProps> = ({
           ) : (
             <View style={{ position: "relative" }}>
               <Video
-                ref={videoRef}
+                ref={(ref) => {
+                  if (ref) {
+                    videoRefs.current[images[0].uri] = ref; // Sincroniza la referencia del video único
+                  }
+                }}
                 source={{ uri: images[0].uri }}
                 style={styles.singlePostImage}
                 resizeMode={ResizeMode.COVER}
@@ -396,24 +427,25 @@ const Post: React.FC<PostProps> = ({
           data={images}
           horizontal
           keyExtractor={(item, index) => index.toString()}
-          renderItem={({ item }) => (
-            <TouchableOpacity onPress={() => openImageModal(item.uri)}>
+          renderItem={({ item, index }) => (
+            <TouchableOpacity onPress={() => openImageModal(item.uri, index)}>
               <View style={{ position: "relative" }}>
                 {item.type === "image" ? (
                   <Image source={{ uri: item.uri }} style={styles.postImage} />
                 ) : (
-                  <>
+                  <View style={{ position: "relative" }}>
                     <Video
-                      ref={videoRef}
+                      ref={(ref) => {
+                        videoRefs.current[item.uri] = ref; // Almacena la referencia en videoRefs
+                      }}
                       source={{ uri: item.uri }}
                       style={styles.postImage}
                       resizeMode={ResizeMode.COVER}
                       isLooping
                     />
-                    {/* Botón para alternar reproducción/pausa SOLO para videos */}
                     <TouchableOpacity
                       style={styles.playPauseButton}
-                      onPress={() => togglePlayPause(item.uri)}
+                      onPress={() => togglePlayPause(item.uri, false)}
                     >
                       {playingVideos[item.uri] ? (
                         <View style={styles.pauseIcon}>
@@ -424,7 +456,7 @@ const Post: React.FC<PostProps> = ({
                         <View style={styles.playIcon} />
                       )}
                     </TouchableOpacity>
-                  </>
+                  </View>
                 )}
                 {/* Mostrar el ícono de múltiples fotos */}
                 {images.length > 1 && (
@@ -468,18 +500,20 @@ const Post: React.FC<PostProps> = ({
                     ) : (
                       <>
                         <Video
-                          ref={videoRef}
+                          ref={(ref) => {
+                            if (item.uri === selectedImageUri) {
+                              fullscreenVideoRef.current = ref; // Asigna la referencia solo al video visible
+                            }
+                          }}
                           source={{ uri: item.uri }}
-
-                                                style={modalStyles.fullscreenVideo}
+                          style={modalStyles.fullscreenVideo}
                           resizeMode={ResizeMode.CONTAIN}
-                          shouldPlay={selectedImageUri === item.uri} // Reproduce solo el video visible
+                          shouldPlay={playingVideos[item.uri]}
                           isLooping
                         />
-                        {/* Botón de reproducción/pausa solo para videos */}
                         <TouchableOpacity
                           style={styles.playPauseButton}
-                          onPress={() => togglePlayPause(item.uri)}
+                          onPress={() => togglePlayPause(selectedImageUri || "", true)}
                         >
                           {playingVideos[item.uri] ? (
                             <View style={styles.pauseIcon}>
@@ -509,18 +543,23 @@ const Post: React.FC<PostProps> = ({
                 }}
               />
             ) : (
-              selectedImageUri.endsWith(".mp4") || selectedImageUri.includes("video") ? (
+              selectedImageUri?.endsWith(".mp4") || selectedImageUri?.includes("video") ? (
                 <>
                   <Video
+                    ref={(ref) => {
+                      if (ref) {
+                        fullscreenVideoRef.current = ref; // Sincroniza el video único en pantalla completa
+                      }
+                    }}
                     source={{ uri: selectedImageUri }}
                     style={modalStyles.fullscreenVideo}
                     resizeMode={ResizeMode.CONTAIN}
-                    shouldPlay
+                    shouldPlay={playingVideos[selectedImageUri]}
                     isLooping
                   />
                   <TouchableOpacity
                     style={styles.playPauseButton}
-                    onPress={() => togglePlayPause(selectedImageUri)}
+                    onPress={() => togglePlayPause(selectedImageUri, true)}
                   >
                     {playingVideos[selectedImageUri] ? (
                       <View style={styles.pauseIcon}>
