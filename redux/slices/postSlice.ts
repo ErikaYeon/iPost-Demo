@@ -117,8 +117,6 @@ const postSlice = createSlice({
           state.posts.length > 0
             ? state.posts[state.posts.length - 1].createdAt
             : new Date().toISOString();
-        console.log(action.payload);
-        console.log(state.posts);
       })
 
       .addCase(fetchPosts.rejected, (state, action) => {

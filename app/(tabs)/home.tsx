@@ -68,17 +68,17 @@ const home = () => {
       dispatch(fillPostsFromAds());
       setHasFetched(true);
       dispatch(fetchUserInfo(userProfile.id));
-      ChangeInitialLanguage();
     }
   }, [userProfile.id, dispatch, hasFetched]);
 
-  const ChangeInitialLanguage = async () => {
+  const fetchSettingsAndChangeLanguage = async () => {
     try {
       await dispatch(getUserSettingsAsync(userProfile.id));
-      console.log(userProfile.language);
-      i18next.changeLanguage(userProfile.language);
-    } catch {
-      console.log("error al cambiar el lenguage");
+      if (userProfile.language) {
+        i18next.changeLanguage(userProfile.language);
+      }
+    } catch (error) {
+      console.log("Error al cambiar el idioma:", error);
     }
   };
 
@@ -86,6 +86,7 @@ const home = () => {
     if (hasFetched) {
       dispatch(fillPostsFromAds());
       dispatch(addPosts({ newPosts: posts, postsFromAds: ListAdsPost }));
+      fetchSettingsAndChangeLanguage();
     }
   }, [posts, hasFetched, dispatch]);
 

@@ -304,10 +304,8 @@ const profileSlice = createSlice({
         (state, action: PayloadAction<UserSettingsResponse>) => {
           console.log(action.payload.theme);
           state.theme = action.payload.theme === "DARK" ? "dark" : "light";
-          state.language = action.payload.language === "ENGLISH" ? "en" : "es";
-          // console.log(action.payload.language);
-          // state.language = LevelToLanguage(action.payload.language);
-          // i18next.changeLanguage(lang);
+          const lang: string = action.payload.language;
+          state.language = lang === "ENGLISH" ? "en" : "es";
         }
       )
       .addCase(setUserSettingsAsync.pending, (state) => {
