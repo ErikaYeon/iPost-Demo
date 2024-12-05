@@ -10,7 +10,7 @@ interface OptionButtonProps {
 
 const OptionButton: React.FC<OptionButtonProps> = ({ iconComponent, text, onPress, theme }) => {
   const handlePress = async () => {
-    // Aquí puedes manejar diferentes acciones según el uso
+    
     onPress && onPress();
   };
 

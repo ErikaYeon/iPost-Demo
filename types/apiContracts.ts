@@ -72,7 +72,7 @@ export interface UserResponse {
   following: boolean;
 }
 export interface UserSettingsResponse {
-  language: string;
+  language:  string;
   theme: string;
 }
 

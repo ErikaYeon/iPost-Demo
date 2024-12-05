@@ -25,7 +25,7 @@ export const getPosts = async (
     const response = await api.get("/posts", {
       params,
     });
-    console.log(response.data);
+    // console.log(response.data);
     return response.data;
     // }
 

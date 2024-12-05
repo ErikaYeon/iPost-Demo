@@ -1,0 +1,355 @@
+{
+    "settings": {
+      "title": "Settings",
+      "theme": "Theme",
+      "lightMode": "Light Mode",
+      "darkMode": "Dark Mode",
+      "language": "Language",
+      "spanish": "Spanish",
+      "english": "English",
+      "changePassword": "Change Password",
+      "logout": "Log Out",
+      "deleteAccount": "Delete Account"
+    },
+    "activateAccount": {
+      "titlePart1": "Activate your",
+      "infoMessage": "An access link has been sent to your email. Please check your inbox.",
+      "boldText": "access link",
+      "resendButton": "Resend link",
+      "backToLogin": "Back to login",
+      "successMessage": "Email sent successfully",
+      "errorMessage": "An error occurred, please try again"
+    },
+  
+    "addLocation": {
+      "headerTitle": "Add location",
+      "searchPlaceholder": "Search for a location",
+      "searching": "Searching"
+    },
+
+    "changePassword": {
+        "headerTitle": "Change Password",
+        "currentPasswordLabel": "Current Password",
+        "newPasswordLabel": "New Password",
+        "confirmNewPasswordLabel": "Confirm New Password",
+        "passwordPlaceholder": "**************",
+        "changeButton": "Change",
+        "forgotPasswordLink": "Forgot my password",
+        "errors": {
+          "emptyFields": "Please fill in all fields.",
+          "passwordMismatch": "The new password and its confirmation do not match.",
+          "invalidPassword": "The password must be at least 6 characters long and contain a special character.",
+          "shortPassword": "The new password must be at least 8 characters long.",
+          "unexpected": "Unexpected error"
+        },
+        "title": "Change Password",
+        "noPassword": "Please enter your new password.",
+        "shortPassword": "Password must be at least 6 characters long.",
+        "changeError": "Error changing password, please try again.",
+        "generalError": "An error occurred, please try again.",
+        "placeholderPassword": "**************",
+        "acceptButton": "Accept"
+    },
+    
+    "changePassword2": {
+        "headerTitle": "Change Password",
+        "instructions": "A verification link will be sent to the email associated with this account. Check your junk or spam folder if you don't see it in the inbox",
+        "boldText": "verification link",
+        "sendLinkButton": "Send Link",
+        "successMessage": "Email sent successfully"
+    },
+    
+    "createPost": {
+        "headerTitle": "Create Post",
+        "placeholder": "What would you like to post?",
+        "selectMedia": "Select photos or videos",
+        "addLocation": "Add location",
+        "publishButton": "Publish",
+        "error": "Error creating the Post"
+    },
+    
+    "editProfile": {
+        "headerTitle": "Edit Profile",
+        "profileAndCover": "Profile and Cover",
+        "touchPhoto": "Tap the photo to change it",
+        "firstName": "First Name:",
+        "lastName": "Last Name:",
+        "username": "Username:",
+        "gender": "Gender:",
+        "description": "Description:",
+        "saveButton": "Save Changes"
+    },
+    
+    "permissions": {
+        "denied": "Permission denied",
+        "cameraNeeded": "Camera access is required to take photos.",
+        "galleryNeeded": "Gallery access is required to upload images."
+      },
+    
+    "editProfileCover": {
+        "title": "Edit Cover Photo",
+        "takePhoto": "Take Photo",
+        "uploadImage": "Upload Image",
+        "cancel": "Cancel",
+        "save": "Save"
+    },
+
+    "editProfilePhoto": {
+        "title": "Edit Profile Photo",
+        "takePhoto": "Take Photo",
+        "uploadImage": "Upload Image",
+        "cancel": "Cancel",
+        "save": "Save"
+    },
+    
+    "errorConexion": {
+        "title": "No internet connection",
+        "message": "Please check your internet connection.",
+        "retryButton": "Retry"
+    },
+    
+    "errorGeneral": {
+        "title": "Oops!",
+        "message": "Something went wrong, please try again.",
+        "retryButton": "Retry"
+    },
+  
+    "loginScreen": {
+        "header": {
+          "title": "Log in to "
+        },
+        "input": {
+          "email": {
+            "label": "Email",
+            "placeholder": "youremail@example.com"
+          },
+          "password": {
+            "label": "Password",
+            "placeholder": "********"
+          }
+        },
+        "link": {
+          "forgotPassword": "Forgot your password?",
+          "signup": "Sign up"
+        },
+        "button": {
+          "login": "Log in"
+        },
+        "text": {
+          "noAccount": "Don't have an account? "
+        },
+        "errorMessage": {
+          "fillFields": "Please fill in all fields.",
+          "invalidEmail": "Please enter a valid email address.",
+          "invalidCredentials": "Invalid credentials, please try again.",
+          "genericError": "An error occurred, please try again."
+        }
+    },
+    
+    "logInFaceIdScreen": {
+        "header": {
+          "hello": "Hello"
+        },
+        "input": {
+          "password": {
+            "label": "Password",
+            "placeholder": "********"
+          }
+        },
+        "link": {
+          "forgotPassword": "Forgot your password?",
+          "changeUser": "Change user"
+        },
+        "button": {
+          "login": "Log in"
+        },
+        "errorMessage": {
+          "fillFields": "Please fill in all fields.",
+          "invalidPassword": "Password must be at least 6 characters and contain a special character."
+        }
+    },
+
+    "follow": {
+        "stop": "Unfollow",
+        "start": "Follow",
+        "stop_success": "Successfully unfollowed",
+        "start_success": "Successfully followed",
+        "error": "Error changing follow status"
+    },
+
+    "tabs": {
+        "post": "POST"
+    },
+    
+    "restorePassword": {
+        "header": "Reset Password",
+        "info": "Enter your email address and we'll send you a link to recover access to your account.",
+        "errorFields": "Please complete the fields.",
+        "errorInvalidEmail": "Please enter a valid email address.",
+        "buttonText": "Send Link",
+        "linkText": "Back to login"
+    },
+    
+    "restorePassword2": {
+        "header": "Reset Password",
+        "infoMessage": "A recovery link has been sent to the email associated with your account. Check the spam or junk folder if you can't find it.",
+        "boldText": "recovery link",
+        "buttonText": "Resend Link",
+        "linkText": "Back to login",
+        "successMessage": "Email sent successfully"
+    },
+    
+    "searchFollowers": {
+        "title": "Followers"
+    },
+    
+    "searchFollowing": {
+        "title": "Followings"
+    },
+    
+    "signUp": {
+        "header": {
+          "prefix": "Sign up for",
+          "appName": "iPost"
+      },
+      "fields": {
+          "email": {
+            "label": "Email",
+            "placeholder": "myemail@example.com"
+          },
+          "username": {
+            "label": "Username",
+            "placeholder": "example_user"
+          },
+          "password": {
+            "label": "Password",
+            "placeholder": "**************"
+          }
+        },
+        "actions": {
+          "register": "Register"
+        },
+        "links": {
+          "login": {
+            "prefix": "Already have an account?",
+            "action": "Log in"
+          }
+        },
+        "errors": {
+          "missingFields": "Please fill in all fields.",
+          "invalidEmail": "Please enter a valid email.",
+          "invalidPassword": "Password must be at least 6 characters and include a special character.",
+          "invalidUsername": "Username cannot contain spaces.",
+          "emailTaken": "Error. The email is already registered.",
+          "genericError": "An error occurred. Please try again."
+        }
+      },
+      
+      "timeline": {
+          "header": {
+            "title": "Posts"
+          },
+          "actions": {
+            "like": "Liked post ",
+            "comment": "Commented on post ",
+            "save": "Saved post "
+          }
+      },
+      
+      "firstScreen": {
+          "welcome": "Welcome to",
+          "login": "Log In",
+          "register": "Sign Up",
+          "orContinueWith": "or continue with",
+          "google": "Google"
+      },
+      
+      "confirmDeleteAccount": {
+          "message": "Are you sure you want to\ndelete your account\npermanently?",
+          "cancel": "Cancel",
+          "confirm": "Delete Account"
+      },
+      
+      "confirmLogout": {
+          "message": "Are you sure you want to\nlog out?",
+          "cancel": "Cancel",
+          "confirm": "Log Out"
+      },
+      
+      "initialMessage": {
+          "welcome": "Welcome to IPost",
+          "prompt": "Create your first post or follow someone to see their content",
+          "followers": "0 Followers",
+          "motivation": "The more you use the app, the more followers you'll gain!",
+          "following": "0 Following",
+          "followMessage": "Start following your friends or any user on the app!"
+      },
+      
+      "noPosts": {
+          "noPostMessage": "There are no posts"
+      },
+      
+      "error": {
+        "share": "Error sharing"
+      },
+      
+      "post": {
+          "sponsored": "Sponsored",
+          "visitSite": "Visit Site"
+        },
+        "modal": {
+          "close": "Close"
+        },
+        "comment": {
+          "addComment": "Add a comment..."
+      },
+      
+      "profile": {
+          "followers": "followers",
+          "following": "following"
+      },
+      
+      "searchBar": {
+          "placeholder": "Search for a location"
+      },
+    
+      "suggestionsList": {
+          "noResults": "No results found"
+      },
+      
+      "ads": {
+          "locationValidUntil": "Promotion valid until:"
+      },
+      
+      "auth": {
+          "signupError": "An error occurred during signup",
+          "emailNotFound": "Email not found",
+          "emailSent": "Verification email sent",
+          "signupErrorUnknown": "Unknown signup error",
+          "emailAlreadyExists": "This email is already registered",
+          "loginError": "Login failed",
+          "changePasswordError": "Error changing password",
+          "requestError": "Request error",
+          "deleteAccountSuccess": "Account deleted successfully",
+          "deleteAccountError": "Error deleting account",
+          "forgotPasswordSuccess": "Password reset email sent",
+          "forgotPasswordError": "Error sending reset email",
+          "noTokensError": "No tokens found, please login again",
+          "autoLoginError": "Auto-login failed"
+       },
+      
+      "profileScreen": {
+          "tabPosts": "POST",
+          "tabSaved": "SAVED",
+          "errorProfileId": "Profile ID not defined",
+          "errorThumbnail": "Error generating the thumbnail"
+      },
+      "searchScreen":{
+        "search": "Search",
+        "searchProfiles" :"Search Profiles"
+      }
+      
+
+
+}
+  

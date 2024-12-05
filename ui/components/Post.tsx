@@ -1,4 +1,3 @@
-// Post.tsx
 import React, { useState, useEffect, useRef } from "react";
 import {
   View,
@@ -56,6 +55,7 @@ import {
   favoritePostAsync,
   unfavoritePostAsync,
 } from "@/redux/slices/postSlice";
+import { useTranslation } from "react-i18next";
 
 type PostProps = {
   profilePictureUrl: string;
@@ -137,7 +137,8 @@ const Post: React.FC<PostProps> = ({
   const { isLoading } = useSelector((state: RootState) => state.comments);
   const [isImageModalVisible, setImageModalVisible] = useState(false);
   const [selectedImageUri, setSelectedImageUri] = useState<string | null>(null);
-  const [selectedImageIndex, setSelectedImageIndex] = useState<number>(0); 
+  const { t, i18n } = useTranslation("translations");
+  const [selectedImageIndex, setSelectedImageIndex] = useState<number>(0);
   const flatListRef = useRef<FlatList>(null);
 
   const themeMode = useSelector((state: RootState) => state.profile.theme);
@@ -146,19 +147,18 @@ const Post: React.FC<PostProps> = ({
 
   const videoRefs = useRef<{ [key: string]: Video | null }>({});
   const fullscreenVideoRef = useRef<Video | null>(null);
-  
+
   useEffect(() => {
     return () => {
       videoRefs.current = {}; // Limpia todas las referencias de videos en la vista normal
       fullscreenVideoRef.current = null; // Limpia la referencia del video en pantalla completa
     };
   }, []);
-  
+
   const [playingVideos, setPlayingVideos] = useState<{
     [key: string]: boolean;
   }>({});
-  
-  
+
   useEffect(() => {
     const checkIfLiked = async () => {
       try {
@@ -278,7 +278,7 @@ const Post: React.FC<PostProps> = ({
       });
       return result;
     } catch (error) {
-      Alert.alert("Error al compartir");
+      Alert.alert(i18n.t("error.share"));
     }
   };
 
@@ -288,7 +288,7 @@ const Post: React.FC<PostProps> = ({
       const ref = isFullscreen
         ? fullscreenVideoRef.current // Video en pantalla completa
         : videoRefs.current[videoId]; // Video en la vista normal
-  
+
       if (ref) {
         if (playingVideos[videoId]) {
           await ref.pauseAsync();
@@ -306,7 +306,7 @@ const Post: React.FC<PostProps> = ({
       console.error("Error al alternar el estado de reproducción:", error);
     }
   };
-  
+
   const openImageModal = (uri: string, index: number) => {
     setSelectedImageUri(uri);
     setSelectedImageIndex(index);
@@ -348,7 +348,7 @@ const Post: React.FC<PostProps> = ({
             <Text
               style={[styles.username, { color: theme.colors.textSecondary }]}
             >
-              {isAd ? "Patrocinado" : username}
+              {isAd ? i18n.t("post.sponsored") : username}
             </Text>
           </View>
         </View>
@@ -365,7 +365,7 @@ const Post: React.FC<PostProps> = ({
             style={styles.link}
             onPress={() => Linking.openURL(description)} // Abre el enlace en el navegador
           >
-            visitar sitio
+            {i18n.t("post.visitSite")}
           </Text>
         ) : (
           description
@@ -513,7 +513,9 @@ const Post: React.FC<PostProps> = ({
                         />
                         <TouchableOpacity
                           style={styles.playPauseButton}
-                          onPress={() => togglePlayPause(selectedImageUri || "", true)}
+                          onPress={() =>
+                            togglePlayPause(selectedImageUri || "", true)
+                          }
                         >
                           {playingVideos[item.uri] ? (
                             <View style={styles.pauseIcon}>
@@ -538,51 +540,55 @@ const Post: React.FC<PostProps> = ({
                 onScrollToIndexFailed={(info) => {
                   console.warn("Scroll failed: ", info);
                   setTimeout(() => {
-                    flatListRef.current?.scrollToIndex({ index: info.index, animated: true });
+                    flatListRef.current?.scrollToIndex({
+                      index: info.index,
+                      animated: true,
+                    });
                   }, 100);
                 }}
               />
-            ) : (
-              selectedImageUri?.endsWith(".mp4") || selectedImageUri?.includes("video") ? (
-                <>
-                  <Video
-                    ref={(ref) => {
-                      if (ref) {
-                        fullscreenVideoRef.current = ref; // Sincroniza el video único en pantalla completa
-                      }
-                    }}
-                    source={{ uri: selectedImageUri }}
-                    style={modalStyles.fullscreenVideo}
-                    resizeMode={ResizeMode.CONTAIN}
-                    shouldPlay={playingVideos[selectedImageUri]}
-                    isLooping
-                  />
-                  <TouchableOpacity
-                    style={styles.playPauseButton}
-                    onPress={() => togglePlayPause(selectedImageUri, true)}
-                  >
-                    {playingVideos[selectedImageUri] ? (
-                      <View style={styles.pauseIcon}>
-                        <View style={styles.pauseBar} />
-                        <View style={styles.pauseBar} />
-                      </View>
-                    ) : (
-                      <View style={styles.playIcon} />
-                    )}
-                  </TouchableOpacity>
-                </>
-              ) : (
-                <Image
+            ) : selectedImageUri?.endsWith(".mp4") ||
+              selectedImageUri?.includes("video") ? (
+              <>
+                <Video
+                  ref={(ref) => {
+                    if (ref) {
+                      fullscreenVideoRef.current = ref; // Sincroniza el video único en pantalla completa
+                    }
+                  }}
                   source={{ uri: selectedImageUri }}
-                  style={modalStyles.fullscreenImage}
+                  style={modalStyles.fullscreenVideo}
+                  resizeMode={ResizeMode.CONTAIN}
+                  shouldPlay={playingVideos[selectedImageUri]}
+                  isLooping
                 />
-              )
+                <TouchableOpacity
+                  style={styles.playPauseButton}
+                  onPress={() => togglePlayPause(selectedImageUri, true)}
+                >
+                  {playingVideos[selectedImageUri] ? (
+                    <View style={styles.pauseIcon}>
+                      <View style={styles.pauseBar} />
+                      <View style={styles.pauseBar} />
+                    </View>
+                  ) : (
+                    <View style={styles.playIcon} />
+                  )}
+                </TouchableOpacity>
+              </>
+            ) : (
+              <Image
+                source={{ uri: selectedImageUri }}
+                style={modalStyles.fullscreenImage}
+              />
             )}
             <TouchableOpacity
               onPress={closeImageModal}
               style={modalStyles.modalCloseButtonContainer}
             >
-              <Text style={modalStyles.modalCloseButtonText}>Cerrar</Text>
+              <Text style={modalStyles.modalCloseButtonText}>
+                {i18n.t("modal.close")}
+              </Text>
             </TouchableOpacity>
           </View>
         </NativeModal>
@@ -602,11 +608,13 @@ const Post: React.FC<PostProps> = ({
               ) : (
                 <LikeIconLight width={20} height={20} />
               )}
-              <Text style={[styles.counter, { color: theme.colors.textPrimary }]}>
+              <Text
+                style={[styles.counter, { color: theme.colors.textPrimary }]}
+              >
                 {likeCount}
               </Text>
             </TouchableOpacity>
-            
+
             <TouchableOpacity onPress={openModal} style={styles.iconButton}>
               {themeMode === "dark" ? (
                 <CommentIconDark width={20} height={20} />
@@ -687,20 +695,29 @@ const Post: React.FC<PostProps> = ({
             <View style={styles.inputContainer}>
               <TextInput
                 style={[styles.input, { color: theme.colors.textPrimary }]}
-                placeholder="Agrega un comentario..."
+                placeholder={i18n.t("comment.addComment")}
                 placeholderTextColor={theme.colors.textSecondary}
                 value={newComment}
                 onChangeText={setNewComment}
               />
+
               <TouchableOpacity
                 style={styles.sendButton}
                 onPress={handleAddComment}
               >
-              {themeMode === "dark" ? (
-                <SendCommentIconDark width={24} height={24} fill={theme.colors.primary} />
-              ) : (
-                <SendCommentIconLight width={24} height={24} fill={theme.colors.primary} />
-              )}
+                {themeMode === "dark" ? (
+                  <SendCommentIconDark
+                    width={24}
+                    height={24}
+                    fill={theme.colors.primary}
+                  />
+                ) : (
+                  <SendCommentIconLight
+                    width={24}
+                    height={24}
+                    fill={theme.colors.primary}
+                  />
+                )}
               </TouchableOpacity>
             </View>
           </KeyboardAvoidingView>

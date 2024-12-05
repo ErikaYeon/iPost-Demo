@@ -23,6 +23,7 @@ import { router } from "expo-router";
 import { useDispatch, useSelector } from "react-redux";
 import { AppDispatch, RootState } from "@/redux/store";
 import NoFollowings from "@/ui/components/NoFollowings";
+import { useTranslation } from "react-i18next";
 import { UserShort } from "@/types/apiContracts";
 import {
   fetchFollowingsUser,
@@ -31,6 +32,7 @@ import {
 } from "@/redux/slices/searchSlice";
 
 const SearchFollowing: React.FC = () => {
+  const { t, i18n } = useTranslation("translations");
   const themeMode = useSelector((state: RootState) => state.profile.theme); // Selecciona el tema desde Redux
   const theme = themeMode === "dark" ? darkTheme : lightTheme; // Selecciona el tema correcto
 
@@ -129,7 +131,7 @@ const SearchFollowing: React.FC = () => {
               />
             )
           }
-          title="Seguidos"
+          title={i18n.t("searchFollowing.title")}
           onPress={handleGoBack}
           theme={theme}
         />
@@ -137,7 +139,7 @@ const SearchFollowing: React.FC = () => {
       {/* Barra de búsqueda */}
       <View style={styles.searchBarContainer}>
         <SearchBar
-          placeholder="Buscar"
+          placeholder={i18n.t("searchScreen.search")}
           onChangeText={handleSearch}
           value={searchQuery}
           theme={theme}

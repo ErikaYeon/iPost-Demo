@@ -13,22 +13,22 @@ import { router } from "expo-router";
 import { useDispatch, useSelector } from "react-redux";
 import { AppDispatch, RootState } from "@/redux/store";
 import { forgotPasswordAsync } from "@/redux/slices/authSlice";
+import { useTranslation } from "react-i18next";
 
 const ChangePassword2: React.FC = () => {
-  // Establecer manualmente el tema aquí (elige entre darkTheme o lightTheme)
+  const { t, i18n } = useTranslation("translations"); // Inicializa i18n
   const themeMode = useSelector((state: RootState) => state.profile.theme); // Selecciona el tema desde Redux
   const theme = themeMode === "dark" ? darkTheme : lightTheme; // Selecciona el tema correcto
 
   const sharedStyles = createSharedStyles(theme);
-
   const styles = createChangePasswordStyles(theme);
   const dispatch = useDispatch<AppDispatch>();
-  const emialProfile = useSelector((state: RootState) => state.profile.email);
+  const emailProfile = useSelector((state: RootState) => state.profile.email);
   const [successMessage, setSuccessMessage] = useState("");
 
   const handleSendEmail = async () => {
-    await dispatch(forgotPasswordAsync(emialProfile));
-    setSuccessMessage("Email enviado con éxito");
+    await dispatch(forgotPasswordAsync(emailProfile));
+    setSuccessMessage(i18n.t("changePassword2.successMessage"));
   };
 
   return (
@@ -54,7 +54,7 @@ const ChangePassword2: React.FC = () => {
               />
             )
           }
-          title="Cambiar contraseña"
+          title={i18n.t("changePassword2.headerTitle")}
           onPress={() => router.back()}
           theme={theme}
         />
@@ -69,15 +69,15 @@ const ChangePassword2: React.FC = () => {
       >
         <View style={{ marginBottom: 10 }}>
           <MessageText
-            message="Se le enviará un link de verificación al correo asociado a esta cuenta. Revisa tu carpeta de correo no deseado o spam si no lo ves en la casilla de entrada"
-            boldText="link de verificación"
+            message={i18n.t("changePassword2.instructions")}
+            boldText={i18n.t("changePassword2.boldText")}
             theme={theme}
           />
         </View>
 
-        {/* Botón "Reenviar enlace" */}
+        {/* Botón "Enviar enlace" */}
         <CustomButton
-          title="Enviar enlace"
+          title={i18n.t("changePassword2.sendLinkButton")}
           onPress={handleSendEmail}
           theme={theme}
           style={{ marginBottom: theme.spacing.medium, width: "85%" }}

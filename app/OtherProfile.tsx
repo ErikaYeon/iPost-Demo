@@ -27,7 +27,7 @@ import * as VideoThumbnails from "expo-video-thumbnails";
 import { router } from "expo-router";
 import NoPosts from "@/ui/components/NoPost";
 import { followUserThunk, unfollowUserThunk } from "@/redux/slices/searchSlice";
-
+import { useTranslation } from "react-i18next"; // Importa el hook de i18n
 type PostImage = {
   id: string;
   uri: string;
@@ -37,6 +37,7 @@ type PostImage = {
 };
 
 const OtherProfile: React.FC = () => {
+  const { t, i18n } = useTranslation("translations"); // Usar el hook de i18n
   const themeMode = useSelector((state: RootState) => state.profile.theme); // Selecciona el tema desde Redux
   const theme = themeMode === "dark" ? darkTheme : lightTheme; // Selecciona el tema correcto
 
@@ -77,7 +78,7 @@ const OtherProfile: React.FC = () => {
       }
       setIsFollowing(!isFollowing); // Actualiza el estado local
     } catch (error) {
-      console.error("Error al cambiar el estado de seguimiento:", error);
+      console.error(i18n.t("follow.error")); // Usando la traducción
     } finally {
       setLoading(false);
     }
@@ -142,7 +143,7 @@ const OtherProfile: React.FC = () => {
       />
 
       {/* Información de perfil */}
-      <ProfileHeader theme={theme} isOtherProfile={true} />
+      <ProfileHeader isOtherProfile={true} />
       <ProfileAdditionalInfo theme={theme} isOtherProfile={true} />
 
       {/* Botón de Seguir/Dejar de Seguir */}
@@ -173,7 +174,7 @@ const OtherProfile: React.FC = () => {
                   : { color: theme.colors.textPrimary },
               ]}
             >
-              {isFollowing ? "Dejar de Seguir" : "Seguir"}
+              {isFollowing ? i18n.t("follow.stop") : i18n.t("follow.start")}
             </Text>
           )}
         </TouchableOpacity>
@@ -182,7 +183,7 @@ const OtherProfile: React.FC = () => {
       {/* Tabs */}
       <View style={styles.tabsContainer2}>
         <View style={styles.tabButtonDisabled}>
-          <Text style={styles.tabButtonText}>POST</Text>
+          <Text style={styles.tabButtonText}>{i18n.t("tabs.post")}</Text>
         </View>
       </View>
 

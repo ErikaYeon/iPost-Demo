@@ -24,6 +24,7 @@ import {
   setProfileExtraData,
   setProfileEmail,
 } from "@/redux/slices/profileSlice";
+import { useTranslation } from "react-i18next"; // Hook de i18n
 
 const LogInScreen: React.FC = () => {
   const themeMode = useSelector((state: RootState) => state.profile.theme); // Selecciona el tema desde Redux
@@ -31,6 +32,8 @@ const LogInScreen: React.FC = () => {
 
   const sharedStyles = createSharedStyles(theme);
   const styles = createLogInScreenStyles(theme);
+
+  const { t, i18n } = useTranslation("translations");
 
   const dispatch = useDispatch<AppDispatch>();
   const [email, setEmail] = useState("");
@@ -41,9 +44,9 @@ const LogInScreen: React.FC = () => {
 
   const handleLogin = async () => {
     if (!email || !password) {
-      setErrorMessage("Por favor, completa todos los campos.");
+      setErrorMessage(i18n.t("loginScreen.errorMessage.fillFields"));
     } else if (!isEmailValid(email)) {
-      setErrorMessage("Por favor, ingresa un correo electrónico válido.");
+      setErrorMessage(i18n.t("loginScreen.errorMessage.invalidEmail"));
     } else {
       try {
         setErrorMessage("");
@@ -55,11 +58,11 @@ const LogInScreen: React.FC = () => {
           dispatch(setProfileExtraData(resultAction.payload));
           router.push("/(tabs)/home");
         } else {
-          setErrorMessage("credenciales invalidas, intente nuevamente");
+          setErrorMessage(i18n.t("loginScreen.errorMessage.invalidCredentials"));
         }
       } catch (error) {
         console.error("Error from login:", error);
-        setErrorMessage("Ocurrió un error, intentalo nuevamente");
+        setErrorMessage(i18n.t("loginScreen.errorMessage.genericError"));
       }
     }
   };
@@ -71,14 +74,16 @@ const LogInScreen: React.FC = () => {
         style={styles.logo}
       />
 
-      <View style={styles.headerContainer}>
-        <HeaderText text={"Ingresar a"} theme={theme} />
-        <Text style={styles.headerText}> iPost</Text>
-      </View>
+        <View style={styles.headerContainer}>
+          <HeaderText text={i18n.t("loginScreen.header.title")} theme={theme} />
+          <Text style={styles.headerText}>iPost</Text>
+        </View>
+
+
 
       <InputField
-        label="Correo electrónico"
-        placeholder="micorreo@ejemplo.com"
+        label={i18n.t("loginScreen.input.email.label")}
+        placeholder={i18n.t("loginScreen.input.email.placeholder")}
         value={email}
         onChangeText={setEmail}
         error={!!errorMessage}
@@ -86,8 +91,8 @@ const LogInScreen: React.FC = () => {
       />
 
       <InputField
-        label="Contraseña"
-        placeholder="**************"
+        label={i18n.t("loginScreen.input.password.label")}
+        placeholder={i18n.t("loginScreen.input.password.placeholder")}
         value={password}
         onChangeText={setPassword}
         secureTextEntry={true}
@@ -96,14 +101,14 @@ const LogInScreen: React.FC = () => {
       />
       <View style={{ marginTop: 7 }}>
         <LinkText
-          text="¿Olvidaste tu contraseña?"
+          text={i18n.t("loginScreen.link.forgotPassword")}
           onPress={() => router.push("/RestorePssword1")}
           theme={theme}
         />
       </View>
 
       <CustomButton
-        title="Iniciar sesión"
+        title={i18n.t("loginScreen.button.login")}
         onPress={handleLogin}
         type="primary"
         theme={theme}
@@ -118,28 +123,15 @@ const LogInScreen: React.FC = () => {
           marginBottom: 10,
         }}
       >
-        <RegularText text="¿No tienes una cuenta? " theme={theme} />
+        <RegularText text={i18n.t("loginScreen.text.noAccount")} theme={theme} />
         <LinkText
-          text="Regístrate"
+          text={`${i18n.t("loginScreen.link.signup")}`}
           onPress={() => router.push("/SignUp")}
           theme={theme}
         />
       </View>
 
-      {/* <RegularTextLine text="o continua con" theme={theme} />
 
-      <TouchableOpacity
-        style={[sharedStyles.googleButton, { marginTop: theme.spacing.medium }]}
-        onPress={() => console.log("Google")}
-      >
-        <Image
-          source={require("../assets/images/icons/Google.png")}
-          style={{ width: 24, height: 24 }}
-        />
-        <Text style={sharedStyles.googleText}>Google</Text>
-      </TouchableOpacity> */}
-
-      {/* Error message banner */}
       {errorMessage ? (
         <View style={styles.errorBanner}>
           <Text style={styles.errorText}>{errorMessage}</Text>

@@ -20,7 +20,7 @@ import {
   Post,
 } from "@/types/apiContracts";
 import { Crown } from "@/types/models";
-import { levelToCrown } from "@/types/mappers";
+import { levelToCrown, LevelToLanguage } from "@/types/mappers";
 import { RootState } from "../store";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 
@@ -45,7 +45,7 @@ interface ProfileState {
   language: string;
   posts: Post[];
   favorites: Post[];
-  themeLoaded: boolean; 
+  themeLoaded: boolean;
 }
 
 const initialState: ProfileState = {
@@ -66,7 +66,7 @@ const initialState: ProfileState = {
   loading: false,
   error: null,
   theme: "dark",
-  language: "Español",
+  language: "es",
   posts: [],
   favorites: [],
   themeLoaded: false, // Nuevo estado
@@ -232,7 +232,7 @@ const profileSlice = createSlice({
       state.gender = 0;
       state.active = false;
       state.theme = "dark";
-      state.language = "Español";
+      state.language = "es";
     },
     updateTheme: (state, action: PayloadAction<string>) => {
       state.theme = action.payload;
@@ -304,8 +304,8 @@ const profileSlice = createSlice({
         (state, action: PayloadAction<UserSettingsResponse>) => {
           console.log(action.payload.theme);
           state.theme = action.payload.theme === "DARK" ? "dark" : "light";
-          state.language =
-            action.payload.language === "ENGLISH" ? "Inglés" : "Español";
+          const lang: string = action.payload.language;
+          state.language = lang === "ENGLISH" ? "en" : "es";
         }
       )
       .addCase(setUserSettingsAsync.pending, (state) => {

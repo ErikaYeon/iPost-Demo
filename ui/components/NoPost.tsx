@@ -1,11 +1,13 @@
 import React from "react";
 import { View, Text, StyleSheet, Image } from "react-native";
+import { useTranslation } from "react-i18next";
 
 interface NoPostsProps {
   theme: any; // Tema dinámico
 }
 
 const NoPosts: React.FC<NoPostsProps> = ({ theme }) => {
+  const { t, i18n } = useTranslation("translations");
   const styles = createStyles(theme); // Crear estilos dinámicos según el tema
 
   return (

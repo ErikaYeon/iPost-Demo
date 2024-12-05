@@ -23,13 +23,25 @@ import {
   setProfileData,
   updateProfileDataAsync,
 } from "@/redux/slices/profileSlice";
-import { genderToString, stringToGender } from "@/types/mappers";
+import {
+  genderToString,
+  genderToStringEN,
+  stringToGender,
+  stringToGenderEN,
+} from "@/types/mappers";
 import { ProfileUpdateRequest } from "@/types/apiContracts";
-
+import { useTranslation } from "react-i18next";
 
 const GENDER_OPTIONS = ["Mujer", "Hombre", "No binario", "Prefiero no decirlo"];
+const GENDER_OPTIONS_EN = [
+  "Women",
+  "Men",
+  "Non binary",
+  "Prefer not to answer",
+];
 
 const EditProfile: React.FC = () => {
+  const { t, i18n } = useTranslation("translations");
   const themeMode = useSelector((state: RootState) => state.profile.theme); // Selecciona el tema desde Redux
   const theme = themeMode === "dark" ? darkTheme : lightTheme; // Selecciona el tema correcto
 
@@ -46,7 +58,9 @@ const EditProfile: React.FC = () => {
   const [username, setUsername] = useState(Profile.username);
   const [description, setDescription] = useState(Profile.description);
   const [gender, setGender] = useState(
-    genderToString(Profile.gender.toString())
+    Profile.language === "es"
+      ? genderToString(Profile.gender.toString()) // Función para español
+      : genderToStringEN(Profile.gender.toString())
   );
   const userId = Profile.id;
 
@@ -70,7 +84,10 @@ const EditProfile: React.FC = () => {
       lastname: lastName,
       username: username,
       description: description,
-      gender: stringToGender(gender),
+      gender:
+        Profile.language === "es"
+          ? stringToGender(gender)
+          : stringToGenderEN(gender),
     };
     dispatch(setProfileData(ProfileData));
     dispatch(updateProfileDataAsync({ userId, profileData: ProfileData }));
@@ -102,40 +119,42 @@ const EditProfile: React.FC = () => {
               />
             )
           }
-          title="Editar perfil"
+          title={i18n.t("editProfile.headerTitle")}
           onPress={() => router.back()}
           theme={theme}
         />
       </SafeAreaView>
 
       <View style={styles.sectionContainer}>
-        <Text style={styles.sectionTitle}>Perfil y portada</Text>
-        <Text style={styles.subtitle}>Toca la foto para cambiarla</Text>
+        <Text style={styles.sectionTitle}>
+          {i18n.t("editProfile.profileAndCover")}
+        </Text>
+        <Text style={styles.subtitle}>{i18n.t("editProfile.touchPhoto")}</Text>
       </View>
 
       <EditProfileHeader theme={theme} />
 
       <ScrollView contentContainerStyle={styles.contentContainer}>
         <InputRow
-          label="Nombre:"
+          label={i18n.t("editProfile.firstName")}
           value={firstName}
           onChangeText={setFirstName}
           theme={theme}
         />
         <InputRow
-          label="Apellido:"
+          label={i18n.t("editProfile.lastName")}
           value={lastName}
           onChangeText={setLastName}
           theme={theme}
         />
         <InputRow
-          label="Usuario:"
+          label={i18n.t("editProfile.username")}
           value={username}
           onChangeText={setUsername}
           theme={theme}
         />
         <InputRow
-          label="Género:"
+          label={i18n.t("editProfile.gender")}
           value={gender}
           isSelectable
           isDropdownVisible={genderDropdownVisible}
@@ -146,14 +165,14 @@ const EditProfile: React.FC = () => {
           theme={theme}
         />
         <InputRow
-          label="Descripción:"
+          label={i18n.t("editProfile.description")}
           value={description}
           onChangeText={setDescription}
           multiline
           theme={theme}
         />
         <CustomButton
-          title="Guardar cambios"
+          title={i18n.t("editProfile.saveButton")}
           onPress={handleSaveChanges}
           type="primary"
           theme={theme}
@@ -163,13 +182,13 @@ const EditProfile: React.FC = () => {
 
       {genderDropdownVisible && (
         <Dropdown
-          options={GENDER_OPTIONS}
+          options={
+            Profile.language === "es" ? GENDER_OPTIONS : GENDER_OPTIONS_EN
+          }
           position={dropdownPosition}
           onSelect={(option) => {
             setGender(option);
             setGenderDropdownVisible(false);
-            // console.log(stringToGender(option));
-            // setProfileGender(stringToGender(option));
           }}
           theme={theme}
         />

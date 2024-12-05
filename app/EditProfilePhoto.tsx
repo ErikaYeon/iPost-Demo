@@ -23,8 +23,10 @@ import {
 } from "@/redux/slices/profileSlice";
 import { ProfileImageRequest } from "@/types/apiContracts";
 import { isEmpty } from "@/utils/RegexExpressions";
+import { useTranslation } from "react-i18next"; // Importar i18n
 
 const EditProfilePhoto: React.FC = () => {
+  const { t, i18n } = useTranslation("translations");
   const themeMode = useSelector((state: RootState) => state.profile.theme); // Selecciona el tema desde Redux
   const theme = themeMode === "dark" ? darkTheme : lightTheme; // Selecciona el tema correcto
 
@@ -55,8 +57,8 @@ const EditProfilePhoto: React.FC = () => {
     const permission = await ImagePicker.requestCameraPermissionsAsync();
     if (!permission.granted) {
       Alert.alert(
-        "Permiso denegado",
-        "Se necesita acceso a la cámara para tomar fotos."
+        i18n.t("permissions.denied"),
+        i18n.t("permissions.cameraNeeded")
       );
       return;
     }
@@ -82,8 +84,8 @@ const EditProfilePhoto: React.FC = () => {
     const permission = await ImagePicker.requestMediaLibraryPermissionsAsync();
     if (!permission.granted) {
       Alert.alert(
-        "Permiso denegado",
-        "Se necesita acceso a la galería para subir imágenes."
+        i18n.t("permissions.denied"),
+        i18n.t("permissions.galleryNeeded")
       );
       return;
     }
@@ -117,7 +119,6 @@ const EditProfilePhoto: React.FC = () => {
       type: "PROFILE",
     };
     await dispatch(updateProfileImageAsync({ userId, profileImageData }));
-    // console.log("Guardar", selectedImage, base64Image);
     // Implementa la lógica para guardar la imagen seleccionada y su versión en Base64
     router.back(); // Regresa al perfil
   };
@@ -142,7 +143,7 @@ const EditProfilePhoto: React.FC = () => {
             />
           )
         }
-        title="Editar foto de perfil"
+        title={i18n.t("editProfilePhoto.title")}
         onPress={() => router.back()}
         theme={theme}
       />
@@ -169,7 +170,7 @@ const EditProfilePhoto: React.FC = () => {
               <CameraIconLight width={24} height={24} />
             )
           }
-          text="Tomar foto"
+          text={i18n.t("editProfilePhoto.takePhoto")}
           onPress={handleTakePhoto}
           theme={theme}
         />
@@ -181,7 +182,7 @@ const EditProfilePhoto: React.FC = () => {
               <UploadIconLight width={24} height={24} />
             )
           }
-          text="Subir imagen"
+          text={i18n.t("editProfilePhoto.uploadImage")}
           onPress={handleUploadImage}
           theme={theme}
         />
@@ -190,14 +191,14 @@ const EditProfilePhoto: React.FC = () => {
       {/* Botones */}
       <View style={styles.buttonsContainer}>
         <CustomButton
-          title="Cancelar"
+          title={i18n.t("editProfilePhoto.cancel")}
           onPress={handleCancel}
           type="secondary"
           theme={theme}
           style={styles.cancelButton}
         />
         <CustomButton
-          title="Guardar"
+          title={i18n.t("editProfilePhoto.save")}
           onPress={handleSave}
           type="primary"
           theme={theme}

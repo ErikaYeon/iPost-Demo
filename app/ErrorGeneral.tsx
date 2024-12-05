@@ -4,8 +4,10 @@ import ErrorGen from '../assets/images/icons/errorGeneral.svg';
 import CustomButton from '../ui/components/CustomButton'; 
 import { darkTheme, lightTheme } from '../ui/styles/Theme'; 
 import { Router, useRouter } from 'expo-router';
+import { useTranslation } from 'react-i18next';
 
-const ErrorGeneral = ({ theme = darkTheme }) => { // Default to darkTheme if theme is not passed
+const ErrorGeneral = ({ theme = darkTheme }) => {
+  const { t, i18n } = useTranslation("translations");
   const router = useRouter();
   const onRetry  = () => {
     router.back();
@@ -14,12 +16,12 @@ const ErrorGeneral = ({ theme = darkTheme }) => { // Default to darkTheme if the
     <View style={[styles.container, { backgroundColor: theme.colors.background }]}>
       <View style={styles.card}>
         <ErrorGen width={300} height={300} style={styles.icon} />
-        <Text style={styles.title}>Oops!</Text>
-        <Text style={styles.message}>Algo salió mal,{"\n"}por favor intenta nuevamente.</Text>
+        <Text style={styles.title}>{i18n.t('errorGeneral.title')}</Text>
+        <Text style={styles.message}>{i18n.t('errorGeneral.message')}</Text>
         
         {/* Botón de reintentar usando CustomButton */}
         <CustomButton
-          title="Reintentar"
+          title={i18n.t('errorGeneral.retryButton')}
           onPress={onRetry}
           type="primary"
           theme={theme}

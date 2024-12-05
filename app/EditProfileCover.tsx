@@ -21,8 +21,10 @@ import {
   updateProfileImageAsync,
 } from "@/redux/slices/profileSlice";
 import { ProfileImageRequest } from "@/types/apiContracts";
+import { useTranslation } from "react-i18next";
 
 const EditProfileCover: React.FC = () => {
+  const { t, i18n } = useTranslation("translations");
   const themeMode = useSelector((state: RootState) => state.profile.theme); // Selecciona el tema desde Redux
   const theme = themeMode === "dark" ? darkTheme : lightTheme; // Selecciona el tema correcto
 
@@ -53,8 +55,8 @@ const EditProfileCover: React.FC = () => {
     const permission = await ImagePicker.requestCameraPermissionsAsync();
     if (!permission.granted) {
       Alert.alert(
-        "Permiso denegado",
-        "Se necesita acceso a la cámara para tomar fotos."
+        i18n.t("permissions.denied"),
+        i18n.t("permissions.cameraNeeded")
       );
       return;
     }
@@ -80,8 +82,8 @@ const EditProfileCover: React.FC = () => {
     const permission = await ImagePicker.requestMediaLibraryPermissionsAsync();
     if (!permission.granted) {
       Alert.alert(
-        "Permiso denegado",
-        "Se necesita acceso a la galería para subir imágenes."
+        i18n.t("permissions.denied"),
+        i18n.t("permissions.galleryNeeded")
       );
       return;
     }
@@ -139,7 +141,7 @@ const EditProfileCover: React.FC = () => {
             />
           )
         }
-        title="Editar foto de portada"
+        title={i18n.t("editProfileCover.title")}
         onPress={() => router.back()}
         theme={theme}
       />
@@ -164,7 +166,7 @@ const EditProfileCover: React.FC = () => {
               <CameraIconLight width={24} height={24} />
             )
           }
-          text="Tomar foto"
+          text={i18n.t("editProfileCover.takePhoto")}
           onPress={handleTakePhoto}
           theme={theme}
         />
@@ -176,7 +178,7 @@ const EditProfileCover: React.FC = () => {
               <UploadIconLight width={24} height={24} />
             )
           }
-          text="Subir imagen"
+          text={i18n.t("editProfileCover.uploadImage")}
           onPress={handleUploadImage}
           theme={theme}
         />
@@ -185,14 +187,14 @@ const EditProfileCover: React.FC = () => {
       {/* Botones */}
       <View style={styles.buttonsContainer}>
         <CustomButton
-          title="Cancelar"
+          title={i18n.t("editProfileCover.cancel")}
           onPress={handleCancel}
           type="secondary"
           theme={theme}
           style={styles.cancelButton}
         />
         <CustomButton
-          title="Guardar"
+          title={i18n.t("editProfileCover.save")}
           onPress={handleSave}
           type="primary"
           theme={theme}

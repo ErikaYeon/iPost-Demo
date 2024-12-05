@@ -9,14 +9,15 @@ import LinkText from "../ui/components/LinkText";
 import { createChangePasswordStyles } from "../ui/styles/ChangePasswordStyles";
 import { darkTheme, lightTheme } from "../ui/styles/Theme";
 import { useDispatch, useSelector } from "react-redux";
-import { changePasswordAsync } from "@/redux/slices/authSlice"; // Si implementas esta acción
+import { changePasswordAsync } from "@/redux/slices/authSlice";
 import { AppDispatch, RootState } from "@/redux/store";
 import { router } from "expo-router";
 import { ChangePasswordRequest } from "@/types/apiContracts";
 import { isPasswordValid } from "@/utils/RegexExpressions";
+import { useTranslation } from "react-i18next";
 
 const ChangePasswordScreen: React.FC = () => {
-  // Establecer manualmente el tema aquí (elige entre darkTheme o lightTheme)
+  const { t, i18n } = useTranslation("translations"); // Inicializa i18n
   const themeMode = useSelector((state: RootState) => state.profile.theme); // Selecciona el tema desde Redux
   const theme = themeMode === "dark" ? darkTheme : lightTheme; // Selecciona el tema correcto
 
@@ -28,48 +29,47 @@ const ChangePasswordScreen: React.FC = () => {
   const [successMessage, setSuccessMessage] = useState("");
   const userEmail = useSelector((state: RootState) => state.profile.email);
 
-  const styles = createChangePasswordStyles(theme); // Genera estilos dinámicamente
+  const styles = createChangePasswordStyles(theme);
 
   const handleChangePassword = async () => {
     if (!currentPassword || !newPassword || !confirmPassword) {
-      setErrorMessage("Por favor, completa todos los campos.");
+      setErrorMessage(i18n.t("changePassword.errors.emptyFields"));
       return;
     }
 
     if (newPassword !== confirmPassword) {
-      setErrorMessage("La nueva contraseña y su confirmación no coinciden.");
+      setErrorMessage(i18n.t("changePassword.errors.passwordMismatch"));
       return;
     } else if (!isPasswordValid(newPassword)) {
-      setErrorMessage(
-        "La contraseña debe tener al menos 6 caracteres y un carácter especial."
-      );
+      setErrorMessage(i18n.t("changePassword.errors.invalidPassword"));
+      return;
     }
 
     if (newPassword.length < 8) {
-      setErrorMessage("La nueva contraseña debe tener al menos 8 caracteres.");
+      setErrorMessage(i18n.t("changePassword.errors.shortPassword"));
       return;
     }
 
     try {
       setErrorMessage("");
-      const Request: ChangePasswordRequest = {
+      const request: ChangePasswordRequest = {
         email: userEmail,
         password: currentPassword,
         newPassword: newPassword,
       };
-      const resultAction = await dispatch(changePasswordAsync(Request));
+      const resultAction = await dispatch(changePasswordAsync(request));
 
       if (changePasswordAsync.fulfilled.match(resultAction)) {
         const { message } = resultAction.payload;
         setSuccessMessage(message);
       } else if (changePasswordAsync.rejected.match(resultAction)) {
         const { message } = resultAction.payload || {
-          message: "Error inesperado",
+          message: i18n.t("changePassword.errors.unexpected"),
         };
         setErrorMessage(message);
       }
     } catch {
-      setErrorMessage("Error inesperado");
+      setErrorMessage(i18n.t("changePassword.errors.unexpected"));
     }
   };
 
@@ -96,7 +96,7 @@ const ChangePasswordScreen: React.FC = () => {
               />
             )
           }
-          title="Cambiar contraseña"
+          title={i18n.t("changePassword.headerTitle")}
           onPress={() => router.back()}
           theme={theme}
         />
@@ -104,8 +104,8 @@ const ChangePasswordScreen: React.FC = () => {
 
       <View style={styles.contentContainer}>
         <InputField
-          label="Contraseña actual"
-          placeholder="**************"
+          label={i18n.t("changePassword.currentPasswordLabel")}
+          placeholder={i18n.t("changePassword.passwordPlaceholder")}
           value={currentPassword}
           onChangeText={setCurrentPassword}
           secureTextEntry
@@ -114,8 +114,8 @@ const ChangePasswordScreen: React.FC = () => {
         />
 
         <InputField
-          label="Contraseña nueva"
-          placeholder="**************"
+          label={i18n.t("changePassword.newPasswordLabel")}
+          placeholder={i18n.t("changePassword.passwordPlaceholder")}
           value={newPassword}
           onChangeText={setNewPassword}
           secureTextEntry
@@ -124,8 +124,8 @@ const ChangePasswordScreen: React.FC = () => {
         />
 
         <InputField
-          label="Confirmación de contraseña nueva"
-          placeholder="**************"
+          label={i18n.t("changePassword.confirmNewPasswordLabel")}
+          placeholder={i18n.t("changePassword.passwordPlaceholder")}
           value={confirmPassword}
           onChangeText={setConfirmPassword}
           secureTextEntry
@@ -134,7 +134,7 @@ const ChangePasswordScreen: React.FC = () => {
         />
 
         <CustomButton
-          title="Cambiar"
+          title={i18n.t("changePassword.changeButton")}
           onPress={handleChangePassword}
           type="primary"
           theme={theme}
@@ -142,10 +142,9 @@ const ChangePasswordScreen: React.FC = () => {
         />
 
         <LinkText
-          text="Olvidé mi contraseña"
+          text={i18n.t("changePassword.forgotPasswordLink")}
           onPress={() => router.push("/ChangePassword2")}
           theme={theme}
-          // style={styles.link}
         />
       </View>
       {errorMessage ? (

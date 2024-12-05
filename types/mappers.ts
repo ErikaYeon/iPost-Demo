@@ -30,14 +30,27 @@ export function themeToLevel(level: string): string {
 }
 export function languageToLevel(level: string): string {
   switch (level) {
-    case "Español": {
+    case "es": {
       return "SPANISH";
+    }
+    case "en": {
+      return "ENGLISH";
     }
     default: {
       return "ENGLISH";
     }
   }
 }
+export function LevelToLanguage(level: string): string {
+  if (level === "SPANISH") {
+    console.log("entra al if");
+    return "es";
+  }
+  console.log("entra al mapper");
+
+  return "en";
+}
+
 export function genderToString(gender: string): string {
   switch (gender) {
     case "MEN": {
@@ -54,6 +67,22 @@ export function genderToString(gender: string): string {
     }
   }
 }
+export function genderToStringEN(gender: string): string {
+  switch (gender) {
+    case "MEN": {
+      return "Men";
+    }
+    case "WOMAN": {
+      return "Women";
+    }
+    case "NON_BINARY": {
+      return "Non binary";
+    }
+    default: {
+      return "Prefer not to answer";
+    }
+  }
+}
 
 export function stringToGender(gender: string): Gender {
   switch (gender) {
@@ -64,6 +93,22 @@ export function stringToGender(gender: string): Gender {
       return Gender.MEN;
     }
     case "No binario": {
+      return Gender.NON_BINARY;
+    }
+    default: {
+      return Gender.PREFER_NOT_TO_ANSWER;
+    }
+  }
+}
+export function stringToGenderEN(gender: string): Gender {
+  switch (gender) {
+    case "Women": {
+      return Gender.WOMAN;
+    }
+    case "Men": {
+      return Gender.MEN;
+    }
+    case "Non binary": {
       return Gender.NON_BINARY;
     }
     default: {

@@ -1,6 +1,9 @@
 import React from 'react';
 import { View, TextInput, StyleSheet, TouchableOpacity } from 'react-native';
 import SearchIcon from '../../assets/images/icons/search.svg';
+import { useTranslation } from "react-i18next";
+
+const { t, i18n } = useTranslation("translations");
 
 interface SearchBarProps {
   placeholder?: string;
@@ -11,7 +14,7 @@ interface SearchBarProps {
 }
 
 const SearchBar: React.FC<SearchBarProps> = ({
-  placeholder = "Buscar una ubicación",
+  placeholder = i18n.t("searchBar.placeholder"),  // Utilizamos la clave de traducción
   onChangeText,
   value,
   theme,

@@ -24,6 +24,8 @@ import {
   getUserSettingsAsync,
 } from "../../redux/slices/profileSlice";
 import { isEmpty } from "@/utils/RegexExpressions";
+import { I18nextProvider } from "react-i18next";
+import i18next from "i18next";
 import moment from "moment";
 moment().format();
 
@@ -66,14 +68,25 @@ const home = () => {
       dispatch(fillPostsFromAds());
       setHasFetched(true);
       dispatch(fetchUserInfo(userProfile.id));
-      dispatch(getUserSettingsAsync(userProfile.id));
     }
   }, [userProfile.id, dispatch, hasFetched]);
+
+  const fetchSettingsAndChangeLanguage = async () => {
+    try {
+      await dispatch(getUserSettingsAsync(userProfile.id));
+      if (userProfile.language) {
+        i18next.changeLanguage(userProfile.language);
+      }
+    } catch (error) {
+      console.log("Error al cambiar el idioma:", error);
+    }
+  };
 
   useEffect(() => {
     if (hasFetched) {
       dispatch(fillPostsFromAds());
       dispatch(addPosts({ newPosts: posts, postsFromAds: ListAdsPost }));
+      fetchSettingsAndChangeLanguage();
     }
   }, [posts, hasFetched, dispatch]);
 
@@ -185,29 +198,29 @@ export default home;
 
 const createHomeStyles = (theme: any) =>
   StyleSheet.create({
-  screenContainer: {
-    flex: 1,
-    backgroundColor: theme.colors.background,
-  },
-  safeArea: {
-    flex: 1,
-    backgroundColor: theme.colors.background,
-  },
-  container: {
-    flex: 1,
-    paddingHorizontal: 15,
-  },
-  listContainer: {
-    paddingBottom: 20,
-  },
-  errorText: {
-    color: "red",
-    textAlign: "center",
-    marginVertical: 10,
-  },
-  loadingContainer: {
-    flex: 1,
-    justifyContent: "center",
-    alignItems: "center",
-  },
-});
+    screenContainer: {
+      flex: 1,
+      backgroundColor: theme.colors.background,
+    },
+    safeArea: {
+      flex: 1,
+      backgroundColor: theme.colors.background,
+    },
+    container: {
+      flex: 1,
+      paddingHorizontal: 15,
+    },
+    listContainer: {
+      paddingBottom: 20,
+    },
+    errorText: {
+      color: "red",
+      textAlign: "center",
+      marginVertical: 10,
+    },
+    loadingContainer: {
+      flex: 1,
+      justifyContent: "center",
+      alignItems: "center",
+    },
+  });

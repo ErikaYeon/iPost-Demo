@@ -5,6 +5,7 @@ import {
 } from "@/redux/slices/searchSlice";
 import { AppDispatch, RootState } from "@/redux/store";
 import { router } from "expo-router";
+import { useTranslation } from "react-i18next";
 
 import {
   View,
@@ -35,6 +36,8 @@ const ProfileAdditionalInfo: React.FC<{
     router.push("/SearchFollowers");
   };
 
+  const { t, i18n } = useTranslation("translations");
+
   return (
     <View style={styles.container}>
       <Text style={styles.bio}>{profileData.description}</Text>
@@ -42,9 +45,9 @@ const ProfileAdditionalInfo: React.FC<{
         {isOtherProfile ? (
           <>
             <Text style={styles.boldText}>{profileData.followersCount}</Text>{" "}
-            seguidores ·{" "}
+            {i18n.t("profile.followers")} ·{" "}
             <Text style={styles.boldText}>{profileData.followingCount}</Text>{" "}
-            seguidos
+            {i18n.t("profile.following")}
           </>
         ) : (
           <>
@@ -52,14 +55,14 @@ const ProfileAdditionalInfo: React.FC<{
               <TouchableOpacity onPress={handleOnPressFollowers}>
                 <Text style={styles.boldText}>
                   {profileData.followersCount}{" "}
-                  <Text style={styles.boldText}>seguidores</Text>
+                  <Text style={styles.boldText}>{i18n.t("profile.followers")}</Text>
                 </Text>
               </TouchableOpacity>
               {" · "}
               <TouchableOpacity onPress={handleOnPressFollowings}>
                 <Text style={styles.boldText}>
                   {profileData.followingCount}{" "}
-                  <Text style={styles.boldText}>seguidos</Text>
+                  <Text style={styles.boldText}>{i18n.t("profile.following")}</Text>
                 </Text>
               </TouchableOpacity>
             </Text>

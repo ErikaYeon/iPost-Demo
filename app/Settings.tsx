@@ -27,6 +27,8 @@ import {
 import { resetPosts } from "@/redux/slices/timelineSlice";
 import { languageToLevel, themeToLevel } from "../types/mappers";
 import { UserSettingsResponse } from "@/types/apiContracts";
+import { useTranslation } from "react-i18next";
+import i18next from "i18next";
 
 const SettingsScreen: React.FC = () => {
   const [isLogoutVisible, setLogoutVisible] = useState(false);
@@ -47,6 +49,7 @@ const SettingsScreen: React.FC = () => {
   const languageSelectedBackgroundColor = themeSelectedBackgroundColor;
   const languageSelectedTextColor =
     themeMode === "dark" ? "#383860" : "#201E43";
+  const { t, i18n } = useTranslation("translations");
 
   const handleLogout = async () => {
     try {
@@ -75,12 +78,19 @@ const SettingsScreen: React.FC = () => {
   };
 
   const handleGoBack = () => {
+    const storedLanguage = AsyncStorage.getItem("language");
     const userSettings: UserSettingsResponse = {
       language: languageToLevel(Profile.language),
       theme: themeToLevel(Profile.theme),
     };
     dispatch(setUserSettingsAsync({ userSettings, userId }));
     router.back();
+  };
+
+  const handleChangeLanguage = (lang: string) => {
+    i18next.changeLanguage(lang); // Cambia el idioma con i18next
+    dispatch(updateLanguage(lang)); // Actualiza el idioma en Redux
+    AsyncStorage.setItem("language", lang); // Guarda el idioma en AsyncStorage
   };
 
   const renderSelectableOption = ({
@@ -159,7 +169,7 @@ const SettingsScreen: React.FC = () => {
               />
             )
           }
-          title="Ajustes"
+          title={i18n.t("settings.title")}
           onPress={handleGoBack}
           theme={theme}
         />
@@ -174,7 +184,7 @@ const SettingsScreen: React.FC = () => {
             { color: theme.colors.textPrimary },
           ]}
         >
-          Tema
+          {i18n.t("settings.theme")}
         </Text>
         <View
           style={[
@@ -186,7 +196,7 @@ const SettingsScreen: React.FC = () => {
             isSelected: themeMode === "light",
             // onPress: () => setThemeMode("light"),
             onPress: () => dispatch(updateTheme("light")),
-            text: "Claro",
+            text: i18n.t("settings.lightMode"),
             icon:
               themeMode === "light" ? (
                 <LightModeSelectedIcon width={24} height={24} />
@@ -200,7 +210,7 @@ const SettingsScreen: React.FC = () => {
             isSelected: themeMode === "dark",
             // onPress: () => setThemeMode("dark"),
             onPress: () => dispatch(updateTheme("dark")),
-            text: "Oscuro",
+            text: i18n.t("settings.darkMode"),
             icon: <DarkModeIcon width={24} height={24} />,
             selectedTextColor: darkModeTextColor,
             unselectedTextColor: "#201E43",
@@ -214,7 +224,7 @@ const SettingsScreen: React.FC = () => {
             { color: theme.colors.textPrimary },
           ]}
         >
-          Idioma
+          {i18n.t("settings.language")}
         </Text>
         <View
           style={[
@@ -223,18 +233,18 @@ const SettingsScreen: React.FC = () => {
           ]}
         >
           {renderSelectableOption({
-            isSelected: language === "Español",
+            isSelected: language === "es",
             // onPress: () => setLanguage("Español"),
-            onPress: () => dispatch(updateLanguage("Español")),
-            text: "Español",
+            onPress: () => handleChangeLanguage("es"),
+            text: i18n.t("settings.spanish"),
             selectedTextColor: languageSelectedTextColor,
             unselectedTextColor: theme.colors.textSecondary,
           })}
           {renderSelectableOption({
-            isSelected: language === "Inglés",
+            isSelected: language === "en",
             // onPress: () => setLanguage("Inglés"),
-            onPress: () => dispatch(updateLanguage("Inglés")),
-            text: "Inglés",
+            onPress: () => handleChangeLanguage("en"),
+            text: i18n.t("settings.english"),
             selectedTextColor: languageSelectedTextColor,
             unselectedTextColor: theme.colors.textSecondary,
           })}
@@ -249,19 +259,19 @@ const SettingsScreen: React.FC = () => {
         />
         <View>
           {renderSettingsOption({
-            text: "Cambiar contraseña",
+            text: i18n.t("settings.changePassword"),
             onPress: () => router.push("/ChangePassword"),
             color: theme.colors.textPrimary,
             dividerColor: theme.colors.textSecondary,
           })}
           {renderSettingsOption({
-            text: "Cerrar sesión",
+            text: i18n.t("settings.logout"),
             onPress: () => setLogoutVisible(true),
             color: theme.colors.textPrimary,
             dividerColor: theme.colors.textSecondary,
           })}
           {renderSettingsOption({
-            text: "Eliminar cuenta",
+            text: i18n.t("settings.deleteAccount"),
             onPress: () => setDeleteAccountVisible(true),
             color: theme.colors.error,
             dividerColor: theme.colors.textSecondary,

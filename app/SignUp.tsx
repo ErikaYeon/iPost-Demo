@@ -1,11 +1,5 @@
 import React, { useState } from "react";
-import {
-  SafeAreaView,
-  View,
-  TouchableOpacity,
-  Image,
-  Text,
-} from "react-native";
+import { SafeAreaView, View, Text } from "react-native";
 import CustomButton from "../ui/components/CustomButton";
 import HeaderText from "../ui/components/HeaderText";
 import RegularText from "../ui/components/RegularText";
@@ -16,7 +10,6 @@ import { darkTheme, lightTheme } from "../ui/styles/Theme";
 import { createLogInScreenStyles } from "../ui/styles/LogIn";
 import { useDispatch, useSelector } from "react-redux";
 import { router } from "expo-router";
-import RegularTextLine from "@/ui/components/RegularTextLine";
 import { AppDispatch, RootState } from "@/redux/store";
 import { signupAsync } from "@/redux/slices/authSlice";
 import { SignupRequest } from "@/types/apiContracts";
@@ -30,8 +23,10 @@ import {
   setProfileEmail,
   setProfileUsername,
 } from "@/redux/slices/profileSlice";
+import { useTranslation } from "react-i18next";
 
 const SignUpScreen: React.FC = () => {
+  const { t, i18n } = useTranslation("translations");
   const themeMode = useSelector((state: RootState) => state.profile.theme); // Selecciona el tema desde Redux
   const theme = themeMode === "dark" ? darkTheme : lightTheme; // Selecciona el tema correcto
   const sharedStyles = createSharedStyles(theme);
@@ -47,19 +42,13 @@ const SignUpScreen: React.FC = () => {
 
   const handleRegister = async () => {
     if (!email || !username || !password) {
-      setErrorMessage("Por favor, completa todos los campos.");
+      setErrorMessage(i18n.t("signUp.errors.missingFields"));
     } else if (!isEmailValid(email)) {
-      setErrorMessage("Por favor, ingresa un correo electrónico válido.");
-    }
-    // Check if password meets the requirements
-    else if (!isPasswordValid(password)) {
-      setErrorMessage(
-        "La contraseña debe tener al menos 6 caracteres y un carácter especial."
-      );
-    }
-    // Check if password meets the requirements
-    else if (!isStringWithNoSpaces(username)) {
-      setErrorMessage("El username no puede tener espacios en blanco.");
+      setErrorMessage(i18n.t("signUp.errors.invalidEmail"));
+    } else if (!isPasswordValid(password)) {
+      setErrorMessage(i18n.t("signUp.errors.invalidPassword"));
+    } else if (!isStringWithNoSpaces(username)) {
+      setErrorMessage(i18n.t("signUp.errors.invalidUsername"));
     } else {
       setErrorMessage("");
       dispatch(setProfileEmail({ email }));
@@ -80,10 +69,10 @@ const SignUpScreen: React.FC = () => {
         }
       } catch (error: any) {
         if (error.status === 409 || error.status === 404) {
-          setErrorMessage("Error. El email ya está registrado");
+          setErrorMessage(i18n.t("signUp.errors.emailTaken"));
         } else {
           console.error("Error from signup:", error);
-          setErrorMessage("Ocurrió un error, intentalo nuevamente");
+          setErrorMessage(i18n.t("signUp.errors.genericError"));
         }
       }
     }
@@ -91,7 +80,6 @@ const SignUpScreen: React.FC = () => {
 
   return (
     <SafeAreaView style={sharedStyles.screenContainer}>
-      {/* Texto "Regístrese en iPost" */}
       <View
         style={{
           flexDirection: "row",
@@ -99,43 +87,40 @@ const SignUpScreen: React.FC = () => {
           alignItems: "baseline",
         }}
       >
-        <HeaderText text={"Regístrese en"} theme={theme} />
+        <HeaderText text={i18n.t("signUp.header.prefix")} theme={theme} />
         <Text
           style={{
             fontSize: 32,
             fontWeight: "bold",
             color: theme.colors.textPrimary,
+            marginLeft: 5,
           }}
         >
-          {" "}
-          iPost
+          {i18n.t("signUp.header.appName")}
         </Text>
       </View>
 
-      {/* Input de Correo electrónico */}
       <InputField
-        label="Correo electrónico"
-        placeholder="micorreo@ejemplo.com"
+        label={i18n.t("signUp.fields.email.label")}
+        placeholder={i18n.t("signUp.fields.email.placeholder")}
         value={email}
         onChangeText={setEmail}
         error={!!errorMessage}
         theme={theme}
       />
 
-      {/* Input de Nombre de usuario */}
       <InputField
-        label="Nombre de usuario"
-        placeholder="usuario_ejemplo"
+        label={i18n.t("signUp.fields.username.label")}
+        placeholder={i18n.t("signUp.fields.username.placeholder")}
         value={username}
         onChangeText={setUsername}
         error={!!errorMessage}
         theme={theme}
       />
 
-      {/* Input de Contraseña */}
       <InputField
-        label="Contraseña"
-        placeholder="**************"
+        label={i18n.t("signUp.fields.password.label")}
+        placeholder={i18n.t("signUp.fields.password.placeholder")}
         value={password}
         onChangeText={setPassword}
         secureTextEntry={true}
@@ -143,16 +128,14 @@ const SignUpScreen: React.FC = () => {
         theme={theme}
       />
 
-      {/* Botón de Registrarse */}
       <CustomButton
-        title="Registrarte"
+        title={i18n.t("signUp.actions.register")}
         onPress={handleRegister}
         type="primary"
         theme={theme}
         style={{ marginTop: 30, width: "85%" }}
       />
 
-      {/* Link para iniciar sesión */}
       <View
         style={{
           flexDirection: "row",
@@ -161,38 +144,14 @@ const SignUpScreen: React.FC = () => {
           marginBottom: 10,
         }}
       >
-        <RegularText text="¿Tienes una cuenta? " theme={theme} />
+        <RegularText text={i18n.t("signUp.links.login.prefix")} theme={theme} />
         <LinkText
-          text="Inicia sesión"
+          text={` ${i18n.t("signUp.links.login.action")}`}
           onPress={() => router.push("/LogIn")}
           theme={theme}
         />
       </View>
 
-      {/* Texto "o continua con" */}
-      {/* <View
-        style={{
-          justifyContent: "center",
-          alignItems: "center",
-          marginTop: theme.spacing.small,
-        }}
-      > */}
-      {/* <RegularTextLine text="o continua con" theme={theme} />
-      </View> */}
-
-      {/* Botón de Google con imagen PNG */}
-      {/* <TouchableOpacity
-        style={[sharedStyles.googleButton, { marginTop: theme.spacing.medium }]} // Usa los estilos separados
-        onPress={() => console.log("Google")}
-      >
-        <Image
-          source={require("../assets/images/icons/Google.png")}
-          style={{ width: 24, height: 24 }}
-        />
-        <Text style={sharedStyles.googleText}>Google</Text>
-      </TouchableOpacity> */}
-
-      {/* Error message banner */}
       {errorMessage ? (
         <View style={styles.errorBanner}>
           <Text style={styles.errorText}>{errorMessage}</Text>
